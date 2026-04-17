@@ -472,6 +472,37 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .gl-drill-q{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-bottom:.75rem}
 .gl-drill-q-num{font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
 .gl-drill-q-text{font-size:.88rem;font-weight:500;line-height:1.55;margin-bottom:.7rem}
+/* Phase 1 card */
+.gl-phase1-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:1.1rem 1.2rem;margin-bottom:.8rem}
+.gl-p1-section{margin-bottom:.95rem}
+.gl-p1-lbl{display:block;font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;margin-bottom:.35rem}
+.gl-p1-gut{color:var(--str-tx)}
+.gl-p1-gap{color:var(--red)}
+.gl-p1-erkl{color:var(--accent)}
+.gl-p1-body{font-size:.84rem;line-height:1.65;color:var(--text)}
+.gl-p1-list{margin:.1rem 0 0 1rem;padding:0;font-size:.83rem;line-height:1.65;color:var(--text)}
+.gl-p1-list li{margin-bottom:.2rem}
+/* Phase 3 diagnostic mindmap */
+.gl-mindmap-diag{margin-bottom:.8rem}
+.gl-mmd-center{font-family:var(--serif);font-size:1.1rem;font-weight:600;text-align:center;padding:.65rem 1rem;background:var(--accent);color:#fff;border-radius:10px;margin-bottom:1rem}
+.gl-mmd-branches{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:.8rem}
+@media(max-width:480px){.gl-mmd-branches{grid-template-columns:1fr}}
+.gl-mmd-branch{border:1.5px solid;border-radius:12px;padding:.8rem .9rem}
+.gl-mmd-branch-title{font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.55rem}
+.gl-mmd-nodes{display:flex;flex-direction:column;gap:.4rem}
+.gl-mmd-node{background:rgba(255,255,255,.55);border-radius:7px;padding:.45rem .6rem}
+.gl-mmd-node-title{font-size:.8rem;font-weight:600;margin-bottom:.15rem}
+.gl-mmd-node-kern{font-size:.75rem;color:var(--muted);line-height:1.5}
+.gl-mmd-connections{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:.7rem .9rem;margin-top:.2rem}
+.gl-mmd-conn{display:flex;align-items:center;gap:.25rem;font-size:.78rem;margin-bottom:.3rem;flex-wrap:wrap}
+/* Phase 3 diagnostic organizer */
+.gl-org-diag{margin-bottom:.8rem}
+.gl-org-title{font-family:var(--serif);font-size:.95rem;font-weight:500;text-align:center;color:var(--muted);margin-bottom:1rem;font-style:italic}
+.gl-org-step{display:flex;align-items:flex-start;gap:.75rem;border-left:3px solid;border-radius:0 10px 10px 0;padding:.75rem .9rem;margin-bottom:.1rem}
+.gl-org-step-nr{width:22px;height:22px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;margin-top:.1rem}
+.gl-org-step-label{font-size:.78rem;font-weight:700;margin-bottom:.25rem}
+.gl-org-step-kern{font-size:.82rem;line-height:1.6;color:var(--text)}
+.gl-org-arrow{text-align:center;font-size:.9rem;color:var(--muted);padding:.1rem 0;margin-left:1.5rem}
 
 /* Skeleton reference panel */
 .fts-panel{background:var(--accent-s);border:1px solid var(--str-bd);border-radius:12px;margin-bottom:1.2rem;overflow:hidden}
@@ -6585,7 +6616,6 @@ function learnWeakness(titel, beschreibung) {
   ST.gezieltDesc = beschreibung;
   ST.gezieltPhase = 0;
   ST.gezieltMode = true;
-  // Ensure material is available for gezielt phases (regular session → copy ST.sessFiles)
   if (!ST.planFiles || !ST.planFiles.length) ST.planFiles = ST.sessFiles || [];
   if (ST.topic) {
     const d = load() || fresh();
@@ -6595,6 +6625,7 @@ function learnWeakness(titel, beschreibung) {
     save(d); clearDraft();
   }
   hideAnalysisOverlay();
+  document.getElementById('glDrillArea').innerHTML = '';
   show('scGezielt');
   setNav('nPlan');
   renderGezieltScreen();
@@ -6618,11 +6649,11 @@ function renderGezieltScreen() {
     <div class="gl-phase ${p1done ? 'done' : 'active'}">
       <div class="gl-phase-head">
         <div class="gl-phase-num">${p1done ? '✓' : '1'}</div>
-        <div class="gl-phase-title">Text Explanation</div>
-        <span class="gl-phase-badge">📝 Text · Explain to Me</span>
+        <div class="gl-phase-title">Understand the Gap</div>
+        <span class="gl-phase-badge">📖 Read · Analogy</span>
       </div>
-      <div class="gl-phase-desc">The AI re-explains your weakness in a targeted way — focused on exactly what's missing.</div>
-      ${!p1done ? `<button class="gl-phase-btn" onclick="startGezieltPhase1()">▶ Start Phase 1</button>` : `<div style="font-size:.78rem;color:var(--str-tx);font-weight:600">✓ Completed — Phase 2 active</div>`}
+      <div class="gl-phase-desc">The AI breaks down your weakness — what you got right, exactly where the gap is, and re-explains with a concrete analogy.</div>
+      ${!p1done ? `<button class="gl-phase-btn" onclick="startGezieltPhase1()">▶ Start Phase 1</button>` : `<div style="font-size:.78rem;color:var(--str-tx);font-weight:600">✓ Done — Phase 2 unlocked</div>`}
     </div>
 
     <div class="gl-phase ${p2done ? 'done' : p1done ? 'active' : 'locked'}">
@@ -6631,42 +6662,90 @@ function renderGezieltScreen() {
         <div class="gl-phase-title">Socratic Drill</div>
         <span class="gl-phase-badge">❓ 4 Questions</span>
       </div>
-      <div class="gl-phase-desc">The AI probes with targeted questions — you construct the knowledge yourself instead of just reading it.</div>
+      <div class="gl-phase-desc">4 targeted questions — answer in your own words, get full feedback with score, improved version, and tips. Skip anytime.</div>
       ${p1done && !p2done ? `<button class="gl-phase-btn" onclick="startGezieltPhase2()">▶ Start Phase 2</button>` : ''}
-      ${p2done ? `<div style="font-size:.78rem;color:var(--str-tx);font-weight:600">✓ Completed — Phase 3 active</div>` : ''}
+      ${p2done ? `<div style="font-size:.78rem;color:var(--str-tx);font-weight:600">✓ Done — Phase 3 unlocked</div>` : ''}
     </div>
 
     <div class="gl-phase ${p2done ? 'active' : 'locked'}">
       <div class="gl-phase-head">
         <div class="gl-phase-num">3</div>
-        <div class="gl-phase-title">Different Perspective</div>
-        <span class="gl-phase-badge">🔄 Choose format</span>
+        <div class="gl-phase-title">Visual Perspective</div>
+        <span class="gl-phase-badge">🔄 Choose view</span>
       </div>
-      <div class="gl-phase-desc">See the same topic through a different format — Mindmap for connections, Organizer for processes, Comparison for differences.</div>
+      <div class="gl-phase-desc">See the gap visually — Mindmap contrasts misconception vs. correct model. Organizer shows the reasoning chain from wrong intuition to correct understanding.</div>
       ${p2done ? `
         <button class="gl-phase-btn" onclick="startGezieltPhase3('mindmap')">🧠 Mindmap</button>
-        <button class="gl-phase-btn" style="background:var(--ver-tx)" onclick="startGezieltPhase3('organizer')">🔀 Organizer</button>
-        <button class="gl-phase-btn" style="background:var(--pru-tx)" onclick="startGezieltPhase3('vergleich')">⚖️ Vergleich</button>` : ''}
+        <button class="gl-phase-btn" style="background:var(--ver-tx)" onclick="startGezieltPhase3('organizer')">🔀 Organizer</button>` : ''}
     </div>`;
 }
 
-function startGezieltPhase1() {
-  ST.bausteinFocusTopic = ST.gezieltTitel;
-  ST.bausteinFocusDesc  = ST.gezieltDesc;
-  ST.bMode = 'erklaere';
-  ST.bFmt  = 'text';
-  ST.bfmt  = 'text';
-  startBaustein();
+async function startGezieltPhase1() {
+  const drillArea = document.getElementById('glDrillArea');
+  drillArea.innerHTML = `
+    <div class="test-sec-head" style="margin-bottom:1rem;margin-top:1.2rem">
+      <span class="test-sec-ico">📖</span>
+      <span class="test-sec-title">Understanding Your Gap</span>
+    </div>
+    <div id="glPhase1Load" class="bov-load" style="padding:.8rem">
+      <div class="typ"><span></span><span></span><span></span></div>
+      AI analyzing your weakness...
+    </div>`;
+  drillArea.scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+  try {
+    const sys = `You are an expert learning coach. A student has a specific knowledge gap. Analyze it precisely and explain the concept in a new way.
+Respond ONLY with JSON:
+{
+  "gut": ["Point 1 they understood correctly", "Point 2 (omit if nothing clear)"],
+  "luecke": "The specific gap in 1-2 sentences — exactly what is wrong or missing in their understanding",
+  "erklaerung": "Re-explain the concept from scratch: simple, concrete, with a vivid real-world analogy. 3-5 sentences. Build from intuition to correct understanding."
+}
+In English. Be specific and constructive.`;
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:700, system:sys, messages:[{
+        role:'user', content:`Weak point: "${ST.gezieltTitel}"\nDescription: ${ST.gezieltDesc}`
+      }]})
+    });
+    const data = await res.json();
+    const json = safeJsonParse(data.content.map(b=>b.text||'').join('').match(/\{[\s\S]*\}/)[0]);
+
+    const gutHtml = (json.gut || []).filter(Boolean).map(g => `<li>${esc(g)}</li>`).join('');
+    document.getElementById('glPhase1Load').outerHTML = `
+      <div class="gl-phase1-card">
+        ${gutHtml ? `<div class="gl-p1-section">
+          <span class="gl-p1-lbl gl-p1-gut">✓ What you got right</span>
+          <ul class="gl-p1-list">${gutHtml}</ul>
+        </div>` : ''}
+        <div class="gl-p1-section">
+          <span class="gl-p1-lbl gl-p1-gap">△ The gap</span>
+          <div class="gl-p1-body">${esc(json.luecke || '')}</div>
+        </div>
+        <div class="gl-p1-section" style="margin-bottom:0">
+          <span class="gl-p1-lbl gl-p1-erkl">🔄 Re-explained with analogy</span>
+          <div class="gl-p1-body">${esc(json.erklaerung || '')}</div>
+        </div>
+        <div style="margin-top:1.2rem;padding-top:.9rem;border-top:1px solid var(--border)">
+          <button class="gl-phase-btn" onclick="completePhase1()">Phase 2: Practice →</button>
+        </div>
+      </div>`;
+  } catch(e) {
+    document.getElementById('glPhase1Load').outerHTML = `<div class="err on">Error: ${esc(e.message)}</div>`;
+  }
+}
+
+function completePhase1() {
+  ST.gezieltPhase = 1;
+  document.getElementById('glDrillArea').innerHTML = '';
+  renderGezieltScreen();
+  document.getElementById('glPhases')?.scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
 
 function returnFromGezieltPhase1() {
-  ST.gezieltPhase = 1;
-  ST.gezieltMode  = false;
-  hideAnalysisOverlay();
-  document.getElementById('glDrillArea').innerHTML = '';
-  show('scGezielt');
-  setNav('nPlan');
-  renderGezieltScreen();
+  // legacy — phase1 is now inline
+  completePhase1();
 }
 
 async function startGezieltPhase2() {
@@ -6675,7 +6754,7 @@ async function startGezieltPhase2() {
     <div class="test-sec-head" style="margin-bottom:1rem;margin-top:1.2rem">
       <span class="test-sec-ico">❓</span>
       <span class="test-sec-title">Socratic Drill</span>
-      <span class="test-sec-sub">4 questions · Answer in your own words</span>
+      <span class="test-sec-sub">4 questions · Answer in your own words · Skip anytime</span>
     </div>
     <div id="glDrillLoad" class="bov-load" style="padding:.8rem">
       <div class="typ"><span></span><span></span><span></span></div>
@@ -6700,6 +6779,7 @@ In English. Concrete, challenging, in-depth.`;
     const json = safeJsonParse(data.content.map(b=>b.text||'').join('').match(/\{[\s\S]*\}/)[0]);
     ST.glDrillFragen   = json.fragen || [];
     ST.glDrillAnswered = 0;
+    ST.glDrillSkipped  = 0;
 
     document.getElementById('glDrillLoad').style.display = 'none';
     let h = '';
@@ -6709,17 +6789,37 @@ In English. Concrete, challenging, in-depth.`;
         <div class="gl-drill-q-text">${esc(f)}</div>
         <div class="recall-ta-wrap">
           <textarea id="glta-${i}" placeholder="Think out loud — write what comes to mind..."></textarea>
-          <div class="brow" style="margin-top:.55rem">
-            <button class="btn bp" id="glbtn-${i}" onclick="submitGlDrill(${i})">Submit →</button>
+          <div class="brow" style="margin-top:.55rem;gap:.5rem">
+            <button class="btn bg" onclick="skipGlDrill(${i})">Skip →</button>
+            <button class="btn bp" id="glbtn-${i}" onclick="submitGlDrill(${i})">Evaluate →</button>
           </div>
         </div>
         <div id="glfb-${i}"></div>
       </div>`;
     });
+    h += `<div id="glPhase3Btn" style="display:none;margin-top:1rem;padding-top:.9rem;border-top:1px solid var(--border)">
+      <div style="font-size:.78rem;color:var(--str-tx);font-weight:600;margin-bottom:.5rem">✓ Drill complete</div>
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:.75rem">Choose a format for Phase 3 — a visual explanation of the concept:</div>
+      <div class="brow" style="gap:.5rem">
+        <button class="gl-phase-btn" onclick="startGezieltPhase3('mindmap')">🧠 Mindmap</button>
+        <button class="gl-phase-btn" style="background:var(--ver-tx)" onclick="startGezieltPhase3('organizer')">🔀 Organizer</button>
+      </div>
+    </div>`;
     document.getElementById('glDrillQs').innerHTML = h;
   } catch(e) {
     document.getElementById('glDrillLoad').innerHTML = `<div class="err on">Error: ${esc(e.message)}</div>`;
   }
+}
+
+function skipGlDrill(idx) {
+  const ta   = document.getElementById(`glta-${idx}`);
+  const fbEl = document.getElementById(`glfb-${idx}`);
+  const qDiv = document.getElementById(`gldq-${idx}`);
+  if (ta) ta.disabled = true;
+  if (qDiv) qDiv.querySelectorAll('button').forEach(b => b.disabled = true);
+  if (fbEl) fbEl.innerHTML = `<div style="font-size:.78rem;color:var(--muted);padding:.35rem 0;font-style:italic">Skipped</div>`;
+  ST.glDrillSkipped = (ST.glDrillSkipped||0) + 1;
+  checkGlDrillComplete();
 }
 
 async function submitGlDrill(idx) {
@@ -6727,49 +6827,186 @@ async function submitGlDrill(idx) {
   const btn = document.getElementById(`glbtn-${idx}`);
   const answer = ta?.value.trim();
   if (!answer) { if(ta) ta.style.borderColor='var(--red)'; return; }
-  if(ta) ta.style.borderColor='';
-  if(btn) { btn.disabled=true; btn.textContent='...'; }
+  if(ta) { ta.style.borderColor=''; ta.disabled = true; }
+  if(btn) { btn.disabled=true; btn.textContent='Evaluating...'; }
+  const qDiv = document.getElementById(`gldq-${idx}`);
+  if (qDiv) { const skip = qDiv.querySelector('.btn.bg'); if(skip) skip.disabled = true; }
+
+  const fbEl = document.getElementById(`glfb-${idx}`);
+  if(fbEl) fbEl.innerHTML = '<div style="padding:.5rem 0;color:var(--muted);font-size:.8rem">AI evaluating...</div>';
 
   try {
-    const sys = `Give brief, direct feedback (max 2 sentences): what was good, what is still missing.
-Respond ONLY with JSON: {"fb":"2 sentences","ok":true}  ok=true when the core idea is clear. In English.`;
+    const sys = `You are an expert learning coach. Evaluate the student's answer to a targeted question about a knowledge gap.
+Respond ONLY with JSON:
+{"bewertung":7,"gut":"What was correct — 1 sentence","fehlt":"What is missing or imprecise — 1 sentence","verbessert":"A complete model answer in 2-3 sentences","tip":"One concrete learning tip"}
+Rating 1–10. In English. Be specific and constructive.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:300, system:sys, messages:[{
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:500, system:sys, messages:[{
         role:'user', content:`Topic: ${ST.gezieltTitel}\nQuestion: ${ST.glDrillFragen[idx]}\nAnswer: ${answer}`
       }]})
     });
     const data = await res.json();
     const json = safeJsonParse(data.content.map(b=>b.text||'').join('').match(/\{[\s\S]*\}/)[0]);
-    const fb = document.getElementById(`glfb-${idx}`);
-    const bg = json.ok ? 'var(--str-bg)' : 'var(--erk-bg)';
-    const tx = json.ok ? 'var(--str-tx)' : 'var(--erk-tx)';
-    if(fb) fb.innerHTML = `<div style="background:${bg};border-radius:8px;padding:.6rem .8rem;margin-top:.5rem;font-size:.81rem;color:${tx};line-height:1.6">${esc(json.fb||'')}</div>`;
-    if(ta) ta.disabled = true;
+    const score = Math.min(10, Math.max(1, json.bewertung || 5));
+    const cls = score >= 7 ? 'rs-high' : score >= 5 ? 'rs-mid' : 'rs-low';
+    if(fbEl) fbEl.innerHTML = `
+      <div class="recall-fb" style="margin-top:.6rem">
+        <div><span class="recall-score-badge ${cls}"><span class="rsn">${score}</span><span class="rsmax">/10</span></span></div>
+        ${json.gut ? `<div class="recall-fb-sec"><span class="recall-fb-lbl">✓ Correct</span>${esc(json.gut)}</div>` : ''}
+        ${json.fehlt ? `<div class="recall-fb-sec"><span class="recall-fb-lbl">△ Missing</span>${esc(json.fehlt)}</div>` : ''}
+        ${json.verbessert ? `<div class="recall-fb-sec"><span class="recall-fb-lbl">Improved version</span>${esc(json.verbessert)}</div>` : ''}
+        ${json.tip ? `<div class="recall-fb-sec"><span class="recall-fb-lbl">💡 Tip</span>${esc(json.tip)}</div>` : ''}
+      </div>`;
     if(btn) btn.style.display = 'none';
-
     ST.glDrillAnswered = (ST.glDrillAnswered||0) + 1;
-    if (ST.glDrillAnswered >= ST.glDrillFragen.length) {
-      ST.gezieltPhase = 2;
-      setTimeout(() => {
-        renderGezieltScreen();
-        document.getElementById('glDrillArea').innerHTML += `<div style="text-align:center;padding:.8rem 0;font-size:.83rem;color:var(--str-tx);font-weight:600">✓ Drill complete — Phase 3 is unlocked ↑</div>`;
-        document.getElementById('glPhases')?.scrollIntoView({ behavior:'smooth', block:'nearest' });
-      }, 500);
-    }
+    checkGlDrillComplete();
   } catch(e) {
-    if(btn) { btn.disabled=false; btn.textContent='Submit →'; }
+    if(fbEl) fbEl.innerHTML = `<div class="err on" style="margin-top:.4rem">Error: ${esc(e.message)}</div>`;
+    if(btn) { btn.disabled=false; btn.textContent='Evaluate →'; }
+    if(ta) ta.disabled = false;
+    const qDiv2 = document.getElementById(`gldq-${idx}`);
+    if(qDiv2) { const skip = qDiv2.querySelector('.btn.bg'); if(skip) skip.disabled = false; }
   }
 }
 
-function startGezieltPhase3(format) {
-  ST.bausteinFocusTopic = ST.gezieltTitel;
-  ST.bausteinFocusDesc  = ST.gezieltDesc;
-  ST.bMode = 'erklaere';
-  ST.bFmt  = format;
-  ST.bfmt  = format;
-  startBaustein();
+function checkGlDrillComplete() {
+  const total = (ST.glDrillFragen || []).length;
+  const done  = (ST.glDrillAnswered||0) + (ST.glDrillSkipped||0);
+  if (done >= total) {
+    ST.gezieltPhase = 2;
+    renderGezieltScreen();
+    const p3btn = document.getElementById('glPhase3Btn');
+    if(p3btn) { p3btn.style.display = ''; p3btn.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+  }
+}
+
+async function startGezieltPhase3(format) {
+  const drillArea = document.getElementById('glDrillArea');
+  const isMm = format === 'mindmap';
+  drillArea.innerHTML = `
+    <div class="test-sec-head" style="margin-bottom:1rem;margin-top:1.2rem">
+      <span class="test-sec-ico">${isMm ? '🧠' : '🔀'}</span>
+      <span class="test-sec-title">${isMm ? 'Mindmap: Misconception vs. Reality' : 'Organizer: Reasoning Chain'}</span>
+      <span class="test-sec-sub">${isMm ? 'How your mental model differs from the correct one' : 'From wrong intuition to correct understanding'}</span>
+    </div>
+    <div id="glPhase3Load" class="bov-load" style="padding:.8rem">
+      <div class="typ"><span></span><span></span><span></span></div>
+      AI building visual explanation...
+    </div>`;
+  drillArea.scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+  try {
+    let sys;
+    if (isMm) {
+      sys = `You are an expert learning coach. Create a DIAGNOSTIC mindmap that visually contrasts a student's misconception with the correct understanding.
+Do NOT summarize the topic generally. The 4 branches must be: misconception analysis, correct model, analogy, exam application.
+Respond ONLY with JSON:
+{
+  "zentrum": "The weak concept (short)",
+  "aste": [
+    {"titel": "Common Misconception", "knoten": [{"titel": "Why it seems right", "kern": "1 sentence"}, {"titel": "The intuitive trap", "kern": "1 sentence"}, {"titel": "Where it breaks", "kern": "1 sentence"}]},
+    {"titel": "What's Actually True", "knoten": [{"titel": "The correct principle", "kern": "1 sentence"}, {"titel": "Key distinction", "kern": "1 sentence"}, {"titel": "Why it works this way", "kern": "1 sentence"}]},
+    {"titel": "The Analogy", "knoten": [{"titel": "Real-world parallel", "kern": "1 sentence"}, {"titel": "What maps to what", "kern": "1 sentence"}, {"titel": "Where analogy breaks", "kern": "1 sentence"}]},
+    {"titel": "Exam Application", "knoten": [{"titel": "Signal words", "kern": "1 sentence"}, {"titel": "Typical question type", "kern": "1 sentence"}, {"titel": "How to answer correctly", "kern": "1 sentence"}]}
+  ],
+  "verbindungen": [
+    {"von": "Where it breaks", "label": "leads to", "zu": "The correct principle"},
+    {"von": "Real-world parallel", "label": "helps understand", "zu": "Key distinction"}
+  ]
+}
+In English.`;
+    } else {
+      sys = `You are an expert learning coach. Create a causal reasoning chain (5 steps) that walks the student from their misconception to correct understanding.
+This is NOT a topic summary — it's a journey: wrong intuition → why it breaks → correct concept → analogy → applied.
+Respond ONLY with JSON:
+{
+  "titel": "From Misconception to Understanding",
+  "schritte": [
+    {"nr": 1, "label": "The Intuition", "kern": "What seems right at first and why it's tempting", "typ": "start"},
+    {"nr": 2, "label": "The Break Point", "kern": "Where exactly this intuition fails — the precise logical error", "typ": "entscheidung"},
+    {"nr": 3, "label": "The Correct Concept", "kern": "What's actually true — explained simply and precisely", "typ": "prozess"},
+    {"nr": 4, "label": "The Analogy", "kern": "A concrete real-world parallel that makes it click", "typ": "prozess"},
+    {"nr": 5, "label": "How to Apply It", "kern": "In exams and practice — the correct approach step by step", "typ": "ergebnis"}
+  ]
+}
+In English. Make each step feel like a genuine insight.`;
+    }
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1500, system:sys, messages:[{
+        role:'user', content:`Weak concept: "${ST.gezieltTitel}"\nGap description: ${ST.gezieltDesc}`
+      }]})
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error'); }
+    const d = await res.json();
+    const json = safeJsonParse(d.content.map(b=>b.text||'').join('').match(/\{[\s\S]*\}/)[0]);
+    const loadEl = document.getElementById('glPhase3Load');
+    if (isMm) renderGezieltMindmap(loadEl, json);
+    else renderGezieltOrganizer(loadEl, json);
+  } catch(e) {
+    const el = document.getElementById('glPhase3Load');
+    if(el) el.outerHTML = `<div class="err on">Error: ${esc(e.message)}</div>`;
+  }
+}
+
+function renderGezieltMindmap(container, data) {
+  const branchColors = ['var(--red)', 'var(--str-tx)', '#7B5EA7', 'var(--pru-tx)'];
+  const branchBgs    = ['var(--red-s)', 'var(--str-bg)', '#F2EEF8', '#EFF3FA'];
+  let h = `<div class="gl-mindmap-diag">
+    <div class="gl-mmd-center">${esc(data.zentrum || ST.gezieltTitel)}</div>
+    <div class="gl-mmd-branches">`;
+  (data.aste || []).forEach((ast, i) => {
+    const col = branchColors[i % 4];
+    const bg  = branchBgs[i % 4];
+    h += `<div class="gl-mmd-branch" style="border-color:${col};background:${bg}">
+      <div class="gl-mmd-branch-title" style="color:${col}">${esc(ast.titel)}</div>
+      <div class="gl-mmd-nodes">`;
+    (ast.knoten || []).forEach(k => {
+      const t = typeof k === 'string' ? k : (k.titel || '');
+      const e2 = typeof k === 'string' ? '' : (k.kern || '');
+      h += `<div class="gl-mmd-node">
+        <div class="gl-mmd-node-title">${esc(t)}</div>
+        ${e2 ? `<div class="gl-mmd-node-kern">${esc(e2)}</div>` : ''}
+      </div>`;
+    });
+    h += `</div></div>`;
+  });
+  h += `</div>`;
+  if ((data.verbindungen || []).length) {
+    h += `<div class="gl-mmd-connections">
+      <div style="font-size:.62rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem">Cross-connections</div>`;
+    data.verbindungen.forEach(v => {
+      h += `<div class="gl-mmd-conn"><span>${esc(v.von)}</span><span style="color:var(--accent);font-size:.75rem;margin:0 .2rem">→ ${esc(v.label)} →</span><span>${esc(v.zu)}</span></div>`;
+    });
+    h += `</div>`;
+  }
+  h += `</div>`;
+  container.outerHTML = h;
+}
+
+function renderGezieltOrganizer(container, data) {
+  const cols = { start:'var(--erk-tx)', entscheidung:'var(--red)', prozess:'var(--str-tx)', ergebnis:'var(--pru-tx)' };
+  const bgs  = { start:'var(--erk-bg)', entscheidung:'var(--red-s)', prozess:'var(--str-bg)', ergebnis:'#EFF3FA' };
+  let h = `<div class="gl-org-diag">
+    <div class="gl-org-title">${esc(data.titel || 'Reasoning Chain')}</div>`;
+  (data.schritte || []).forEach((s, i, arr) => {
+    const typ = s.typ || 'prozess';
+    const col = cols[typ] || 'var(--accent)';
+    const bg  = bgs[typ]  || 'var(--bg)';
+    h += `<div class="gl-org-step" style="border-left-color:${col};background:${bg}">
+      <div class="gl-org-step-nr" style="background:${col}">${s.nr}</div>
+      <div class="gl-org-step-body">
+        <div class="gl-org-step-label" style="color:${col}">${esc(s.label)}</div>
+        <div class="gl-org-step-kern">${esc(s.kern || '')}</div>
+      </div>
+    </div>`;
+    if (i < arr.length - 1) h += `<div class="gl-org-arrow">↓</div>`;
+  });
+  h += `</div>`;
+  container.outerHTML = h;
 }
 
 // ═══════════════════════════════
