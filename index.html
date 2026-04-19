@@ -7468,6 +7468,13 @@ function safeJsonParse(raw) {
       out += c;
     }
     out = out.replace(/,(\s*[}\]])/g, '$1');
+    // Close any unclosed strings
+    if (inStr) out += '"';
+    // Close any unclosed structures
+    for (let i = stack.length - 1; i >= 0; i--) {
+      out += stack[i] === 'obj' ? '}' : ']';
+    }
+    out = out.replace(/,(\s*[}\]])/g, '$1');
     return JSON.parse(out);
   } catch(e) { throw new Error('JSON nicht parsebar: ' + e.message); }
 }
