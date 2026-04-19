@@ -1740,7 +1740,7 @@ async function submitSRAnswer() {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 600, system: sys, messages: [{ role: 'user', content: `Question: ${q.frage}\n\n${referenz}\n\nStudent answer: ${answer}` }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 600, system: sys, messages: [{ role: 'user', content: `Question: ${q.frage}\n\n${referenz}\n\nStudent answer: ${answer}` }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error'); }
     const data = await res.json();
@@ -2308,7 +2308,7 @@ async function callAPI() {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: (['mindmap','organizer'].includes(ST.fmt) || ['mindmap','organizer'].includes(ST.bfmt)) ? 8000 : 2000, system: buildSys(), messages: ST.msgs })
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: (['mindmap','organizer'].includes(ST.fmt) || ['mindmap','organizer'].includes(ST.bfmt)) ? 8000 : 2000, system: buildSys(), messages: ST.msgs })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
@@ -2824,7 +2824,7 @@ Analyze each main point of the student. Rating 1–10. In English.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 800, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 800, system: sys, messages: [{
         role: 'user',
         content: `Original text:\n${originalText}\n\nStudent's reproduction:\n${answer}`
       }]})
@@ -3036,7 +3036,7 @@ In English. Not just repeating — force the student to think deeply.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,system:sys,messages:[{
+      body: JSON.stringify({model:'claude-sonnet-4-5',max_tokens:200,system:sys,messages:[{
         role:'user',content:`Topic:\n${originalText.slice(0,600)}\n\nRecall feedback:\n${recallFeedback}`
       }]})
     });
@@ -3085,7 +3085,7 @@ Rating 1–10. In English.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,system:sys,messages:[{
+      body: JSON.stringify({model:'claude-sonnet-4-5',max_tokens:400,system:sys,messages:[{
         role:'user',content:`Background:\n${originalText.slice(0,600)}\n\nQuestion:\n${frage}\n\nAnswer:\n${answer}`
       }]})
     });
@@ -3142,7 +3142,7 @@ In English. Close to exam scenarios, realistic.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,system:sys,messages:[{
+      body: JSON.stringify({model:'claude-sonnet-4-5',max_tokens:200,system:sys,messages:[{
         role:'user',content:`Topic:\n${originalText.slice(0,600)}`
       }]})
     });
@@ -3192,7 +3192,7 @@ Rating 1–10. In English.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,system:sys,messages:[{
+      body: JSON.stringify({model:'claude-sonnet-4-5',max_tokens:400,system:sys,messages:[{
         role:'user',content:`Background:\n${originalText.slice(0,600)}\n\nTask:\n${aufgabe}\n\nStudent's example:\n${answer}`
       }]})
     });
@@ -3258,7 +3258,7 @@ In English. The question should be close to exam format.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 300, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 300, system: sys, messages: [{
         role: 'user', content: `Topic:\n${originalText.slice(0, 500)}`
       }]})
     });
@@ -3314,7 +3314,7 @@ Rating 1–10. In English.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 400, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 400, system: sys, messages: [{
         role: 'user',
         content: `Background knowledge:\n${originalText}\n\nTransfer question:\n${frage}\n\nStudent's answer:\n${answer}`
       }]})
@@ -3378,7 +3378,7 @@ In English. Max 2 sentences.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 300, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 300, system: sys, messages: [{
         role: 'user', content: `Topic:\n${originalText.slice(0, 500)}`
       }]})
     });
@@ -3448,7 +3448,7 @@ Reply ONLY with this JSON. In English. Be critical — don't give up too easily.
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 400, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 400, system: sys, messages: [{
         role: 'user', content: `Topic:\n${originalText}\n\nDebate history:\n${verlauf}`
       }]})
     });
@@ -3498,7 +3498,7 @@ Rating 1–10. In English.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 500, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 500, system: sys, messages: [{
         role: 'user', content: `Topic:\n${originalText.slice(0,400)}\n\nDebate:\n${verlauf}`
       }]})
     });
@@ -3738,7 +3738,7 @@ Respond ONLY with this JSON (no text before/after):
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:500, system:sys, messages:[{
+      body: JSON.stringify({model:'claude-sonnet-4-5', max_tokens:500, system:sys, messages:[{
         role:'user', content:`Cross-connection: "${v.von}" ${v.label} "${v.zu}"\n\nExplain this connection in detail.`
       }]})
     });
@@ -3941,7 +3941,7 @@ Rating 1–10. Focus on understanding the causal/logical connection. Everything 
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:700, system:sys, messages:[{
+      body: JSON.stringify({model:'claude-sonnet-4-5', max_tokens:700, system:sys, messages:[{
         role:'user', content:`Cross-connection: "${v.von}" ${v.label} "${v.zu}"\n\nStudent's explanation: ${answer}\n\nEvaluate now.`
       }]})
     });
@@ -4267,7 +4267,7 @@ status is EXACTLY ONE of: richtig | unvollstaendig | falsch. Rating 1–10. In E
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:sys,messages:[{role:'user',content:`Reference:\n${referenz}\n\nStudent answer:\n${answer}`}]})
+      body: JSON.stringify({model:'claude-sonnet-4-5',max_tokens:800,system:sys,messages:[{role:'user',content:`Reference:\n${referenz}\n\nStudent answer:\n${answer}`}]})
     });
     const data = await res.json();
     const json = JSON.parse(data.content[0].text.match(/\{[\s\S]*\}/)[0]);
@@ -4419,7 +4419,7 @@ Rating 1–10. In English.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,system:sys,messages:[{role:'user',content:`Reference:\n${referenz}\n\nStudent answer:\n${answer}`}]})
+      body: JSON.stringify({model:'claude-sonnet-4-5',max_tokens:600,system:sys,messages:[{role:'user',content:`Reference:\n${referenz}\n\nStudent answer:\n${answer}`}]})
     });
     const data = await res.json();
     const json = JSON.parse(data.content[0].text.match(/\{[\s\S]*\}/)[0]);
@@ -4539,7 +4539,7 @@ Rating 1–10. In English.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,system:sys,messages:[{role:'user',content:`Reference:\n${ablauf}\n\nStudent answer:\n${answer}`}]})
+      body: JSON.stringify({model:'claude-sonnet-4-5',max_tokens:600,system:sys,messages:[{role:'user',content:`Reference:\n${ablauf}\n\nStudent answer:\n${answer}`}]})
     });
     const data = await res.json();
     const json = JSON.parse(data.content[0].text.match(/\{[\s\S]*\}/)[0]);
@@ -4618,7 +4618,7 @@ Exactly ${schritte.length} entries in the same order. In English.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:900, system:sys, messages:[{role:'user', content:stepsDesc}]})
+      body: JSON.stringify({model:'claude-sonnet-4-5', max_tokens:900, system:sys, messages:[{role:'user', content:stepsDesc}]})
     });
     if (!res.ok) return;
     const d = await res.json();
@@ -4885,7 +4885,7 @@ status is EXACTLY ONE of: richtig | unvollstaendig | falsch. Rating 1–10. In E
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 800, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 800, system: sys, messages: [{
         role: 'user', content: `Reference:\n${referenz}\n\nStudent answer:\n${answer}`
       }]})
     });
@@ -5354,7 +5354,7 @@ Respond ONLY with this JSON (no text before/after):
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 3000, system: sys, messages: [{ role: 'user', content }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 3000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
@@ -5550,7 +5550,7 @@ Respond ONLY with JSON:
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 4000, system: sys, messages: [{ role: 'user', content }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 4000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
@@ -5692,7 +5692,7 @@ score = 0–10 (integer). 10=perfect, 7.5=passed, <5=insufficient. Be demanding.
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 600, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 600, system: sys, messages: [{
         role: 'user',
         content: `Topic: ${ST.currentTestTopic?.name || ''}\nTask type: ${task.typ}\nTask: ${task.aufgabe}\nModel answer: ${task.idealantwort}\n\nStudent's answer: ${answer}`
       }]})
@@ -5755,7 +5755,7 @@ Respond ONLY with JSON: {"staerken":"2-3 sentences what was good","schwaechen":"
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 500, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 500, system: sys, messages: [{
         role: 'user',
         content: `Topic: ${topic}\nFormat: ${format}\nResults:\n${taskSummary}\nTotal score: ${avg.toFixed(1)}/10`
       }]})
@@ -5879,7 +5879,7 @@ Rules: 3–4 quickCheck, 2 activeRecall, 1–2 examSimulation, 2 spacedRepetitio
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 3000, system: sys, messages: [{ role: 'user', content }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 3000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
@@ -6224,7 +6224,7 @@ Rating 1–10. Fachbegriffe: only terms central to the topic (max 4).`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1200, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 1200, system: sys, messages: [{
         role: 'user',
         content: `Question: ${question}\n\nModel answer (Reference): ${idealantwort}\n\nStudent's answer: ${answer}\n\nEvaluate now.`
       }]})
@@ -6329,7 +6329,7 @@ Rating 1–10. Focus on exam logic, argumentation structure, completeness.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1200, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 1200, system: sys, messages: [{
         role: 'user',
         content: `Exam task: ${question}\n\nModel solution (Reference): ${idealantwort}\n\nStudent's solution: ${answer}\n\nEvaluate now.`
       }]})
@@ -6462,7 +6462,7 @@ Weaknesses sorted by exam relevance (high first). Max 5 weaknesses. All in Engli
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1200, system: sys, messages: [{ role: 'user', content: `Test results:\n\n${ergebnisse}` }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 1200, system: sys, messages: [{ role: 'user', content: `Test results:\n\n${ergebnisse}` }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
@@ -6608,7 +6608,7 @@ In English. Be specific and constructive.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:700, system:sys, messages:[{
+      body: JSON.stringify({ model:'claude-sonnet-4-5', max_tokens:700, system:sys, messages:[{
         role:'user', content:`Weak point: "${ST.gezieltTitel}"\nDescription: ${ST.gezieltDesc}`
       }]})
     });
@@ -6674,7 +6674,7 @@ In English. Concrete, challenging, in-depth.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:600, system:sys, messages:[{
+      body: JSON.stringify({ model:'claude-sonnet-4-5', max_tokens:600, system:sys, messages:[{
         role:'user', content:`Weak point: "${ST.gezieltTitel}"\nDescription: ${ST.gezieltDesc}`
       }]})
     });
@@ -6746,7 +6746,7 @@ Rating 1–10. In English. Be specific and constructive.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:500, system:sys, messages:[{
+      body: JSON.stringify({ model:'claude-sonnet-4-5', max_tokens:500, system:sys, messages:[{
         role:'user', content:`Topic: ${ST.gezieltTitel}\nQuestion: ${ST.glDrillFragen[idx]}\nAnswer: ${answer}`
       }]})
     });
@@ -6839,7 +6839,7 @@ In English. Make each step feel like a genuine insight.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1500, system:sys, messages:[{
+      body: JSON.stringify({ model:'claude-sonnet-4-5', max_tokens:1500, system:sys, messages:[{
         role:'user', content:`Weak concept: "${ST.gezieltTitel}"\nGap description: ${ST.gezieltDesc}`
       }]})
     });
@@ -6969,7 +6969,7 @@ gesamtnote: ${gesamtScore !== null ? `Calculated from task average: ${gesamtScor
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: sys, messages: [{ role: 'user', content: `Task results:\n\n${aufgabenText}` }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 1000, system: sys, messages: [{ role: 'user', content: `Task results:\n\n${aufgabenText}` }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
@@ -7167,7 +7167,7 @@ All in English, precise, exam-relevant.`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: sys, messages: [{ role: 'user', content }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 1000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
