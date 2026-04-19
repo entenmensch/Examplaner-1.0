@@ -5354,12 +5354,15 @@ Respond ONLY with this JSON (no text before/after):
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 3000, system: sys, messages: [{ role: 'user', content }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 6000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
-    const json = JSON.parse(text.match(/\{[\s\S]*\}/)[0]);
+    const raw = (text.match(/\{[\s\S]*\}/) || [])[0];
+    if (!raw) throw new Error('No JSON found in response');
+    const json = safeJsonParse(raw);
+    if (!json) throw new Error('Could not parse study plan JSON');
     renderPlan(json, name, examStr, days);
   } catch (e) {
     out.innerHTML = `<div class="err on">Error: ${e.message}</div>`;
@@ -5550,7 +5553,7 @@ Respond ONLY with JSON:
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 4000, system: sys, messages: [{ role: 'user', content }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 8000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
@@ -5879,12 +5882,15 @@ Rules: 3–4 quickCheck, 2 activeRecall, 1–2 examSimulation, 2 spacedRepetitio
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 3000, system: sys, messages: [{ role: 'user', content }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 6000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
-    const json = JSON.parse(text.match(/\{[\s\S]*\}/)[0]);
+    const raw = (text.match(/\{[\s\S]*\}/) || [])[0];
+    if (!raw) throw new Error('No JSON found in response');
+    const json = safeJsonParse(raw);
+    if (!json) throw new Error('Could not parse JSON response');
     renderTest(json);
   } catch (e) {
     document.getElementById('testLoad').innerHTML = `<div class="err on">Error: ${esc(e.message)}</div>`;
@@ -6232,7 +6238,10 @@ Rating 1–10. Fachbegriffe: only terms central to the topic (max 4).`;
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error'); }
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
-    const json = JSON.parse(text.match(/\{[\s\S]*\}/)[0]);
+    const raw = (text.match(/\{[\s\S]*\}/) || [])[0];
+    if (!raw) throw new Error('No JSON found in response');
+    const json = safeJsonParse(raw);
+    if (!json) throw new Error('Could not parse JSON response');
     renderRecallFeedback(fbEl, json, qIdx, attempt, topic);
   } catch (e) {
     fbEl.innerHTML = `<div class="err on" style="margin-top:.6rem">Error: ${esc(e.message)}</div>`;
@@ -6337,7 +6346,10 @@ Rating 1–10. Focus on exam logic, argumentation structure, completeness.`;
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error'); }
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
-    const json = JSON.parse(text.match(/\{[\s\S]*\}/)[0]);
+    const raw = (text.match(/\{[\s\S]*\}/) || [])[0];
+    if (!raw) throw new Error('No JSON found in response');
+    const json = safeJsonParse(raw);
+    if (!json) throw new Error('Could not parse JSON response');
     renderExamFeedback(fbEl, json, qIdx, attempt, topic);
   } catch (e) {
     fbEl.innerHTML = `<div class="err on" style="margin-top:.6rem">Error: ${esc(e.message)}</div>`;
@@ -6467,7 +6479,10 @@ Weaknesses sorted by exam relevance (high first). Max 5 weaknesses. All in Engli
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
-    const json = JSON.parse(text.match(/\{[\s\S]*\}/)[0]);
+    const raw = (text.match(/\{[\s\S]*\}/) || [])[0];
+    if (!raw) throw new Error('No JSON found in response');
+    const json = safeJsonParse(raw);
+    if (!json) throw new Error('Could not parse JSON response');
     renderSchwaechen(json);
     if (btn) btn.style.display = 'none';
   } catch (e) {
@@ -6974,7 +6989,10 @@ gesamtnote: ${gesamtScore !== null ? `Calculated from task average: ${gesamtScor
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
-    const json = JSON.parse(text.match(/\{[\s\S]*\}/)[0]);
+    const raw = (text.match(/\{[\s\S]*\}/) || [])[0];
+    if (!raw) throw new Error('No JSON found in response');
+    const json = safeJsonParse(raw);
+    if (!json) throw new Error('Could not parse JSON response');
     // Use calculated average as ground truth if available
     if (gesamtScore !== null) json.gesamtnote = gesamtScore;
     renderSessionAnalysis(json, topic);
@@ -7172,7 +7190,10 @@ All in English, precise, exam-relevant.`;
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
-    const json = JSON.parse(text.match(/\{[\s\S]*\}/)[0]);
+    const raw = (text.match(/\{[\s\S]*\}/) || [])[0];
+    if (!raw) throw new Error('No JSON found in response');
+    const json = safeJsonParse(raw);
+    if (!json) throw new Error('Could not parse JSON response');
     ST.subtopics = json.unterthemen || [];
     ST.bausteinLernziele = json.lernziele || {};
     ST.bovData = json;
