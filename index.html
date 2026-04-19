@@ -5315,28 +5315,31 @@ Analyze the material. Create a study plan as JSON:
 - Distributed across the available ${days} days
 - Realistic hour estimates
 
-Respond ONLY with this JSON (no text before/after):
+Respond ONLY with valid JSON in a code block (no text before/after). Use only simple characters in string values — no quotes, no apostrophes, no special characters that could break JSON.
+
+\`\`\`json
 {
   "zusammenfassung": "1-2 sentences about the content",
-  "gesamtthemen": <Zahl>,
-  "empfohleneStunden": <Zahl>,
+  "gesamtthemen": 0,
+  "empfohleneStunden": 0,
   "wochen": [
     {
-      "woche": "Week 1" or "This Week" or "Last 3 Days",
+      "woche": "Week 1",
       "fokus": "Brief description",
       "themen": [
         {
-          "name": "Themenname",
-          "beschreibung": "What needs to be learned",
-          "prioritaet": "hoch" | "mittel" | "niedrig",
-          "stunden": <Zahl>,
-          "tags": ["tag1", "tag2"]
+          "name": "Topic name",
+          "beschreibung": "What needs to be learned - no special chars",
+          "prioritaet": "hoch",
+          "stunden": 2,
+          "tags": ["tag1"]
         }
       ]
     }
   ],
   "tipp": "One concrete learning tip"
-}`;
+}
+\`\`\``;
 
   const content = [];
   ST.planFiles.forEach(f => {
@@ -5359,7 +5362,8 @@ Respond ONLY with this JSON (no text before/after):
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
-    const raw = (text.match(/\{[\s\S]*\}/) || [])[0];
+    const codeBlock = (text.match(/```(?:json)?\s*([\s\S]*?)```/) || [])[1];
+    const raw = codeBlock ? codeBlock.trim() : (text.match(/\{[\s\S]*\}/) || [])[0];
     if (!raw) throw new Error('No JSON found in response');
     const json = safeJsonParse(raw);
     if (!json) throw new Error('Could not parse study plan JSON');
