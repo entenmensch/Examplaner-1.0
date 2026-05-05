@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RR7LKKG495"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-RR7LKKG495');
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StudyAI</title>
@@ -240,25 +249,6 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .qm-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--text)}
 .qm-info-btn:hover + .qm-tooltip,.qm-info:hover .qm-tooltip{display:block}
 .qm-tooltip strong{color:#a8d5b5;display:block;margin-bottom:.2rem}
-
-/* ── VERGLEICH ── */
-.vgl-wrap{width:100%}
-.vgl-header{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-bottom:0}
-.vgl-header-lbl{font-size:.62rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:.55rem .8rem;color:var(--muted)}
-.vgl-header-a{background:var(--accent);color:#fff;border-radius:10px 10px 0 0;text-align:center;padding:.65rem .8rem;font-size:.78rem;font-weight:700}
-.vgl-header-b{background:var(--erk-bg);color:var(--erk-tx);border-radius:10px 10px 0 0;text-align:center;padding:.65rem .8rem;font-size:.78rem;font-weight:700;border:1px solid var(--erk-bd);border-bottom:none}
-.vgl-row{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--border)}
-.vgl-row:last-child{border-bottom:none}
-.vgl-row:nth-child(even){background:rgba(0,0,0,.015)}
-.vgl-kriterium{padding:.7rem .8rem;font-size:.78rem;font-weight:600;color:var(--text);display:flex;align-items:flex-start;border-right:1px solid var(--border)}
-.vgl-cell{padding:.7rem .8rem;font-size:.78rem;line-height:1.55;color:var(--text);display:flex;align-items:flex-start;gap:.4rem}
-.vgl-cell:last-child{border-left:1px solid var(--border)}
-.vgl-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:.38rem}
-.vgl-dot.positiv{background:var(--accent)}
-.vgl-dot.negativ{background:var(--red)}
-.vgl-dot.neutral{background:var(--muted2)}
-.vgl-fazit{background:var(--accent-s);border:1px solid var(--str-bd);border-radius:0 0 10px 10px;padding:.75rem .9rem;font-size:.8rem;color:var(--accent-m);line-height:1.6}
-.vgl-fazit-lbl{font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.2rem}
 
 /* ── LÜCKENTEXT ── */
 .luecken-inp{display:inline-block;border:none;border-bottom:2px solid var(--accent);background:var(--accent-s);border-radius:4px;padding:.1em .4em;font-size:inherit;font-family:inherit;color:var(--text);min-width:80px;max-width:180px;outline:none;transition:border-color .15s,background .15s;vertical-align:baseline}
@@ -551,20 +541,6 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .vocab-chip .vc-plus{font-size:.85rem;font-weight:700;line-height:1}
 .versuch2-btn{margin-top:.8rem;padding:.52rem 1.1rem;border-radius:var(--r);background:var(--accent-s);color:var(--accent);border:1px solid var(--str-bd);font-family:var(--sans);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .14s;width:100%}
 .versuch2-btn:hover{background:var(--accent);color:#fff}
-
-/* ── GLOSSAR ── */
-.glossar-empty{text-align:center;padding:3rem 1rem;color:var(--muted2);font-size:.83rem;line-height:2}
-.gcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:.9rem}
-.gcard-front{padding:.9rem 1.1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:.7rem}
-.gcard-term{font-family:var(--serif);font-size:1.05rem;font-weight:500}
-.gcard-topic{font-size:.62rem;color:var(--muted);padding:.18rem .52rem;border:1px solid var(--border);border-radius:100px;white-space:nowrap}
-.gcard-back{padding:.85rem 1.1rem;background:var(--accent-s)}
-.gcard-def{font-size:.83rem;line-height:1.65;margin-bottom:.45rem}
-.gcard-bsp{font-size:.76rem;color:var(--accent-m);font-style:italic;line-height:1.55}
-.gcard-bsp::before{content:'z.B. ';font-style:normal;font-weight:600}
-.glossar-group{margin-bottom:1.6rem}
-.glossar-group-lbl{font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.65rem;display:flex;align-items:center;gap:.48rem}
-.glossar-group-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
 
 /* ── BAUSTEIN OVERVIEW ── */
 .bov-load{text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:.83rem}
@@ -898,7 +874,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <div class="logo">Study<em>AI</em></div>
   <div class="navlinks">
     <button class="nl on" id="nPlan" onclick="goPlaner()">📅 Exam Planner</button>
-    <button class="nl" id="nGlossar" onclick="goGlossar()">📚 Glossary</button>
+
     <button class="nl" id="nSettings" onclick="editSetup()">⚙️</button>
   </div>
 </nav>
@@ -929,11 +905,6 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
     <input type="text" id="inSG" placeholder="e.g. International Management, Business Administration, Psychology...">
   </div>
 
-  <div class="f">
-    <label class="lbl">Anthropic API Key</label>
-    <input type="password" id="inApiKey" placeholder="sk-ant-...">
-    <div class="hint">Stored only locally in your browser — never transmitted. <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">Create key →</a></div>
-  </div>
 
   <div class="brow">
     <button class="btn bp" onclick="saveSetup()">Save →</button>
@@ -961,7 +932,8 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
       <input type="file" id="f1" accept=".pdf,.png,.jpg,.jpeg,.webp" multiple onchange="onFilesChosen(this.files,'sess')">
       <span class="dz-ico">📎</span>
       <div class="dz-t">Drop files or click</div>
-      <div class="dz-s">PDF, PNG, JPG, WEBP · max. 32 MB per file · multiple allowed</div>
+      <div class="dz-s">PDF, PNG, JPG, WEBP · max. 50 MB · max. 100 pages per PDF · multiple allowed</div>
+      <div class="dz-s" style="margin-top:.35rem;color:var(--muted)">💡 PowerPoint or Word? Export as PDF first.</div>
     </div>
     <div class="flist" id="flist1"></div>
   </div>
@@ -1025,7 +997,6 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
       <div class="fc on" data-f="text" onclick="pickFmt(this)"><span class="fc-ico">📝</span><div class="fc-n">Text</div></div>
       <div class="fc" data-f="mindmap" onclick="pickFmt(this)"><span class="fc-ico">🧠</span><div class="fc-n">Mindmap</div></div>
       <div class="fc" data-f="organizer" onclick="pickFmt(this)"><span class="fc-ico">🔀</span><div class="fc-n">Organizer</div></div>
-      <div class="fc" data-f="vergleich" onclick="pickFmt(this)"><span class="fc-ico">⚖️</span><div class="fc-n">Comparison</div></div>
     </div>
   </div>
 
@@ -1051,9 +1022,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
     <div class="chip mm-hidden" onclick="quick('Go deeper into detail.')">🔬 More detail</div>
     <div class="chip mm-only" style="display:none" onclick="quick('Choose a main branch from the mindmap and create a detailed mindmap for it as JSON in the mindmap code block.')">🔍 Expand branch</div>
     <div class="chip mm-only" style="display:none" onclick="mmRestartLatest(true)">🔄 Explain differently</div>
-    <div class="chip vgl-only" style="display:none" onclick="quick('Add 3 more exam-relevant criteria to the comparison. Output only the new criteria as text, no JSON.')">➕ More criteria</div>
-    <div class="chip vgl-only" style="display:none" onclick="quick('Which concept would you recommend for which concrete use case? Name 2-3 scenarios with justification.')">🎯 When to use which?</div>
-    <div class="chip vgl-only" style="display:none" onclick="quick('Formulate 2 typical exam questions based on this comparison, and sketch the sample answer.')">📝 Exam questions</div>
+
     <div class="chip org-only" style="display:none" onclick="quick('For each step of the process: Why must this step be in exactly this order? What would happen if you reversed or skipped it?')">🔗 Why this step?</div>
     <div class="chip org-only" style="display:none" onclick="quick('At which concrete step of this process do students most often fail — and why? What is misunderstood or done wrong?')">⚠️ Where do students fail?</div>
     <div class="chip org-only" style="display:none" onclick="quick('Simulate what happens if a central step of this process is missing or executed incorrectly. Address 2-3 concrete steps.')">🔀 What if step is missing?</div>
@@ -1111,7 +1080,8 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
       <input type="file" id="f2" accept=".pdf,.png,.jpg,.jpeg,.webp" multiple onchange="onFilesChosen(this.files,'plan')">
       <span class="dz-ico">📎</span>
       <div class="dz-t">Drop script, notes, or textbook</div>
-      <div class="dz-s">PDF, PNG, JPG · multiple files allowed · max. 32 MB per file</div>
+      <div class="dz-s">PDF, PNG, JPG · multiple files allowed · max. 50 MB · max. 100 pages per PDF</div>
+      <div class="dz-s" style="margin-top:.35rem;color:var(--muted)">💡 PowerPoint or Word? Export as PDF first.</div>
     </div>
     <div class="flist" id="flist2"></div>
   </div>
@@ -1139,13 +1109,6 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <div class="brow" style="margin-top:1rem">
     <button class="btn bg" onclick="show('scPlan');setNav('nPlan')">← Back to Plan</button>
   </div>
-</div>
-
-<!-- ══════ GLOSSARY ══════ -->
-<div class="sc" id="scGlossar">
-  <p class="h1">My<em>glossary</em></p>
-  <p class="sub">Technical terms from your tests — saved as flashcards.</p>
-  <div id="glossarContent"></div>
 </div>
 
 <!-- ══════ TEST ══════ -->
@@ -1216,7 +1179,6 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
       <div class="bfc on" data-bf="text" onclick="pickBFmt(this)"><span class="fc-ico">📝</span><div class="fc-n">Text</div></div>
       <div class="bfc" data-bf="mindmap" onclick="pickBFmt(this)"><span class="fc-ico">🧠</span><div class="fc-n">Mindmap</div></div>
       <div class="bfc" data-bf="organizer" onclick="pickBFmt(this)"><span class="fc-ico">🔀</span><div class="fc-n">Organizer</div></div>
-      <div class="bfc" data-bf="vergleich" onclick="pickBFmt(this)"><span class="fc-ico">⚖️</span><div class="fc-n">Comparison</div></div>
     </div>
   </div>
 
@@ -1308,8 +1270,6 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 // ═══════════════════════════════
 // API KEY — wird in localStorage gespeichert
 // ═══════════════════════════════
-const getApiKey = () => localStorage.getItem('skriptlernen_apikey') || '';
-const saveApiKey = k => localStorage.setItem('skriptlernen_apikey', k.trim());
 
 // ═══════════════════════════════
 // STORAGE
@@ -1317,7 +1277,7 @@ const saveApiKey = k => localStorage.setItem('skriptlernen_apikey', k.trim());
 const SK = 'skriptlernen_v1';
 const load = () => { try { return JSON.parse(localStorage.getItem(SK)) || null; } catch { return null; } };
 const save = d => localStorage.setItem(SK, JSON.stringify(d));
-const fresh = () => ({ profile: { av: '🦉', sg: '' }, streak: { cur: 0, best: 0, last: null }, sessions: [], glossar: [] });
+const fresh = () => ({ profile: { av: '🦉', sg: '' }, streak: { cur: 0, best: 0, last: null }, sessions: [] });
 
 const DK = 'skriptlernen_draft';
 const SKS = 'skriptlernen_scores';
@@ -1426,8 +1386,7 @@ const MM = {
 const FM = {
   text:      { ico: '📝', lbl: 'Text' },
   organizer: { ico: '🔀', lbl: 'Graphic Organizer' },
-  mindmap:   { ico: '🧠', lbl: 'Mindmap' },
-  vergleich: { ico: '⚖️', lbl: 'Comparison' }
+  mindmap:   { ico: '🧠', lbl: 'Mindmap' }
 };
 
 // ═══════════════════════════════
@@ -1448,7 +1407,7 @@ function show(id) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 function setNav(active) {
-  ['nPlan','nGlossar'].forEach(id => document.getElementById(id).classList.toggle('on', id === active));
+  document.getElementById('nPlan').classList.toggle('on', active === 'nPlan');
 }
 function goHome() { goPlaner(); }
 function goSession() {
@@ -1466,8 +1425,6 @@ function goPlaner() {
 function editSetup() {
   const d = load() || fresh();
   document.getElementById('inSG').value = d.profile.sg || '';
-  document.getElementById('inApiKey').value = '';
-  document.getElementById('inApiKey').placeholder = getApiKey() ? '(saved — leave empty to keep)' : 'sk-ant-...';
   document.querySelectorAll('.avo').forEach(a => a.classList.toggle('on', a.dataset.v === d.profile.av));
   ST.av = d.profile.av || '🦉';
   show('scSetup');
@@ -1484,10 +1441,7 @@ function pickAv(el) {
 function saveSetup() {
   const sg = document.getElementById('inSG').value.trim();
   if (!sg) return showErr('Please enter your field of study.');
-  const key = document.getElementById('inApiKey').value.trim();
-  if (!key && !getApiKey()) return showErr('Please enter your Anthropic API Key.');
   hideErr();
-  if (key) saveApiKey(key);
   const d = load() || fresh();
   d.profile.av = ST.av;
   d.profile.sg = sg;
@@ -1773,10 +1727,9 @@ async function submitSRAnswer() {
   const referenz = q.antwort ? `Idealantwort (Referenz): ${q.antwort}` : `Thema: ${q.thema}`;
   const sys = `You are a learning coach. Evaluate the student's answer. Respond ONLY with JSON: {"bewertung":7,"feedback":"What was good / what is missing","verbesserte_version":"..."} Rating 1–10.`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 600, system: sys, messages: [{ role: 'user', content: `Question: ${q.frage}\n\n${referenz}\n\nStudent answer: ${answer}` }] })
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 600, system: sys, messages: [{ role: 'user', content: `Question: ${q.frage}\n\n${referenz}\n\nStudent answer: ${answer}` }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error'); }
     const data = await res.json();
@@ -2227,8 +2180,7 @@ const MPROMPT = {
 const FPROMPT = {
   text:      'ALWAYS answer in exactly this structure (no exceptions):\n**Core:** [1 precise sentence — what is the essential point]\n**Explanation:** [3–4 sentences — how and why, with an analogy if helpful]\n**Example:** [1 concrete example from practice or exam]\nAlways mark technical terms with **double asterisks**.',
   organizer: 'Create a graphic organizer as JSON in a code block with language "organizer". Format:\n```organizer\n{"titel":"Name","typ":"linear","schritte":[{"id":"1","typ":"prozess","label":"Short name","kern":"1 precise sentence","erklaerung":"2 sentences how/why","beispiel":"concrete example","pfeile":[{"zu":"2","label":"leads to"}]}]}\n```\nStep type: prozess | entscheidung | ergebnis\nFlow type: linear | verzweigt | zyklisch\n4–7 steps. kern/erklaerung/beispiel as detailed as in text format. Arrow label=brief description of connection (max 3 words). ALL in English. ONLY JSON code block.',
-  mindmap:   'Create a mindmap as JSON in a code block with language "mindmap". Format:\n```mindmap\n{"zentrum":"Main topic","aste":[{"titel":"Branch","knoten":[{"titel":"Concept","kern":"1 sentence","erklaerung":"2 sentences","beispiel":"1 example"}]}],"verbindungen":[{"von":"Concept A","zu":"Concept B","label":"influences"}]}\n```\nRules: 4 branches, 3 nodes each. kern=1 precise sentence. erklaerung=max 2 sentences. beispiel=1 concrete example. EXACTLY 3 connections between concepts from DIFFERENT branches — label=short verb (max 3 words). ALL in English. Output ONLY the JSON code block.',
-  vergleich: 'Create a comparison table as JSON in a code block with language "vergleich". Format:\n```vergleich\n{"titel":"Comparison: A vs. B","konzeptA":"Name A","konzeptB":"Name B","kriterien":[{"kriterium":"Criterion name","A":{"wert":"Statement about A","bewertung":"positiv"},"B":{"wert":"Statement about B","bewertung":"negativ"}}],"fazit":"1-2 sentences on when which concept is better suited"}\n```\nbewertung is EXACTLY ONE of: positiv | negativ | neutral\n6–8 criteria. Each wert=1-2 precise sentences. Choose exam-relevant criteria. ALL in English. Output ONLY the JSON code block.'
+  mindmap:   'Create a mindmap as JSON in a code block with language "mindmap". Format:\n```mindmap\n{"zentrum":"Main topic","aste":[{"titel":"Branch","knoten":[{"titel":"Concept","kern":"1 sentence","erklaerung":"2 sentences","beispiel":"1 example"}]}],"verbindungen":[{"von":"Concept A","zu":"Concept B","label":"influences"}]}\n```\nRules: 4 branches, 3 nodes each. kern=1 precise sentence. erklaerung=max 2 sentences. beispiel=1 concrete example. EXACTLY 3 connections between concepts from DIFFERENT branches — label=short verb (max 3 words). ALL in English. Output ONLY the JSON code block.'
 };
 
 function setQuellenModus(modus) {
@@ -2342,10 +2294,9 @@ async function callAPI() {
   setBusy(true);
   const ty = addTyping();
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: (['mindmap','organizer','vergleich'].includes(ST.fmt) || ['mindmap','organizer','vergleich'].includes(ST.bfmt)) ? 8000 : 2000, system: buildSys(), messages: ST.msgs })
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: (['mindmap','organizer'].includes(ST.fmt) || ['mindmap','organizer'].includes(ST.bfmt)) ? 8000 : 2000, system: buildSys(), messages: ST.msgs })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
@@ -2443,13 +2394,6 @@ function addAI(text) {
   const mmJson = mmBlock ? mmBlock[1] : mmRawJson;
   const mmFullMatch = mmBlock ? mmBlock[0] : mmRawJson;
 
-  // Vergleich JSON: ```vergleich {...} ```
-  const vglBlock = text.match(/```vergleich\s*([\s\S]*?)\s*```/i);
-  const isVglFmt = ST.fmt === 'vergleich' || ST.bfmt === 'vergleich';
-  const vglRawJson = !vglBlock && isVglFmt ? (text.match(/(\{[\s\S]*"kriterien"[\s\S]*\})/) || [])[1] : null;
-  const vglJson = vglBlock ? vglBlock[1] : vglRawJson;
-  const vglFullMatch = vglBlock ? vglBlock[0] : vglRawJson;
-
   // Organizer JSON: ```organizer {...} ```
   const orgBlock = text.match(/```organizer\s*([\s\S]*?)\s*```/i);
   const isOrgFmt = ST.fmt === 'organizer' || ST.bfmt === 'organizer';
@@ -2481,12 +2425,6 @@ function addAI(text) {
   <div class="mm-phase-content" id="${mmId}-pc"></div>
 </div></div>`;
     setTimeout(() => renderMarkmap(mmId, mmJson), 80);
-  } else if (vglJson) {
-    main = vglFullMatch ? text.replace(vglFullMatch, '').trim() : '';
-    try {
-      const data = JSON.parse(vglJson);
-      vis = `<div class="vis"><div class="vis-lbl">⚖️ Vergleich</div><div class="vis-body" style="padding:.8rem">${renderVergleich(data)}</div></div>`;
-    } catch(e) { vis = ''; }
   } else if (orgJson) {
     main = orgFullMatch ? text.replace(orgFullMatch, '').trim() : '';
     const orgId = 'org-' + Date.now();
@@ -2791,33 +2729,6 @@ function orgChatExplain(label, kern) {
   quick(msg);
 }
 
-function renderVergleich(data) {
-  const A = esc(data.konzeptA || 'A');
-  const B = esc(data.konzeptB || 'B');
-  const rows = (data.kriterien || []).map(k => {
-    const bwA = (k.A && k.A.bewertung) || 'neutral';
-    const bwB = (k.B && k.B.bewertung) || 'neutral';
-    return `<div class="vgl-row">
-      <div class="vgl-kriterium">${esc(k.kriterium)}</div>
-      <div class="vgl-cell"><div class="vgl-dot ${bwA}"></div><span>${esc((k.A && k.A.wert) || '')}</span></div>
-      <div class="vgl-cell"><div class="vgl-dot ${bwB}"></div><span>${esc((k.B && k.B.wert) || '')}</span></div>
-    </div>`;
-  }).join('');
-  const fazit = data.fazit ? `<div class="vgl-fazit"><span class="vgl-fazit-lbl">Summary</span>${esc(data.fazit)}</div>` : '';
-  return `<div class="vgl-wrap">
-    <div class="vgl-header">
-      <div class="vgl-header-lbl">Criterion</div>
-      <div class="vgl-header-a">${A}</div>
-      <div class="vgl-header-b">${B}</div>
-    </div>
-    <div style="border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;overflow:hidden">
-      ${rows}
-    </div>
-    ${fazit}
-  </div>`;
-}
-
-
 function startLernenRecall(btn, originalText, bub, renderedHtml) {
   // Fachbegriffe extrahieren (fett markierte Begriffe aus md2h)
   const begriffe = [];
@@ -2898,10 +2809,9 @@ status is EXACTLY ONE of: richtig | unvollstaendig | falsch
 Analyze each main point of the student. Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 800, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 800, system: sys, messages: [{
         role: 'user',
         content: `Original text:\n${originalText}\n\nStudent's reproduction:\n${answer}`
       }]})
@@ -3110,10 +3020,9 @@ Respond ONLY with this JSON:
 In English. Not just repeating — force the student to think deeply.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,system:sys,messages:[{
+      body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:200,system:sys,messages:[{
         role:'user',content:`Topic:\n${originalText.slice(0,600)}\n\nRecall feedback:\n${recallFeedback}`
       }]})
     });
@@ -3159,10 +3068,9 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,system:sys,messages:[{
+      body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,system:sys,messages:[{
         role:'user',content:`Background:\n${originalText.slice(0,600)}\n\nQuestion:\n${frage}\n\nAnswer:\n${answer}`
       }]})
     });
@@ -3216,10 +3124,9 @@ Respond ONLY with this JSON:
 In English. Close to exam scenarios, realistic.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,system:sys,messages:[{
+      body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:200,system:sys,messages:[{
         role:'user',content:`Topic:\n${originalText.slice(0,600)}`
       }]})
     });
@@ -3266,10 +3173,9 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,system:sys,messages:[{
+      body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,system:sys,messages:[{
         role:'user',content:`Background:\n${originalText.slice(0,600)}\n\nTask:\n${aufgabe}\n\nStudent's example:\n${answer}`
       }]})
     });
@@ -3332,10 +3238,9 @@ Respond ONLY with this JSON:
 In English. The question should be close to exam format.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 300, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 300, system: sys, messages: [{
         role: 'user', content: `Topic:\n${originalText.slice(0, 500)}`
       }]})
     });
@@ -3388,10 +3293,9 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 400, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 400, system: sys, messages: [{
         role: 'user',
         content: `Background knowledge:\n${originalText}\n\nTransfer question:\n${frage}\n\nStudent's answer:\n${answer}`
       }]})
@@ -3452,10 +3356,9 @@ Respond ONLY with this JSON:
 In English. Max 2 sentences.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 300, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 300, system: sys, messages: [{
         role: 'user', content: `Topic:\n${originalText.slice(0, 500)}`
       }]})
     });
@@ -3522,10 +3425,9 @@ If no: respond with {"ergebnis":"kontern","konter":"Your sharpened counter-argum
 Reply ONLY with this JSON. In English. Be critical — don't give up too easily.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 400, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 400, system: sys, messages: [{
         role: 'user', content: `Topic:\n${originalText}\n\nDebate history:\n${verlauf}`
       }]})
     });
@@ -3572,10 +3474,9 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 500, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 500, system: sys, messages: [{
         role: 'user', content: `Topic:\n${originalText.slice(0,400)}\n\nDebate:\n${verlauf}`
       }]})
     });
@@ -3812,10 +3713,9 @@ async function mmVerbViewLoad(mmId, idx) {
 Respond ONLY with this JSON (no text before/after):
 {"erklaerung":"Detailed explanation (3–5 sentences)","kern":"A precise core sentence summarizing the connection"}`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:500, system:sys, messages:[{
+      body: JSON.stringify({model:'claude-haiku-4-5-20251001', max_tokens:500, system:sys, messages:[{
         role:'user', content:`Cross-connection: "${v.von}" ${v.label} "${v.zu}"\n\nExplain this connection in detail.`
       }]})
     });
@@ -4015,10 +3915,9 @@ Respond ONLY with this JSON (no text before/after):
 {"bewertung":7,"feedback":"What was good: ... / What is missing: ...","verbesserte_version":"...","lerntips":["Tip 1","Tip 2"]}
 Rating 1–10. Focus on understanding the causal/logical connection. Everything in English.`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:700, system:sys, messages:[{
+      body: JSON.stringify({model:'claude-haiku-4-5-20251001', max_tokens:700, system:sys, messages:[{
         role:'user', content:`Cross-connection: "${v.von}" ${v.label} "${v.zu}"\n\nStudent's explanation: ${answer}\n\nEvaluate now.`
       }]})
     });
@@ -4341,10 +4240,9 @@ Respond ONLY with this JSON:
 status is EXACTLY ONE of: richtig | unvollstaendig | falsch. Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:sys,messages:[{role:'user',content:`Reference:\n${referenz}\n\nStudent answer:\n${answer}`}]})
+      body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:800,system:sys,messages:[{role:'user',content:`Reference:\n${referenz}\n\nStudent answer:\n${answer}`}]})
     });
     const data = await res.json();
     const json = JSON.parse(data.content[0].text.match(/\{[\s\S]*\}/)[0]);
@@ -4493,10 +4391,9 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,system:sys,messages:[{role:'user',content:`Reference:\n${referenz}\n\nStudent answer:\n${answer}`}]})
+      body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:600,system:sys,messages:[{role:'user',content:`Reference:\n${referenz}\n\nStudent answer:\n${answer}`}]})
     });
     const data = await res.json();
     const json = JSON.parse(data.content[0].text.match(/\{[\s\S]*\}/)[0]);
@@ -4613,10 +4510,9 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,system:sys,messages:[{role:'user',content:`Reference:\n${ablauf}\n\nStudent answer:\n${answer}`}]})
+      body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:600,system:sys,messages:[{role:'user',content:`Reference:\n${ablauf}\n\nStudent answer:\n${answer}`}]})
     });
     const data = await res.json();
     const json = JSON.parse(data.content[0].text.match(/\{[\s\S]*\}/)[0]);
@@ -4692,10 +4588,9 @@ Respond ONLY with JSON (no text before/after):
 {"schritte":[{"kern":"new formulation"},{"kern":"new formulation"},...]}
 Exactly ${schritte.length} entries in the same order. In English.`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:900, system:sys, messages:[{role:'user', content:stepsDesc}]})
+      body: JSON.stringify({model:'claude-haiku-4-5-20251001', max_tokens:900, system:sys, messages:[{role:'user', content:stepsDesc}]})
     });
     if (!res.ok) return;
     const d = await res.json();
@@ -4959,10 +4854,9 @@ Respond ONLY with this JSON:
 status is EXACTLY ONE of: richtig | unvollstaendig | falsch. Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 800, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 800, system: sys, messages: [{
         role: 'user', content: `Reference:\n${referenz}\n\nStudent answer:\n${answer}`
       }]})
     });
@@ -5313,9 +5207,6 @@ function showChips() {
   chips.querySelectorAll('.mm-hidden').forEach(c => c.style.display = (isMm || isOrg) ? 'none' : '');
   chips.querySelectorAll('.mm-only').forEach(c  => c.style.display = isMm  ? '' : 'none');
   chips.querySelectorAll('.org-only').forEach(c => c.style.display = isOrg ? '' : 'none');
-  const isVgl = ST.fmt === 'vergleich' || ST.bfmt === 'vergleich';
-  chips.querySelectorAll('.vgl-only').forEach(c => c.style.display = isVgl ? '' : 'none');
-  if (isVgl) chips.querySelectorAll('.mm-hidden').forEach(c => c.style.display = 'none');
 }
 
 document.addEventListener('keydown', e => {
@@ -5395,28 +5286,31 @@ Analyze the material. Create a study plan as JSON:
 - Distributed across the available ${days} days
 - Realistic hour estimates
 
-Respond ONLY with this JSON (no text before/after):
+Respond ONLY with valid JSON in a code block (no text before/after). Use only simple characters in string values — no quotes, no apostrophes, no special characters that could break JSON.
+
+\`\`\`json
 {
   "zusammenfassung": "1-2 sentences about the content",
-  "gesamtthemen": <Zahl>,
-  "empfohleneStunden": <Zahl>,
+  "gesamtthemen": 0,
+  "empfohleneStunden": 0,
   "wochen": [
     {
-      "woche": "Week 1" or "This Week" or "Last 3 Days",
+      "woche": "Week 1",
       "fokus": "Brief description",
       "themen": [
         {
-          "name": "Themenname",
-          "beschreibung": "What needs to be learned",
-          "prioritaet": "hoch" | "mittel" | "niedrig",
-          "stunden": <Zahl>,
-          "tags": ["tag1", "tag2"]
+          "name": "Topic name",
+          "beschreibung": "What needs to be learned - no special chars",
+          "prioritaet": "hoch",
+          "stunden": 2,
+          "tags": ["tag1"]
         }
       ]
     }
   ],
   "tipp": "One concrete learning tip"
-}`;
+}
+\`\`\``;
 
   const content = [];
   ST.planFiles.forEach(f => {
@@ -5431,15 +5325,18 @@ Respond ONLY with this JSON (no text before/after):
   content.push({ type: 'text', text: `Create the study plan for "${name}" in ${days} days.` });
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 3000, system: sys, messages: [{ role: 'user', content }] })
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 6000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
-    const json = JSON.parse(text.match(/\{[\s\S]*\}/)[0]);
+    const codeBlock = (text.match(/```(?:json)?\s*([\s\S]*?)```/) || [])[1];
+    const raw = codeBlock ? codeBlock.trim() : (text.match(/\{[\s\S]*\}/) || [])[0];
+    if (!raw) throw new Error('No JSON found in response');
+    const json = safeJsonParse(raw);
+    if (!json) throw new Error('Could not parse study plan JSON');
     renderPlan(json, name, examStr, days);
   } catch (e) {
     out.innerHTML = `<div class="err on">Error: ${e.message}</div>`;
@@ -5627,10 +5524,9 @@ Respond ONLY with JSON:
   content.push({ type: 'text', text: `Create the ${format} test for: "${t.name}" — ${t.beschreibung}` });
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 4000, system: sys, messages: [{ role: 'user', content }] })
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 8000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
@@ -5769,10 +5665,9 @@ Respond ONLY with JSON: {"score":7,"feedback":"brief evaluation","staerken":"wha
 score = 0–10 (integer). 10=perfect, 7.5=passed, <5=insufficient. Be demanding.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 600, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 600, system: sys, messages: [{
         role: 'user',
         content: `Topic: ${ST.currentTestTopic?.name || ''}\nTask type: ${task.typ}\nTask: ${task.aufgabe}\nModel answer: ${task.idealantwort}\n\nStudent's answer: ${answer}`
       }]})
@@ -5832,10 +5727,9 @@ async function runFormatTestAuswertung() {
 Respond ONLY with JSON: {"staerken":"2-3 sentences what was good","schwaechen":"2-3 sentences concrete gaps","empfehlung":"1-2 sentences next steps"}`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 500, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 500, system: sys, messages: [{
         role: 'user',
         content: `Topic: ${topic}\nFormat: ${format}\nResults:\n${taskSummary}\nTotal score: ${avg.toFixed(1)}/10`
       }]})
@@ -5956,15 +5850,17 @@ Rules: 3–4 quickCheck, 2 activeRecall, 1–2 examSimulation, 2 spacedRepetitio
   content.push({ type: 'text', text: `Create the test for: "${t.name}" — ${t.beschreibung}` });
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 3000, system: sys, messages: [{ role: 'user', content }] })
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 6000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
-    const json = JSON.parse(text.match(/\{[\s\S]*\}/)[0]);
+    const raw = (text.match(/\{[\s\S]*\}/) || [])[0];
+    if (!raw) throw new Error('No JSON found in response');
+    const json = safeJsonParse(raw);
+    if (!json) throw new Error('Could not parse JSON response');
     renderTest(json);
   } catch (e) {
     document.getElementById('testLoad').innerHTML = `<div class="err on">Error: ${esc(e.message)}</div>`;
@@ -6301,10 +6197,9 @@ Respond ONLY with this JSON (no text before/after):
 Rating 1–10. Fachbegriffe: only terms central to the topic (max 4).`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1200, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1200, system: sys, messages: [{
         role: 'user',
         content: `Question: ${question}\n\nModel answer (Reference): ${idealantwort}\n\nStudent's answer: ${answer}\n\nEvaluate now.`
       }]})
@@ -6312,7 +6207,10 @@ Rating 1–10. Fachbegriffe: only terms central to the topic (max 4).`;
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error'); }
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
-    const json = JSON.parse(text.match(/\{[\s\S]*\}/)[0]);
+    const raw = (text.match(/\{[\s\S]*\}/) || [])[0];
+    if (!raw) throw new Error('No JSON found in response');
+    const json = safeJsonParse(raw);
+    if (!json) throw new Error('Could not parse JSON response');
     renderRecallFeedback(fbEl, json, qIdx, attempt, topic);
   } catch (e) {
     fbEl.innerHTML = `<div class="err on" style="margin-top:.6rem">Error: ${esc(e.message)}</div>`;
@@ -6330,12 +6228,6 @@ function renderRecallFeedback(container, data, qIdx, attempt, topic) {
 
   const tipsHtml = (data.lerntips || []).map(t => `<li>${esc(t)}</li>`).join('');
 
-  const vocabHtml = (data.fachbegriffe || []).map((fb, vi) => {
-    const uid = `vc-ar${qIdx}-${attempt}-${vi}`;
-    return `<button class="vocab-chip" id="${uid}" onclick="addToGlossar('${uid}','${esc(fb.term).replace(/'/g,"\\'")}','${esc(fb.definition).replace(/'/g,"\\'")}','${esc(fb.beispiel||'').replace(/'/g,"\\'")}','${esc(topic).replace(/'/g,"\\'")}')">
-      <span class="vc-plus">+</span>${esc(fb.term)}
-    </button>`;
-  }).join('');
 
   let html = `<div class="recall-fb">
     <div>
@@ -6352,10 +6244,6 @@ function renderRecallFeedback(container, data, qIdx, attempt, topic) {
     ${tipsHtml ? `<div class="recall-fb-sec">
       <span class="recall-fb-lbl">Learning Tips</span>
       <ul class="recall-tip-list">${tipsHtml}</ul>
-    </div>` : ''}
-    ${vocabHtml ? `<div class="recall-fb-sec">
-      <span class="recall-fb-lbl">Terms → to Glossary</span>
-      <div class="vocab-chips">${vocabHtml}</div>
     </div>` : ''}
   </div>`;
 
@@ -6416,10 +6304,9 @@ Respond ONLY with this JSON (no text before/after):
 Rating 1–10. Focus on exam logic, argumentation structure, completeness.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1200, system: sys, messages: [{
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1200, system: sys, messages: [{
         role: 'user',
         content: `Exam task: ${question}\n\nModel solution (Reference): ${idealantwort}\n\nStudent's solution: ${answer}\n\nEvaluate now.`
       }]})
@@ -6427,7 +6314,10 @@ Rating 1–10. Focus on exam logic, argumentation structure, completeness.`;
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error'); }
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
-    const json = JSON.parse(text.match(/\{[\s\S]*\}/)[0]);
+    const raw = (text.match(/\{[\s\S]*\}/) || [])[0];
+    if (!raw) throw new Error('No JSON found in response');
+    const json = safeJsonParse(raw);
+    if (!json) throw new Error('Could not parse JSON response');
     renderExamFeedback(fbEl, json, qIdx, attempt, topic);
   } catch (e) {
     fbEl.innerHTML = `<div class="err on" style="margin-top:.6rem">Error: ${esc(e.message)}</div>`;
@@ -6443,19 +6333,12 @@ function renderExamFeedback(container, data, qIdx, attempt, topic) {
   if (!ST.examBestScores[qIdx] || score > ST.examBestScores[qIdx]) ST.examBestScores[qIdx] = score;
   const scoreClass = score >= 8 ? 'rs-high' : score >= 5 ? 'rs-mid' : 'rs-low';
   const tipsHtml = (data.lerntips || []).map(t => `<li>${esc(t)}</li>`).join('');
-  const vocabHtml = (data.fachbegriffe || []).map((fb, vi) => {
-    const uid = `vc-es${qIdx}-${attempt}-${vi}`;
-    return `<button class="vocab-chip" id="${uid}" onclick="addToGlossar('${uid}','${esc(fb.term).replace(/'/g,"\\'")}','${esc(fb.definition).replace(/'/g,"\\'")}','${esc(fb.beispiel||'').replace(/'/g,"\\'")}','${esc(topic).replace(/'/g,"\\'")}')">
-      <span class="vc-plus">+</span>${esc(fb.term)}
-    </button>`;
-  }).join('');
 
   let html = `<div class="recall-fb">
     <div><span class="recall-score-badge ${scoreClass}"><span class="rsn">${score}</span><span class="rsmax">/10</span></span></div>
     <div class="recall-fb-sec"><span class="recall-fb-lbl">Feedback</span>${esc(data.feedback)}</div>
     <div class="recall-fb-sec"><span class="recall-fb-lbl">Improved Version</span>${esc(data.verbesserte_version)}</div>
     ${tipsHtml ? `<div class="recall-fb-sec"><span class="recall-fb-lbl">Learning Tips</span><ul class="recall-tip-list">${tipsHtml}</ul></div>` : ''}
-    ${vocabHtml ? `<div class="recall-fb-sec"><span class="recall-fb-lbl">Terms → to Glossary</span><div class="vocab-chips">${vocabHtml}</div></div>` : ''}
   </div>`;
 
   if (attempt === 1) {
@@ -6556,15 +6439,17 @@ Rules: gesamtnote 1–10. klausurrelevanz is EXACTLY ONE of: hoch | mittel | nie
 Weaknesses sorted by exam relevance (high first). Max 5 weaknesses. All in English, precise.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1200, system: sys, messages: [{ role: 'user', content: `Test results:\n\n${ergebnisse}` }] })
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1200, system: sys, messages: [{ role: 'user', content: `Test results:\n\n${ergebnisse}` }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
-    const json = JSON.parse(text.match(/\{[\s\S]*\}/)[0]);
+    const raw = (text.match(/\{[\s\S]*\}/) || [])[0];
+    if (!raw) throw new Error('No JSON found in response');
+    const json = safeJsonParse(raw);
+    if (!json) throw new Error('Could not parse JSON response');
     renderSchwaechen(json);
     if (btn) btn.style.display = 'none';
   } catch (e) {
@@ -6702,10 +6587,9 @@ Respond ONLY with JSON:
   "erklaerung": "Re-explain the concept from scratch: simple, concrete, with a vivid real-world analogy. 3-5 sentences. Build from intuition to correct understanding."
 }
 In English. Be specific and constructive.`;
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:700, system:sys, messages:[{
+      body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:700, system:sys, messages:[{
         role:'user', content:`Weak point: "${ST.gezieltTitel}"\nDescription: ${ST.gezieltDesc}`
       }]})
     });
@@ -6768,10 +6652,9 @@ async function startGezieltPhase2() {
 No yes/no questions. Each question illuminates a different aspect. Respond ONLY with JSON:
 {"fragen":["Question 1","Question 2","Question 3","Question 4"]}
 In English. Concrete, challenging, in-depth.`;
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:600, system:sys, messages:[{
+      body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:600, system:sys, messages:[{
         role:'user', content:`Weak point: "${ST.gezieltTitel}"\nDescription: ${ST.gezieltDesc}`
       }]})
     });
@@ -6840,10 +6723,9 @@ async function submitGlDrill(idx) {
 Respond ONLY with JSON:
 {"bewertung":7,"gut":"What was correct — 1 sentence","fehlt":"What is missing or imprecise — 1 sentence","verbessert":"A complete model answer in 2-3 sentences","tip":"One concrete learning tip"}
 Rating 1–10. In English. Be specific and constructive.`;
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:500, system:sys, messages:[{
+      body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:500, system:sys, messages:[{
         role:'user', content:`Topic: ${ST.gezieltTitel}\nQuestion: ${ST.glDrillFragen[idx]}\nAnswer: ${answer}`
       }]})
     });
@@ -6933,10 +6815,9 @@ Respond ONLY with JSON:
 }
 In English. Make each step feel like a genuine insight.`;
     }
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1500, system:sys, messages:[{
+      body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:1500, system:sys, messages:[{
         role:'user', content:`Weak concept: "${ST.gezieltTitel}"\nGap description: ${ST.gezieltDesc}`
       }]})
     });
@@ -7063,15 +6944,17 @@ Respond ONLY with this JSON:
 gesamtnote: ${gesamtScore !== null ? `Calculated from task average: ${gesamtScore} — adjust slightly if needed` : 'Estimate 1–10'}. klausurrelevanz: hoch | mittel | niedrig. Max 4 weaknesses. All in English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: sys, messages: [{ role: 'user', content: `Task results:\n\n${aufgabenText}` }] })
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1000, system: sys, messages: [{ role: 'user', content: `Task results:\n\n${aufgabenText}` }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
-    const json = JSON.parse(text.match(/\{[\s\S]*\}/)[0]);
+    const raw = (text.match(/\{[\s\S]*\}/) || [])[0];
+    if (!raw) throw new Error('No JSON found in response');
+    const json = safeJsonParse(raw);
+    if (!json) throw new Error('Could not parse JSON response');
     // Use calculated average as ground truth if available
     if (gesamtScore !== null) json.gesamtnote = gesamtScore;
     renderSessionAnalysis(json, topic);
@@ -7194,60 +7077,6 @@ function saStartTest() {
   startFormatTest(fmt);
 }
 
-function addToGlossar(uid, term, definition, beispiel, topic) {
-  const chip = document.getElementById(uid);
-  if (chip && chip.classList.contains('added')) return;
-  const d = load() || fresh();
-  if (!d.glossar) d.glossar = [];
-  if (!d.glossar.find(g => g.term.toLowerCase() === term.toLowerCase())) {
-    d.glossar.push({ term, definition, beispiel, topic, ts: Date.now() });
-    save(d);
-  }
-  if (chip) { chip.classList.add('added'); chip.querySelector('.vc-plus').textContent = '✓'; }
-}
-
-function goGlossar() {
-  const d = load() || fresh();
-  if (!d || !d.profile.sg) { show('scSetup'); return; }
-  renderGlossar();
-  show('scGlossar');
-  setNav('nGlossar');
-}
-
-function renderGlossar() {
-  const d = load() || fresh();
-  const entries = d.glossar || [];
-  const el = document.getElementById('glossarContent');
-  if (!entries.length) {
-    el.innerHTML = `<div class="glossar-empty">📭<br>No entries yet.<br>Add terms from the Active Recall Test<br>here.</div>`;
-    return;
-  }
-  const byTopic = {};
-  entries.slice().reverse().forEach(g => {
-    const t = g.topic || 'Allgemein';
-    if (!byTopic[t]) byTopic[t] = [];
-    byTopic[t].push(g);
-  });
-  let h = '';
-  Object.entries(byTopic).forEach(([topic, items]) => {
-    h += `<div class="glossar-group"><div class="glossar-group-lbl">${esc(topic)}</div>`;
-    items.forEach(g => {
-      h += `<div class="gcard">
-        <div class="gcard-front">
-          <div class="gcard-term">${esc(g.term)}</div>
-          <span class="gcard-topic">${esc(g.topic || '')}</span>
-        </div>
-        <div class="gcard-back">
-          <div class="gcard-def">${esc(g.definition)}</div>
-          ${g.beispiel ? `<div class="gcard-bsp">${esc(g.beispiel)}</div>` : ''}
-        </div>
-      </div>`;
-    });
-    h += '</div>';
-  });
-  el.innerHTML = h;
-}
-
 // ═══════════════════════════════
 // BAUSTEIN
 // ═══════════════════════════════
@@ -7315,15 +7144,17 @@ All in English, precise, exam-relevant.`;
   content.push({ type: 'text', text: `Create the overview for the learning module: "${ST.bausteinTopic}" — ${ST.bausteinDesc}` });
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: sys, messages: [{ role: 'user', content }] })
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
-    const json = JSON.parse(text.match(/\{[\s\S]*\}/)[0]);
+    const raw = (text.match(/\{[\s\S]*\}/) || [])[0];
+    if (!raw) throw new Error('No JSON found in response');
+    const json = safeJsonParse(raw);
+    if (!json) throw new Error('Could not parse JSON response');
     ST.subtopics = json.unterthemen || [];
     ST.bausteinLernziele = json.lernziele || {};
     ST.bovData = json;
@@ -7592,6 +7423,13 @@ function safeJsonParse(raw) {
         }
       }
       out += c;
+    }
+    out = out.replace(/,(\s*[}\]])/g, '$1');
+    // Close any unclosed strings
+    if (inStr) out += '"';
+    // Close any unclosed structures
+    for (let i = stack.length - 1; i >= 0; i--) {
+      out += stack[i] === 'obj' ? '}' : ']';
     }
     out = out.replace(/,(\s*[}\]])/g, '$1');
     return JSON.parse(out);
