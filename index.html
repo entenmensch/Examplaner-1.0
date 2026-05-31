@@ -3353,7 +3353,7 @@ Rating 1–10. In English.`;
         <div class="lernen-fb-text">${esc(json.feedback)}</div>
         <div class="lernen-actions" style="margin-top:.5rem">
           <button class="lernen-submit" style="background:var(--surface);color:var(--accent);border:1.5px solid var(--accent)" onclick="bspNochmal('${bspId}')">Try again →</button>
-          ${recallId ? `<button class="lernen-submit" style="background:var(--pru-tx)" onclick="startTransfer Question('${recallId}')">+ Transfer Question →</button>` : ''}
+          ${recallId ? `<button class="lernen-submit" style="background:var(--pru-tx)" onclick="startTransferQuestion('${recallId}')">+ Transfer Question →</button>` : ''}
         </div>
       </div>`;
     fbEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -3373,7 +3373,7 @@ function bspNochmal(bspId) {
   if (fb) fb.innerHTML = '';
 }
 
-async function startTransfer Question(recallId) {
+async function startTransferQuestion(recallId) {
   const recallDiv = document.getElementById(recallId);
   const bub = recallDiv.closest('.bub');
   const originalText = bub._originalText || '';
@@ -3416,7 +3416,7 @@ In English. The question should be close to exam format.`;
       <div class="tf-frage">${esc(frage)}</div>
       <textarea class="lernen-ta" id="${tfId}-ta" placeholder="Write your answer here..."></textarea>
       <div class="lernen-actions" style="margin-top:.6rem">
-        <button class="lernen-submit" id="${tfId}-btn" onclick="submitTransfer Question('${tfId}')">Evaluate →</button>
+        <button class="lernen-submit" id="${tfId}-btn" onclick="submitTransferQuestion('${tfId}')">Evaluate →</button>
       </div>
       <div id="${tfId}-fb"></div>`;
     tfWrap.innerHTML = '';
@@ -3427,7 +3427,7 @@ In English. The question should be close to exam format.`;
   }
 }
 
-async function submitTransfer Question(tfId) {
+async function submitTransferQuestion(tfId) {
   const ta = document.getElementById(`${tfId}-ta`);
   const answer = ta && ta.value.trim();
   if (!answer) { if (ta) ta.style.borderColor = 'var(--red)'; return; }
@@ -3473,7 +3473,7 @@ Rating 1–10. In English.`;
         <div class="lernen-fb-text">${esc(json.feedback)}</div>
         <div class="lernen-actions" style="margin-top:.5rem">
           <button class="lernen-submit" style="background:var(--surface);color:var(--accent);border:1.5px solid var(--accent)" onclick="tfNochmal('${tfId}')">Try again →</button>
-          ${recallId ? `<button class="lernen-submit" style="background:var(--surface);color:var(--muted);border:1px solid var(--border)" onclick="startTransfer Question('${recallId}')">Different Question →</button>` : ''}
+          ${recallId ? `<button class="lernen-submit" style="background:var(--surface);color:var(--muted);border:1px solid var(--border)" onclick="startTransferQuestion('${recallId}')">Different Question →</button>` : ''}
         </div>
       </div>`;
     fbEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
