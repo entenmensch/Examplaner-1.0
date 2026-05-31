@@ -2341,6 +2341,18 @@ function setQuellenModus(modus) {
 
 function buildSys() {
   const d = load() || fresh();
+  if (ST.fmt === 'organizer') {
+    return `You are a learning assistant for students. Answer exclusively in English, precisely, without filler words.
+Field of study: ${d.profile.sg}
+Topic: "${ST.topic}"
+Focus: "${ST.focus || 'general'}"
+
+ABSOLUTE FORMAT RULE — overrides everything else:
+Output ONLY the JSON code block. No text before or after it. No explanations, no learning outcomes, no summaries. ONLY the code block.
+${FPROMPT.organizer}
+
+Mode context (influences content depth only, NOT output structure): ${MPROMPT[ST.mode]}`;
+  }
   if (ST.fmt === 'text' && ST.mode !== 'pruefe') {
     return `You are a learning assistant for students. Answer exclusively in English, precisely, without filler words.
 Field of study: ${d.profile.sg}
