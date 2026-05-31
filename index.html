@@ -3029,13 +3029,21 @@ function startLernenFlow(btn, text, bub, h) {
   const begriffe = [];
   const matches = text.matchAll(/\*\*(.+?)\*\*/g);
   for (const m of matches) {
-    const term = m[1].replace(/^(Kern|Erklärung|Beispiel|Zusammenfassung|Hinweis|Core|Explanation|Example|Summary|Note):$/, '').trim();
-    if (term && !begriffe.includes(term)) begriffe.push(term);
+    const term = m[1]
+      .replace(/^(Kern|Erklärung|Beispiel|Zusammenfassung|Hinweis|Core|Explanation|Example|Summary|Note):$/, '')
+      .replace(/^Q\d+[^:]*:\s*/, '')
+      .trim();
+    if (!term) continue;
+    if (begriffe.includes(term)) continue;
+    if (term.length > 45) continue;
+    if (/^Q\d/.test(term)) continue;
+    begriffe.push(term);
   }
   bub._originalContent = bub.innerHTML;
   bub._originalText = text;
   btn.style.display = 'none';
-  if (begriffe.length >= 2) {
+  const isPruefe = ST.mode === 'pruefe' || ST.bMode === 'pruefe';
+  if (!isPruefe && begriffe.length >= 2) {
     startLueckentext(bub, begriffe, h);
   } else {
     startRecallPhase(bub);
@@ -3136,8 +3144,15 @@ function startRecallPhase(bub) {
   const begriffe = [];
   const matches = text.matchAll(/\*\*(.+?)\*\*/g);
   for (const m of matches) {
-    const term = m[1].replace(/^(Kern|Erklärung|Beispiel|Zusammenfassung|Hinweis|Core|Explanation|Example|Summary|Note):$/, '').trim();
-    if (term && !begriffe.includes(term)) begriffe.push(term);
+    const term = m[1]
+      .replace(/^(Kern|Erklärung|Beispiel|Zusammenfassung|Hinweis|Core|Explanation|Example|Summary|Note):$/, '')
+      .replace(/^Q\d+[^:]*:\s*/, '')
+      .trim();
+    if (!term) continue;
+    if (begriffe.includes(term)) continue;
+    if (term.length > 45) continue;
+    if (/^Q\d/.test(term)) continue;
+    begriffe.push(term);
   }
   const recallId = 'lr-' + Date.now();
   const chipsHtml = begriffe.length
