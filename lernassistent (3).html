@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RR7LKKG495"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-RR7LKKG495');
-</script>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,9 +27,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15
 .wrap{max-width:680px;margin:0 auto;padding:0 1.5rem 6rem}
 
 /* NAV */
-.nav{padding:2.5rem 0 1.5rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;border-bottom:1px solid var(--border);margin-bottom:2rem;gap:1rem}
-.nav .logo{grid-column:2;text-align:center}
-.nav .navlinks{grid-column:3;justify-self:end}
+.nav{padding:2.5rem 0 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);margin-bottom:2rem;gap:1rem;flex-wrap:wrap}
 .logo{font-family:var(--serif);font-size:1.5rem;font-weight:500;letter-spacing:-.02em;white-space:nowrap}
 .logo em{color:var(--accent);font-style:italic}
 .navlinks{display:flex;gap:.4rem;flex-wrap:wrap}
@@ -865,55 +855,6 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .ttag{font-size:.58rem;font-weight:500;padding:.08rem .48rem;border-radius:100px;border:1px solid var(--border);color:var(--muted);background:var(--bg)}
 .ttime{flex-shrink:0;font-size:.68rem;color:var(--muted2);white-space:nowrap;margin-top:2px}
 .plan-tip{font-size:.75rem;color:var(--muted);line-height:1.6;padding:.72rem .95rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);margin-top:.9rem}
-
-/* ── PRIORITY OVERVIEW ── */
-.prio-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;display:inline-block}
-.prio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.6rem;align-items:start}
-@media(max-width:600px){.prio-grid{grid-template-columns:1fr}}
-.prio-col{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.9rem;transition:all .2s}
-.prio-col-head{display:flex;align-items:center;gap:.45rem;margin-bottom:.75rem;padding-bottom:.6rem;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
-.prio-col-head:hover .prio-col-toggle{color:var(--text)}
-.prio-col-title{font-size:.75rem;font-weight:600;letter-spacing:.02em;flex:1;color:var(--text)}
-.prio-col-count{font-size:.6rem;color:var(--muted2);white-space:nowrap}
-.prio-col-toggle{font-size:.7rem;color:var(--muted2);transition:transform .2s;flex-shrink:0}
-.prio-col.collapsed{padding:.7rem .75rem}
-.prio-col.collapsed .prio-col-head{border-bottom:none;margin-bottom:0;padding-bottom:0}
-.prio-col.collapsed .prio-col-title{display:none}
-.prio-col.collapsed .prio-col-count{display:none}
-.prio-col.collapsed .prio-col-toggle{transform:rotate(180deg)}
-.prio-col.collapsed .prio-col-tiles{display:none}
-.prio-tile{background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:.45rem;overflow:hidden}
-.prio-tile-hd{padding:.7rem .8rem .1rem}
-.prio-tile-name{font-size:.82rem;font-weight:600;color:var(--text);line-height:1.4}
-.prio-tile-bd{padding:.1rem .8rem .75rem;border-top:1px solid var(--border);margin-top:.6rem}
-.prio-tile-desc{font-size:.72rem;color:var(--muted);line-height:1.5;margin:.45rem 0 .65rem}
-.prio-tile-actions{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center}
-.prio-tile-lernen{font-size:.68rem;font-weight:600;padding:.28rem .7rem;border-radius:100px;background:var(--accent);color:#fff;border:none;cursor:pointer;font-family:var(--sans);transition:background .14s;margin-left:auto}
-.prio-tile-lernen:hover{background:var(--accent-m)}
-.prio-move-btn{display:inline-flex;align-items:center;gap:.28rem;font-size:.65rem;font-weight:500;padding:.25rem .55rem;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-family:var(--sans);transition:all .14s}
-.prio-move-btn:hover{border-color:var(--border2);color:var(--text)}
-.prio-del-btn{font-size:.65rem;font-weight:500;padding:.25rem .55rem;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-family:var(--sans);transition:all .14s}
-.prio-del-btn:hover{border-color:var(--red);color:var(--red)}
-.prio-empty{font-size:.73rem;color:var(--muted2);padding:1rem 0;display:block;text-align:center}
-.prio-modify{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.15rem 1.25rem}
-.prio-modify-lbl{font-family:var(--serif);font-size:1rem;font-weight:500;margin-bottom:.75rem;display:block}
-.saved-plan-undo{font-size:.78rem;color:var(--muted);padding:.65rem .9rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem}
-.saved-plan-undo-btn{background:none;border:none;color:var(--accent);font-size:.78rem;font-weight:600;cursor:pointer;font-family:var(--sans);padding:0}
-/* ── FAB + SLIDE PANEL ── */
-.prio-fab{display:none;position:fixed;bottom:2rem;right:2rem;z-index:90;background:var(--accent);color:#fff;border:none;border-radius:100px;padding:.65rem 1.25rem;font-size:.8rem;font-weight:600;font-family:var(--sans);cursor:pointer;box-shadow:0 4px 20px rgba(29,61,42,.28);transition:all .18s;align-items:center;gap:.4rem}
-.prio-fab:hover{background:var(--accent-m);transform:translateY(-2px);box-shadow:0 6px 28px rgba(29,61,42,.32)}
-.prio-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.22);z-index:200;backdrop-filter:blur(2px);animation:fu .2s ease}
-.prio-backdrop.open{display:block}
-.prio-slide{position:fixed;bottom:0;left:0;right:0;z-index:201;background:var(--surface);border-radius:18px 18px 0 0;padding:1.4rem 1.5rem 2.2rem;box-shadow:0 -6px 36px rgba(0,0,0,.13);transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1)}
-.prio-slide.open{transform:translateY(0)}
-.prio-slide-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
-.prio-slide-title{font-family:var(--serif);font-size:1.1rem;font-weight:500}
-.prio-slide-close{background:none;border:1px solid var(--border);border-radius:50%;width:28px;height:28px;color:var(--muted);font-size:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .14s}
-.prio-slide-close:hover{border-color:var(--border2);color:var(--text)}
-.prio-slide-ta{width:100%;resize:none;min-height:76px;margin-bottom:1rem;border-radius:var(--r);border:1px solid var(--border);padding:.72rem 1rem;font-family:var(--sans);font-size:.9rem;color:var(--text);outline:none;background:var(--bg);transition:border-color .2s}
-.prio-slide-ta:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(29,61,42,.08)}
-.prio-slide-ft{display:flex;align-items:center;gap:.75rem}
-.prio-slide-load{font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:.5rem;flex:1}
 </style>
 <!-- PDF.js für Text-Extraktion -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -933,7 +874,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 <div class="err" id="errBar"></div>
 
 <!-- ══════ SETUP ══════ -->
-<div class="sc" id="scSetup">
+<div class="sc on" id="scSetup">
   <p class="h1">Get<em>started</em></p>
   <p class="sub">No name, no email. Just your field of study — so the AI has the right context.</p>
 
@@ -956,6 +897,11 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
     <input type="text" id="inSG" placeholder="e.g. International Management, Business Administration, Psychology...">
   </div>
 
+  <div class="f">
+    <label class="lbl">Anthropic API Key</label>
+    <input type="password" id="inApiKey" placeholder="sk-ant-...">
+    <div class="hint">Stored only locally in your browser — never transmitted. <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">Create key →</a></div>
+  </div>
 
   <div class="brow">
     <button class="btn bp" onclick="saveSetup()">Save →</button>
@@ -983,7 +929,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
       <input type="file" id="f1" accept=".pdf,.png,.jpg,.jpeg,.webp" multiple onchange="onFilesChosen(this.files,'sess')">
       <span class="dz-ico">📎</span>
       <div class="dz-t">Drop files or click</div>
-      <div class="dz-s">PDF, PNG, JPG, WEBP · max. 50 MB · max. 100 pages per PDF · multiple allowed</div>
+      <div class="dz-s">PDF, PNG, JPG, WEBP · max. 32 MB per file · multiple allowed</div>
       <div class="dz-s" style="margin-top:.35rem;color:var(--muted)">💡 PowerPoint or Word? Export as PDF first.</div>
     </div>
     <div class="flist" id="flist1"></div>
@@ -1089,11 +1035,9 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 </div>
 
 <!-- ══════ EXAM PLANNER ══════ -->
-<div class="sc on" id="scPlan">
+<div class="sc" id="scPlan">
   <p class="h1">Exam<em>planner</em></p>
   <p class="sub">Upload your material and enter the exam date. The AI analyzes the content and creates a study plan — sorted by relevance and remaining time.</p>
-
-  <div id="savedPlanArea"></div>
 
   <div class="daterow">
     <div class="f">
@@ -1133,7 +1077,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
       <input type="file" id="f2" accept=".pdf,.png,.jpg,.jpeg,.webp" multiple onchange="onFilesChosen(this.files,'plan')">
       <span class="dz-ico">📎</span>
       <div class="dz-t">Drop script, notes, or textbook</div>
-      <div class="dz-s">PDF, PNG, JPG · multiple files allowed · max. 50 MB · max. 100 pages per PDF</div>
+      <div class="dz-s">PDF, PNG, JPG · multiple files allowed · max. 32 MB per file</div>
       <div class="dz-s" style="margin-top:.35rem;color:var(--muted)">💡 PowerPoint or Word? Export as PDF first.</div>
     </div>
     <div class="flist" id="flist2"></div>
@@ -1152,28 +1096,6 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <div class="plan-out" id="planOut"></div>
 </div>
 
-<!-- ══════ PRIORITY OVERVIEW ══════ -->
-<div class="sc" id="scPrioOverview">
-  <p class="h1">Dein Lern<em>plan</em></p>
-  <div id="prioHead"></div>
-  <div class="prio-grid" id="prioGrid"></div>
-</div>
-
-<!-- ══════ PRIO FAB + SLIDE PANEL ══════ -->
-<button class="prio-fab" id="prioFab" onclick="openPrioAdjust()">✏️ KI-Anpassung</button>
-<div class="prio-backdrop" id="prioBackdrop" onclick="closePrioAdjust()"></div>
-<div class="prio-slide" id="prioSlide">
-  <div class="prio-slide-hd">
-    <span class="prio-slide-title">Plan anpassen</span>
-    <button class="prio-slide-close" onclick="closePrioAdjust()">✕</button>
-  </div>
-  <textarea class="prio-slide-ta" id="prioAdjustInput" placeholder="z.B. »Kapitel 3 weglassen, das kenne ich schon« · »Mehr Fokus auf Statistik einplanen«" rows="3"></textarea>
-  <div class="prio-slide-ft">
-    <div class="prio-slide-load" id="prioAdjustLoad" style="display:none"><div class="typ" style="display:inline-flex"><span></span><span></span><span></span></div> KI passt an…</div>
-    <button class="btn bp" id="btnPrioAdjust" onclick="applyPrioChange()">Anpassen →</button>
-  </div>
-</div>
-
 <!-- ══════ TARGETED LEARNING ══════ -->
 <div class="sc" id="scGezielt">
   <p class="h1">Targeted<em>learning</em></p>
@@ -1182,7 +1104,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <div id="glPhases"></div>
   <div id="glDrillArea"></div>
   <div class="brow" style="margin-top:1rem">
-    <button class="btn bg" onclick="backToPlan()">← Back to Plan</button>
+    <button class="btn bg" onclick="show('scPlan');setNav('nPlan')">← Back to Plan</button>
   </div>
 </div>
 
@@ -1273,7 +1195,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <div id="srFeedbackWrap"></div>
   <div id="srDoneWrap" style="display:none"></div>
   <div class="brow" id="srBtns" style="display:none">
-    <button class="btn bg" onclick="backToPlan()">← Exam Planner</button>
+    <button class="btn bg" onclick="goPlaner()">← Exam Planner</button>
     <button class="btn bp" id="srNextBtn" onclick="srNextQuestion()">Next Question →</button>
   </div>
 </div>
@@ -1283,7 +1205,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <p class="h1">SR-<em>Questions</em></p>
   <div id="srManageContent"></div>
   <div class="brow" style="margin-top:1.2rem">
-    <button class="btn bg" onclick="backToPlan()">← Exam Planner</button>
+    <button class="btn bg" onclick="goPlaner()">← Exam Planner</button>
   </div>
 </div>
 
@@ -1345,6 +1267,8 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 // ═══════════════════════════════
 // API KEY — wird in localStorage gespeichert
 // ═══════════════════════════════
+const getApiKey = () => localStorage.getItem('skriptlernen_apikey') || '';
+const saveApiKey = k => localStorage.setItem('skriptlernen_apikey', k.trim());
 
 // ═══════════════════════════════
 // STORAGE
@@ -1355,7 +1279,6 @@ const save = d => localStorage.setItem(SK, JSON.stringify(d));
 const fresh = () => ({ profile: { av: '🦉', sg: '' }, streak: { cur: 0, best: 0, last: null }, sessions: [] });
 
 const DK = 'skriptlernen_draft';
-const PK = 'studyai_savedplan';
 const SKS = 'skriptlernen_scores';
 const loadScores = () => { try { return JSON.parse(localStorage.getItem(SKS)) || {}; } catch { return {}; } };
 const saveScores = s => localStorage.setItem(SKS, JSON.stringify(s));
@@ -1411,76 +1334,6 @@ const saveDraft = () => {
 };
 const loadDraft = () => { try { return JSON.parse(localStorage.getItem(DK)) || null; } catch { return null; } };
 const clearDraft = () => localStorage.removeItem(DK);
-
-function savePlan() {
-  if (!ST._pendingPlan || !ST._pendingPlanMeta) return;
-  try {
-    const textFiles = ST.planFiles
-      .filter(f => f.mode === 'text' && f.text)
-      .map(f => ({ name: f.name, text: f.text, mode: 'text', type: 'text/plain', pages: f.pages || 0 }));
-    localStorage.setItem(PK, JSON.stringify({
-      plan: ST._pendingPlan,
-      meta: ST._pendingPlanMeta,
-      allTopics: ST.allTopics,
-      textFiles,
-      ts: Date.now()
-    }));
-    const btn = document.getElementById('btnSavePlan');
-    if (btn) { btn.textContent = '✓ Gespeichert'; btn.disabled = true; setTimeout(() => { btn.textContent = '💾 Plan speichern'; btn.disabled = false; }, 2000); }
-  } catch(e) {}
-}
-const loadSavedPlan = () => { try { return JSON.parse(localStorage.getItem(PK)) || null; } catch { return null; } };
-const clearSavedPlan = () => localStorage.removeItem(PK);
-
-function resumeSavedPlan() {
-  const saved = loadSavedPlan();
-  if (!saved) return;
-  ST.allTopics = saved.allTopics || [];
-  if (saved.textFiles && saved.textFiles.length) ST.planFiles = saved.textFiles;
-  showPrioOverview(saved.plan, saved.meta.name, saved.meta.examStr, saved.meta.days);
-}
-
-function renderSavedPlanCard() {
-  const el = document.getElementById('savedPlanArea');
-  if (!el) return;
-  const saved = loadSavedPlan();
-  if (!saved) {
-    if (ST._deletedPlanBackup) {
-      el.innerHTML = `<div class="saved-plan-undo">
-        Plan gelöscht. <button onclick="undoDeletePlan()" class="saved-plan-undo-btn">Wiederherstellen →</button>
-      </div>`;
-    } else {
-      el.innerHTML = '';
-    }
-    return;
-  }
-  const { name, examStr, days } = saved.meta;
-  const ago = formatAgo(saved.ts);
-  const total = (saved.allTopics || []).length;
-  el.innerHTML = `<div class="draft-card" onclick="resumeSavedPlan()">
-    <div class="draft-ico">📋</div>
-    <div class="draft-info">
-      <div class="draft-badge">Gespeicherter Plan</div>
-      <div class="draft-topic">${esc(name)}</div>
-      <div class="draft-meta">${examStr} · ${days} Tage · ${total} Themen · ${ago}</div>
-    </div>
-    <button class="draft-del" onclick="event.stopPropagation();softDeletePlan()" title="Löschen">✕</button>
-    <div class="draft-arr">→</div>
-  </div>`;
-}
-
-function softDeletePlan() {
-  ST._deletedPlanBackup = loadSavedPlan();
-  clearSavedPlan();
-  renderSavedPlanCard();
-}
-
-function undoDeletePlan() {
-  if (!ST._deletedPlanBackup) return;
-  try { localStorage.setItem(PK, JSON.stringify(ST._deletedPlanBackup)); } catch(e) {}
-  ST._deletedPlanBackup = null;
-  renderSavedPlanCard();
-}
 
 function stripFilesFromMsgs(msgs) {
   return msgs.map((msg, i) => {
@@ -1539,9 +1392,9 @@ const FM = {
 // BOOT
 // ═══════════════════════════════
 window.addEventListener('DOMContentLoaded', () => {
-  const saved = loadSavedPlan();
-  if (saved) { resumeSavedPlan(); }
-  else { show('scPlan'); setNav('nPlan'); renderSavedPlanCard(); }
+  const d = load();
+  if (d && d.profile && d.profile.sg) { goPlaner(); }
+  else show('scSetup');
 });
 
 // ═══════════════════════════════
@@ -1551,25 +1404,28 @@ function show(id) {
   document.querySelectorAll('.sc').forEach(s => s.classList.remove('on'));
   document.getElementById(id).classList.add('on');
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  const fab = document.getElementById('prioFab');
-  if (fab) fab.style.display = id === 'scPrioOverview' ? 'inline-flex' : 'none';
 }
 function setNav(active) {
   document.getElementById('nPlan').classList.toggle('on', active === 'nPlan');
 }
 function goHome() { goPlaner(); }
 function goSession() {
+  const d = load();
+  if (!d || !d.profile.sg) { show('scSetup'); return; }
   resetSession();
   show('scUpload'); setNav('nPlan');
 }
 function goPlaner() {
+  const d = load();
+  if (!d || !d.profile.sg) { show('scSetup'); return; }
   resetPlaner();
   show('scPlan'); setNav('nPlan');
-  renderSavedPlanCard();
 }
 function editSetup() {
   const d = load() || fresh();
   document.getElementById('inSG').value = d.profile.sg || '';
+  document.getElementById('inApiKey').value = '';
+  document.getElementById('inApiKey').placeholder = getApiKey() ? '(saved — leave empty to keep)' : 'sk-ant-...';
   document.querySelectorAll('.avo').forEach(a => a.classList.toggle('on', a.dataset.v === d.profile.av));
   ST.av = d.profile.av || '🦉';
   show('scSetup');
@@ -1586,14 +1442,15 @@ function pickAv(el) {
 function saveSetup() {
   const sg = document.getElementById('inSG').value.trim();
   if (!sg) return showErr('Please enter your field of study.');
+  const key = document.getElementById('inApiKey').value.trim();
+  if (!key && !getApiKey()) return showErr('Please enter your Anthropic API Key.');
   hideErr();
-  const raw = load();
-  const d = (raw && raw.profile) ? raw : fresh();
+  if (key) saveApiKey(key);
+  const d = load() || fresh();
   d.profile.av = ST.av;
   d.profile.sg = sg;
   save(d);
-  const saved = loadSavedPlan();
-  if (saved) { resumeSavedPlan(); } else { goPlaner(); }
+  goPlaner();
 }
 
 // ═══════════════════════════════
@@ -1649,7 +1506,7 @@ function renderHome(d) {
 }
 
 function deleteSession(idx) {
-  const d = load() || fresh();
+  const d = load();
   if (!d || !d.sessions[idx]) return;
   d.sessions.splice(idx, 1);
   save(d);
@@ -1874,8 +1731,9 @@ async function submitSRAnswer() {
   const referenz = q.antwort ? `Idealantwort (Referenz): ${q.antwort}` : `Thema: ${q.thema}`;
   const sys = `You are a learning coach. Evaluate the student's answer. Respond ONLY with JSON: {"bewertung":7,"feedback":"What was good / what is missing","verbesserte_version":"..."} Rating 1–10.`;
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 600, system: sys, messages: [{ role: 'user', content: `Question: ${q.frage}\n\n${referenz}\n\nStudent answer: ${answer}` }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error'); }
@@ -2319,13 +2177,13 @@ function pickFmt(el) {
 // ═══════════════════════════════
 const MPROMPT = {
   erklaere: 'MODE: Explain to Me — Explain clearly with 1-2 concrete everyday analogies.',
-  pruefe:   'MODE: Practice — Progressive difficulty, one question at a time. Start immediately with Q1, no introduction. Q1 = pure recall (define or name something). Q2 = understanding (explain why/how). Q3 = integrative: ask the student to either (a) explain a connection between two concepts from this topic ("How does X relate to Y and what follows from that?") OR (b) reconstruct a process/sequence ("Describe the steps from X to Z and explain why the order matters"). Choose whichever fits the topic better. After each answer: 1 sentence of feedback. If the answer is wrong or incomplete, do NOT move to the next question — instead ask one targeted follow-up drilling into exactly the gap, then proceed. Never show more than one question at a time.',
+  pruefe:   'MODE: Quiz Me — Ask 3 questions IMMEDIATELY without prior explanation. After each answer: brief feedback + next question.',
   struktur: 'MODE: Organize — Clear overview, tables when appropriate.',
   vernetze: 'MODE: Connect — Brief explanation, then 3 explicit connections (🔗 1/2/3).',
   story:    'MODE: Tell Me a Story — Story with concrete characters, then 3 key points.'
 };
 const FPROMPT = {
-  text:      'ALWAYS answer in EXACTLY this structure — one time, never repeat it, never add extra sections:\n**Core:** [1 precise sentence — the single most essential point of the entire topic]\n**Explanation:** [3–4 sentences max — how and why, one analogy if helpful]\n**Example:** [1 concrete example]\nDo NOT create sub-sections, periods, or multiple Core/Explanation/Example blocks. One block total. Always mark technical terms with **double asterisks**.',
+  text:      'ALWAYS answer in exactly this structure (no exceptions):\n**Core:** [1 precise sentence — what is the essential point]\n**Explanation:** [3–4 sentences — how and why, with an analogy if helpful]\n**Example:** [1 concrete example from practice or exam]\nAlways mark technical terms with **double asterisks**.',
   organizer: 'Create a graphic organizer as JSON in a code block with language "organizer". Format:\n```organizer\n{"titel":"Name","typ":"linear","schritte":[{"id":"1","typ":"prozess","label":"Short name","kern":"1 precise sentence","erklaerung":"2 sentences how/why","beispiel":"concrete example","pfeile":[{"zu":"2","label":"leads to"}]}]}\n```\nStep type: prozess | entscheidung | ergebnis\nFlow type: linear | verzweigt | zyklisch\n4–7 steps. kern/erklaerung/beispiel as detailed as in text format. Arrow label=brief description of connection (max 3 words). ALL in English. ONLY JSON code block.',
   mindmap:   'Create a mindmap as JSON in a code block with language "mindmap". Format:\n```mindmap\n{"zentrum":"Main topic","aste":[{"titel":"Branch","knoten":[{"titel":"Concept","kern":"1 sentence","erklaerung":"2 sentences","beispiel":"1 example"}]}],"verbindungen":[{"von":"Concept A","zu":"Concept B","label":"influences"}]}\n```\nRules: 4 branches, 3 nodes each. kern=1 precise sentence. erklaerung=max 2 sentences. beispiel=1 concrete example. EXACTLY 3 connections between concepts from DIFFERENT branches — label=short verb (max 3 words). ALL in English. Output ONLY the JSON code block.'
 };
@@ -2337,31 +2195,14 @@ function setQuellenModus(modus) {
 }
 
 function buildSys() {
-  const d = load() || fresh();
-  if (ST.fmt === 'text' && ST.mode !== 'pruefe') {
-    return `You are a learning assistant for students. Answer exclusively in English, precisely, without filler words.
-Field of study: ${d.profile.sg}
-Topic: "${ST.topic}"
-Focus: "${ST.focus || 'general'}"
-
-ABSOLUTE FORMAT RULE — this overrides everything else:
-Answer in EXACTLY ONE block with this structure, never repeated:
-**Core:** [1 sentence — the single most essential point of the entire topic]
-**Explanation:** [3–4 sentences max — how and why, one analogy if helpful]
-**Example:** [1 concrete example]
-Do NOT split into sub-sections, periods, chapters, or multiple blocks. ONE Core, ONE Explanation, ONE Example. Nothing else.
-
-Mode intent (affects tone/angle only, NOT structure): ${MPROMPT[ST.mode]}
-Always mark technical terms with **double asterisks**.
-Analyze the uploaded material and answer based on actual content.`;
-  }
+  const d = load();
   return `You are a learning assistant for students. Answer exclusively in English, precisely, without filler words.
 Field of study: ${d.profile.sg}
 Topic: "${ST.topic}"
 Focus: "${ST.focus || 'general'}"
 ${MPROMPT[ST.mode]}
 Format: ${FPROMPT[ST.fmt]}
-Analyze the uploaded material and answer precisely based on actual content.`;
+Analyze the uploaded material and answer precisely based on the actual content.`;
 }
 
 function buildFirstContent() {
@@ -2458,8 +2299,9 @@ async function callAPI() {
   setBusy(true);
   const ty = addTyping();
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: (['mindmap','organizer'].includes(ST.fmt) || ['mindmap','organizer'].includes(ST.bfmt)) ? 8000 : 2000, system: buildSys(), messages: ST.msgs })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
@@ -2608,6 +2450,12 @@ function addAI(text) {
   bub.className = 'bub';
   bub.innerHTML = `${h}${vis}`;
 
+  const speakBtn = document.createElement('button');
+  speakBtn.type = 'button';
+  speakBtn.className = 'speak-btn';
+  speakBtn.textContent = '🔊 Read aloud';
+  speakBtn.addEventListener('click', () => toggleSpeech(speakBtn, text));
+  bub.appendChild(speakBtn);
 
   // Lernen-Button: Text
   const isTextFmt = !ST.fmt || ST.fmt === 'text' || ST.bfmt === 'text';
@@ -2967,8 +2815,9 @@ status is EXACTLY ONE of: richtig | unvollstaendig | falsch
 Analyze each main point of the student. Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 800, system: sys, messages: [{
         role: 'user',
         content: `Original text:\n${originalText}\n\nStudent's reproduction:\n${answer}`
@@ -3178,8 +3027,9 @@ Respond ONLY with this JSON:
 In English. Not just repeating — force the student to think deeply.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:200,system:sys,messages:[{
         role:'user',content:`Topic:\n${originalText.slice(0,600)}\n\nRecall feedback:\n${recallFeedback}`
       }]})
@@ -3226,8 +3076,9 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,system:sys,messages:[{
         role:'user',content:`Background:\n${originalText.slice(0,600)}\n\nQuestion:\n${frage}\n\nAnswer:\n${answer}`
       }]})
@@ -3282,8 +3133,9 @@ Respond ONLY with this JSON:
 In English. Close to exam scenarios, realistic.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:200,system:sys,messages:[{
         role:'user',content:`Topic:\n${originalText.slice(0,600)}`
       }]})
@@ -3331,8 +3183,9 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,system:sys,messages:[{
         role:'user',content:`Background:\n${originalText.slice(0,600)}\n\nTask:\n${aufgabe}\n\nStudent's example:\n${answer}`
       }]})
@@ -3353,7 +3206,7 @@ Rating 1–10. In English.`;
         <div class="lernen-fb-text">${esc(json.feedback)}</div>
         <div class="lernen-actions" style="margin-top:.5rem">
           <button class="lernen-submit" style="background:var(--surface);color:var(--accent);border:1.5px solid var(--accent)" onclick="bspNochmal('${bspId}')">Try again →</button>
-          ${recallId ? `<button class="lernen-submit" style="background:var(--pru-tx)" onclick="startTransfer Question('${recallId}')">+ Transfer Question →</button>` : ''}
+          ${recallId ? `<button class="lernen-submit" style="background:var(--pru-tx)" onclick="startTransferfrage('${recallId}')">+ Transferfrage →</button>` : ''}
         </div>
       </div>`;
     fbEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -3373,12 +3226,12 @@ function bspNochmal(bspId) {
   if (fb) fb.innerHTML = '';
 }
 
-async function startTransfer Question(recallId) {
+async function startTransferfrage(recallId) {
   const recallDiv = document.getElementById(recallId);
   const bub = recallDiv.closest('.bub');
   const originalText = bub._originalText || '';
 
-  // Transfer Question-Container suchen oder erstellen
+  // Transferfrage-Container suchen oder erstellen
   let tfWrap = bub.querySelector('.tf-wrap');
   if (!tfWrap) {
     tfWrap = document.createElement('div');
@@ -3396,8 +3249,9 @@ Respond ONLY with this JSON:
 In English. The question should be close to exam format.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 300, system: sys, messages: [{
         role: 'user', content: `Topic:\n${originalText.slice(0, 500)}`
       }]})
@@ -3412,11 +3266,11 @@ In English. The question should be close to exam format.`;
     tfCard._tfFrage = frage;
     tfCard._tfOriginal = originalText;
     tfCard.innerHTML = `
-      <div class="tf-lbl">Transfer Question</div>
+      <div class="tf-lbl">Transferfrage</div>
       <div class="tf-frage">${esc(frage)}</div>
       <textarea class="lernen-ta" id="${tfId}-ta" placeholder="Write your answer here..."></textarea>
       <div class="lernen-actions" style="margin-top:.6rem">
-        <button class="lernen-submit" id="${tfId}-btn" onclick="submitTransfer Question('${tfId}')">Evaluate →</button>
+        <button class="lernen-submit" id="${tfId}-btn" onclick="submitTransferfrage('${tfId}')">Evaluate →</button>
       </div>
       <div id="${tfId}-fb"></div>`;
     tfWrap.innerHTML = '';
@@ -3427,7 +3281,7 @@ In English. The question should be close to exam format.`;
   }
 }
 
-async function submitTransfer Question(tfId) {
+async function submitTransferfrage(tfId) {
   const ta = document.getElementById(`${tfId}-ta`);
   const answer = ta && ta.value.trim();
   if (!answer) { if (ta) ta.style.borderColor = 'var(--red)'; return; }
@@ -3451,8 +3305,9 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 400, system: sys, messages: [{
         role: 'user',
         content: `Background knowledge:\n${originalText}\n\nTransfer question:\n${frage}\n\nStudent's answer:\n${answer}`
@@ -3462,7 +3317,7 @@ Rating 1–10. In English.`;
     const json = JSON.parse(data.content[0].text.match(/\{[\s\S]*\}/)[0]);
     const score = Math.min(10, Math.max(1, json.bewertung || 5));
     const scoreColor = score >= 7 ? 'var(--accent)' : score >= 5 ? '#E8A020' : 'var(--red)';
-    recordSessionTask('Transfer Question', ST.bausteinFocusTopic || ST.topic || 'Transfer Question', score);
+    recordSessionTask('Transferfrage', ST.bausteinFocusTopic || ST.topic || 'Transferfrage', score);
 
     fbEl.innerHTML = `
       <div class="lernen-fb" style="margin-top:.6rem">
@@ -3473,7 +3328,7 @@ Rating 1–10. In English.`;
         <div class="lernen-fb-text">${esc(json.feedback)}</div>
         <div class="lernen-actions" style="margin-top:.5rem">
           <button class="lernen-submit" style="background:var(--surface);color:var(--accent);border:1.5px solid var(--accent)" onclick="tfNochmal('${tfId}')">Try again →</button>
-          ${recallId ? `<button class="lernen-submit" style="background:var(--surface);color:var(--muted);border:1px solid var(--border)" onclick="startTransfer Question('${recallId}')">Different Question →</button>` : ''}
+          ${recallId ? `<button class="lernen-submit" style="background:var(--surface);color:var(--muted);border:1px solid var(--border)" onclick="startTransferfrage('${recallId}')">Andere Frage →</button>` : ''}
         </div>
       </div>`;
     fbEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -3514,8 +3369,9 @@ Respond ONLY with this JSON:
 In English. Max 2 sentences.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 300, system: sys, messages: [{
         role: 'user', content: `Topic:\n${originalText.slice(0, 500)}`
       }]})
@@ -3583,8 +3439,9 @@ If no: respond with {"ergebnis":"kontern","konter":"Your sharpened counter-argum
 Reply ONLY with this JSON. In English. Be critical — don't give up too easily.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 400, system: sys, messages: [{
         role: 'user', content: `Topic:\n${originalText}\n\nDebate history:\n${verlauf}`
       }]})
@@ -3632,8 +3489,9 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 500, system: sys, messages: [{
         role: 'user', content: `Topic:\n${originalText.slice(0,400)}\n\nDebate:\n${verlauf}`
       }]})
@@ -3871,8 +3729,9 @@ async function mmVerbViewLoad(mmId, idx) {
 Respond ONLY with this JSON (no text before/after):
 {"erklaerung":"Detailed explanation (3–5 sentences)","kern":"A precise core sentence summarizing the connection"}`;
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001', max_tokens:500, system:sys, messages:[{
         role:'user', content:`Cross-connection: "${v.von}" ${v.label} "${v.zu}"\n\nExplain this connection in detail.`
       }]})
@@ -4073,8 +3932,9 @@ Respond ONLY with this JSON (no text before/after):
 {"bewertung":7,"feedback":"What was good: ... / What is missing: ...","verbesserte_version":"...","lerntips":["Tip 1","Tip 2"]}
 Rating 1–10. Focus on understanding the causal/logical connection. Everything in English.`;
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001', max_tokens:700, system:sys, messages:[{
         role:'user', content:`Cross-connection: "${v.von}" ${v.label} "${v.zu}"\n\nStudent's explanation: ${answer}\n\nEvaluate now.`
       }]})
@@ -4398,8 +4258,9 @@ Respond ONLY with this JSON:
 status is EXACTLY ONE of: richtig | unvollstaendig | falsch. Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:800,system:sys,messages:[{role:'user',content:`Reference:\n${referenz}\n\nStudent answer:\n${answer}`}]})
     });
     const data = await res.json();
@@ -4549,8 +4410,9 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:600,system:sys,messages:[{role:'user',content:`Reference:\n${referenz}\n\nStudent answer:\n${answer}`}]})
     });
     const data = await res.json();
@@ -4668,8 +4530,9 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:600,system:sys,messages:[{role:'user',content:`Reference:\n${ablauf}\n\nStudent answer:\n${answer}`}]})
     });
     const data = await res.json();
@@ -4746,8 +4609,9 @@ Respond ONLY with JSON (no text before/after):
 {"schritte":[{"kern":"new formulation"},{"kern":"new formulation"},...]}
 Exactly ${schritte.length} entries in the same order. In English.`;
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001', max_tokens:900, system:sys, messages:[{role:'user', content:stepsDesc}]})
     });
     if (!res.ok) return;
@@ -5012,8 +4876,9 @@ Respond ONLY with this JSON:
 status is EXACTLY ONE of: richtig | unvollstaendig | falsch. Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 800, system: sys, messages: [{
         role: 'user', content: `Reference:\n${referenz}\n\nStudent answer:\n${answer}`
       }]})
@@ -5427,7 +5292,7 @@ async function buildPlan() {
   out.innerHTML = '<div class="plan-load"><div class="typ"><span></span><span></span><span></span></div>AI analyzing your material...</div>';
   document.getElementById('btnPlan').disabled = true;
 
-  const d = load() || fresh();
+  const d = load();
   const quellenHinweis = ST.quellenModus === 'material'
     ? 'IMPORTANT: Base the study plan EXCLUSIVELY on the uploaded material. No additions from your own knowledge.'
     : 'You may supplement the study plan with your own knowledge — deeper explanations, practical references, and cross-connections are welcome.';
@@ -5439,13 +5304,10 @@ ${hints ? 'Notes: ' + hints : ''}
 ${quellenHinweis}
 
 Analyze the material. Create a study plan as JSON:
-- STRICT LIMIT: maximum 10 topics TOTAL across ALL weeks combined. Each topic appears exactly once — never repeat a topic in a different week.
-- Group related content into broad topics. Do not list sub-details as separate topics.
-- Assign priority based ONLY on content importance and exam relevance (NOT based on time available):
-  hoch = core concepts, heavily covered in material, likely exam-relevant
-  mittel = supporting concepts, moderately covered
-  niedrig = peripheral or supplementary topics
-- Distribute the (max 10) topics across weeks, with realistic hour estimates
+- All topics relevant to the exam
+- Priority: hoch / mittel / niedrig
+- Distributed across the available ${days} days
+- Realistic hour estimates
 
 Respond ONLY with valid JSON in a code block (no text before/after). Use only simple characters in string values — no quotes, no apostrophes, no special characters that could break JSON.
 
@@ -5461,7 +5323,7 @@ Respond ONLY with valid JSON in a code block (no text before/after). Use only si
       "themen": [
         {
           "name": "Topic name",
-          "beschreibung": "What needs to be learned - no special chars",
+          "beschreibung": "What needs to be learned",
           "prioritaet": "hoch",
           "stunden": 2,
           "tags": ["tag1"]
@@ -5486,8 +5348,9 @@ Respond ONLY with valid JSON in a code block (no text before/after). Use only si
   content.push({ type: 'text', text: `Create the study plan for "${name}" in ${days} days.` });
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 6000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
@@ -5497,8 +5360,8 @@ Respond ONLY with valid JSON in a code block (no text before/after). Use only si
     const raw = codeBlock ? codeBlock.trim() : (text.match(/\{[\s\S]*\}/) || [])[0];
     if (!raw) throw new Error('No JSON found in response');
     const json = safeJsonParse(raw);
-    if (!json) throw new Error('Could not parse study plan JSON');
-    showPrioOverview(json, name, examStr, days);
+    if (!json) throw new Error('Could not parse JSON response');
+    renderPlan(json, name, examStr, days);
   } catch (e) {
     out.innerHTML = `<div class="err on">Error: ${e.message}</div>`;
   } finally {
@@ -5555,207 +5418,6 @@ function renderPlan(plan, name, examStr, days) {
 
   document.getElementById('planOut').innerHTML = h;
   document.getElementById('planOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function showPrioOverview(plan, name, examStr, days) {
-  ST._pendingPlan = plan;
-  ST._pendingPlanMeta = { name, examStr, days };
-  ST.currentPlan = { name, examStr, days };
-
-  // Populate allTopics so openBaustein(idx) works directly
-  ST.allTopics = [];
-  (plan.wochen || []).forEach(w => (w.themen || []).forEach(t => ST.allTopics.push(t)));
-
-  const groups = { hoch: [], mittel: [], niedrig: [] };
-  ST.allTopics.forEach((t, idx) => {
-    const p = t.prioritaet in groups ? t.prioritaet : 'niedrig';
-    groups[p].push({ t, idx });
-  });
-
-  document.getElementById('prioHead').innerHTML = `
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.4rem">
-      <div>
-        <div class="plan-title">${esc(name)}</div>
-        <div class="plan-meta">${examStr} · ${days} Tage · ~${plan.empfohleneStunden}h · ${plan.gesamtthemen} Themen</div>
-      </div>
-      <button class="btn bg" id="btnSavePlan" onclick="savePlan()" style="font-size:.72rem;padding:.38rem .85rem;white-space:nowrap;flex-shrink:0">💾 Speichern</button>
-    </div>`;
-
-  const COLS = [
-    { key: 'hoch',    label: 'Priorität Hoch',    dot: '#C4533A' },
-    { key: 'mittel',  label: 'Priorität Mittel',   dot: '#C8A020' },
-    { key: 'niedrig', label: 'Priorität Niedrig',  dot: '#4A9A5A' },
-  ];
-
-  ST._prioGroups = groups;
-  ST._prioCols = COLS;
-  ST._prioColCollapsed = { hoch: false, mittel: false, niedrig: false };
-
-  renderPrioGrid();
-
-  show('scPrioOverview');
-  setNav('nPlan');
-}
-
-const PRIO_DOTS = { hoch: '#C4533A', mittel: '#C8A020', niedrig: '#4A9A5A' };
-const PRIO_LABELS = { hoch: 'Hoch', mittel: 'Mittel', niedrig: 'Niedrig' };
-
-function truncW(text, n) {
-  if (!text) return '';
-  const w = text.split(' ');
-  return w.length <= n ? text : w.slice(0, n).join(' ') + '…';
-}
-
-function togglePrioCol(key) {
-  if (!ST._prioColCollapsed) ST._prioColCollapsed = {};
-  ST._prioColCollapsed[key] = !ST._prioColCollapsed[key];
-  renderPrioGrid();
-}
-
-function renderPrioGrid() {
-  const COLS = ST._prioCols || [];
-  const groups = ST._prioGroups || {};
-  const collapsed = ST._prioColCollapsed || {};
-
-  const gridCols = ['hoch','mittel','niedrig'].map(k => collapsed[k] ? 'auto' : '1fr').join(' ');
-  const grid = document.getElementById('prioGrid');
-  grid.style.gridTemplateColumns = gridCols;
-
-  grid.innerHTML = COLS.map(col => {
-    const items = groups[col.key] || [];
-    const isCollapsed = !!collapsed[col.key];
-    const tilesHtml = items.length
-      ? items.map(({ t, idx }) => {
-          const otherPrios = ['hoch','mittel','niedrig'].filter(p => p !== t.prioritaet);
-          return `
-          <div class="prio-tile">
-            <div class="prio-tile-hd"><span class="prio-tile-name">${esc(t.name)}</span></div>
-            <div class="prio-tile-bd">
-              ${t.beschreibung ? `<div class="prio-tile-desc">${esc(truncW(t.beschreibung, 10))}</div>` : ''}
-              <div class="prio-tile-actions">
-                ${otherPrios.map(p => `
-                  <button class="prio-move-btn" onclick="movePrioTopic(${idx},'${p}')">
-                    <span class="prio-dot" style="background:${PRIO_DOTS[p]};width:7px;height:7px"></span>${PRIO_LABELS[p]}
-                  </button>`).join('')}
-                <button class="prio-del-btn" onclick="removePrioTopic(${idx})">× Entfernen</button>
-                <button class="prio-tile-lernen" onclick="openBaustein(${idx})">Lernen →</button>
-              </div>
-            </div>
-          </div>`;
-        }).join('')
-      : `<span class="prio-empty">Keine Themen</span>`;
-    return `
-      <div class="prio-col${isCollapsed ? ' collapsed' : ''}">
-        <div class="prio-col-head" onclick="togglePrioCol('${col.key}')">
-          <span class="prio-dot" style="background:${col.dot}"></span>
-          <span class="prio-col-title">${col.label}</span>
-          <span class="prio-col-count">${items.length}</span>
-          <span class="prio-col-toggle">‹</span>
-        </div>
-        <div class="prio-col-tiles">${tilesHtml}</div>
-      </div>`;
-  }).join('');
-}
-
-function removePrioTopic(idx) {
-  ST.allTopics.splice(idx, 1);
-  rebuildPrioGroups();
-}
-
-function movePrioTopic(idx, newPrio) {
-  ST.allTopics[idx].prioritaet = newPrio;
-  rebuildPrioGroups();
-}
-
-function rebuildPrioGroups() {
-  const groups = { hoch: [], mittel: [], niedrig: [] };
-  ST.allTopics.forEach((t, idx) => {
-    const p = t.prioritaet in groups ? t.prioritaet : 'niedrig';
-    groups[p].push({ t, idx });
-  });
-  ST._prioGroups = groups;
-  renderPrioGrid();
-}
-
-function showFullPlan() {
-  const { name, examStr, days } = ST._pendingPlanMeta;
-  renderPlan(ST._pendingPlan, name, examStr, days);
-  show('scPlan');
-  setNav('nPlan');
-}
-
-function openPrioAdjust() {
-  document.getElementById('prioBackdrop').classList.add('open');
-  document.getElementById('prioSlide').classList.add('open');
-  setTimeout(() => document.getElementById('prioAdjustInput').focus(), 320);
-}
-
-function closePrioAdjust() {
-  document.getElementById('prioBackdrop').classList.remove('open');
-  document.getElementById('prioSlide').classList.remove('open');
-}
-
-async function applyPrioChange() {
-  const hint = document.getElementById('prioAdjustInput').value.trim();
-  if (!hint) { closePrioAdjust(); return; }
-
-  const btn = document.getElementById('btnPrioAdjust');
-  const loadEl = document.getElementById('prioAdjustLoad');
-  btn.disabled = true;
-  loadEl.style.display = 'flex';
-
-  const { name, examStr, days } = ST._pendingPlanMeta;
-  const d = load() || fresh();
-  const quellenHinweis = ST.quellenModus === 'material'
-    ? 'IMPORTANT: Base the study plan EXCLUSIVELY on the uploaded material.'
-    : 'You may supplement the study plan with your own knowledge.';
-
-  const allVisible = ['hoch','mittel','niedrig'].map(k => {
-    const topics = (ST._prioGroups?.[k] || []).map(({t}) => t.name).join(', ');
-    return topics ? `${PRIO_LABELS[k]}: ${topics}` : null;
-  }).filter(Boolean).join(' | ');
-
-  const sys = `You are an academic study planner. Respond exclusively in English, without filler words.
-Field of study: ${d.profile.sg}
-Exam: "${name}" on ${examStr} (in ${days} days)
-${quellenHinweis}
-
-Currently visible topics — ${allVisible}
-
-Here is the full study plan as JSON:
-${JSON.stringify(ST._pendingPlan)}
-
-The user wants the following change: "${hint}"
-If the change refers to "this topic", "the first one", "these topics" etc., interpret it relative to the currently visible topics listed above.
-
-Apply the change and return the updated plan as valid JSON in a code block. Keep the exact same JSON structure. Maintain content-based priority assignment (hoch = core/heavily covered, mittel = supporting, niedrig = peripheral) — do not distribute topics evenly across priorities. Use only simple characters — no quotes, apostrophes, or special characters that could break JSON.
-
-\`\`\`json
-{ ... }
-\`\`\``;
-
-  try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
-      method: 'POST',
-      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 6000, system: sys, messages: [{ role: 'user', content: `Apply the requested change to the study plan.` }] })
-    });
-    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
-    const data = await res.json();
-    const text = data.content.map(b => b.text || '').join('');
-    const codeBlock = (text.match(/```(?:json)?\s*([\s\S]*?)```/) || [])[1];
-    const raw = codeBlock ? codeBlock.trim() : (text.match(/\{[\s\S]*\}/) || [])[0];
-    if (!raw) throw new Error('No JSON in response');
-    const json = safeJsonParse(raw);
-    if (!json) throw new Error('Could not parse updated plan');
-    closePrioAdjust();
-    document.getElementById('prioAdjustInput').value = '';
-    showPrioOverview(json, name, examStr, days);
-  } catch (e) {
-    alert('Fehler beim Anpassen: ' + e.message);
-  } finally {
-    btn.disabled = false;
-    loadEl.style.display = 'none';
-  }
 }
 
 // ═══════════════════════════════
@@ -5886,8 +5548,9 @@ Respond ONLY with JSON:
   content.push({ type: 'text', text: `Create the ${format} test for: "${t.name}" — ${t.beschreibung}` });
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 8000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
@@ -6021,14 +5684,15 @@ async function submitFormatTask(idx) {
   stopTimer(key, 'recall', idx);
 
   const task = ST.formatTestTasks[idx];
-  const d = load() || fresh();
+  const d = load();
   const sys = `You are a strict but fair examiner. Evaluate the answer to a test task.
 Respond ONLY with JSON: {"score":7,"feedback":"brief evaluation","staerken":"what was good","luecken":"what was missing or wrong"}
 score = 0–10 (integer). 10=perfect, 7.5=passed, <5=insufficient. Be demanding.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 600, system: sys, messages: [{
         role: 'user',
         content: `Topic: ${ST.currentTestTopic?.name || ''}\nTask type: ${task.typ}\nTask: ${task.aufgabe}\nModel answer: ${task.idealantwort}\n\nStudent's answer: ${answer}`
@@ -6089,8 +5753,9 @@ async function runFormatTestAuswertung() {
 Respond ONLY with JSON: {"staerken":"2-3 sentences what was good","schwaechen":"2-3 sentences concrete gaps","empfehlung":"1-2 sentences next steps"}`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 500, system: sys, messages: [{
         role: 'user',
         content: `Topic: ${topic}\nFormat: ${format}\nResults:\n${taskSummary}\nTotal score: ${avg.toFixed(1)}/10`
@@ -6140,7 +5805,7 @@ function saveFormatTestScore(avg) {
   const topic = ST.currentTestTopic?.name || '';
   const parent = ST.currentTestParent || '';
   if (!topic) return;
-  const d = load() || fresh();
+  const d = load();
   const key = `${parent}__${topic}`;
   if (!d.sessionScores) d.sessionScores = {};
   const prev = d.sessionScores[key];
@@ -6183,7 +5848,7 @@ function openBausteinTest(idx) {
 }
 
 async function loadTest(t) {
-  const d = load() || fresh();
+  const d = load();
   const sys = `You are an exam coach. Create a structured learning test for the topic "${t.name}".
 Respond ONLY with this JSON (no text before/after):
 {
@@ -6212,8 +5877,9 @@ Rules: 3–4 quickCheck, 2 activeRecall, 1–2 examSimulation, 2 spacedRepetitio
   content.push({ type: 'text', text: `Create the test for: "${t.name}" — ${t.beschreibung}` });
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 6000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
@@ -6523,7 +6189,7 @@ function backFromTest() {
   } else {
     const idx = ST.testBausteinIdx;
     if (idx >= 0 && ST.allTopics[idx]) openBaustein(idx);
-    else { backToPlan(); }
+    else { show('scPlan'); setNav('nPlan'); }
   }
 }
 
@@ -6559,8 +6225,9 @@ Respond ONLY with this JSON (no text before/after):
 Rating 1–10. Fachbegriffe: only terms central to the topic (max 4).`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1200, system: sys, messages: [{
         role: 'user',
         content: `Question: ${question}\n\nModel answer (Reference): ${idealantwort}\n\nStudent's answer: ${answer}\n\nEvaluate now.`
@@ -6666,8 +6333,9 @@ Respond ONLY with this JSON (no text before/after):
 Rating 1–10. Focus on exam logic, argumentation structure, completeness.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1200, system: sys, messages: [{
         role: 'user',
         content: `Exam task: ${question}\n\nModel solution (Reference): ${idealantwort}\n\nStudent's solution: ${answer}\n\nEvaluate now.`
@@ -6801,8 +6469,9 @@ Rules: gesamtnote 1–10. klausurrelevanz is EXACTLY ONE of: hoch | mittel | nie
 Weaknesses sorted by exam relevance (high first). Max 5 weaknesses. All in English, precise.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1200, system: sys, messages: [{ role: 'user', content: `Test results:\n\n${ergebnisse}` }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
@@ -6949,8 +6618,9 @@ Respond ONLY with JSON:
   "erklaerung": "Re-explain the concept from scratch: simple, concrete, with a vivid real-world analogy. 3-5 sentences. Build from intuition to correct understanding."
 }
 In English. Be specific and constructive.`;
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:700, system:sys, messages:[{
         role:'user', content:`Weak point: "${ST.gezieltTitel}"\nDescription: ${ST.gezieltDesc}`
       }]})
@@ -7014,8 +6684,9 @@ async function startGezieltPhase2() {
 No yes/no questions. Each question illuminates a different aspect. Respond ONLY with JSON:
 {"fragen":["Question 1","Question 2","Question 3","Question 4"]}
 In English. Concrete, challenging, in-depth.`;
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:600, system:sys, messages:[{
         role:'user', content:`Weak point: "${ST.gezieltTitel}"\nDescription: ${ST.gezieltDesc}`
       }]})
@@ -7085,8 +6756,9 @@ async function submitGlDrill(idx) {
 Respond ONLY with JSON:
 {"bewertung":7,"gut":"What was correct — 1 sentence","fehlt":"What is missing or imprecise — 1 sentence","verbessert":"A complete model answer in 2-3 sentences","tip":"One concrete learning tip"}
 Rating 1–10. In English. Be specific and constructive.`;
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:500, system:sys, messages:[{
         role:'user', content:`Topic: ${ST.gezieltTitel}\nQuestion: ${ST.glDrillFragen[idx]}\nAnswer: ${answer}`
       }]})
@@ -7177,8 +6849,9 @@ Respond ONLY with JSON:
 }
 In English. Make each step feel like a genuine insight.`;
     }
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:1500, system:sys, messages:[{
         role:'user', content:`Weak concept: "${ST.gezieltTitel}"\nGap description: ${ST.gezieltDesc}`
       }]})
@@ -7267,7 +6940,7 @@ function startSessionAnalysis() {
 }
 
 async function runSessionAnalysis(topic) {
-  const d = load() || fresh();
+  const d = load();
   const sg = d && d.profile && d.profile.sg ? d.profile.sg : 'Studium';
   const tasks = ST.sessionTaskScores || [];
 
@@ -7306,8 +6979,9 @@ Respond ONLY with this JSON:
 gesamtnote: ${gesamtScore !== null ? `Calculated from task average: ${gesamtScore} — adjust slightly if needed` : 'Estimate 1–10'}. klausurrelevanz: hoch | mittel | niedrig. Max 4 weaknesses. All in English.`;
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1000, system: sys, messages: [{ role: 'user', content: `Task results:\n\n${aufgabenText}` }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
@@ -7461,7 +7135,7 @@ function bausteinHeaderHTML(id) {
 }
 
 function openBaustein(idx) {
-  if (!ST.planFiles.length && !ST.allTopics.length) return showErr('No exam planner material available.');
+  if (!ST.planFiles.length) return showErr('No exam planner material available.');
   const t = ST.allTopics[idx];
   if (!t) return;
   ST.bausteinIdx = idx;
@@ -7480,7 +7154,7 @@ function openBaustein(idx) {
 }
 
 async function loadBausteinOverview() {
-  const d = load() || fresh();
+  const d = load();
   const sys = `You are a learning assistant for exam preparation. Analyze the material on the topic "${ST.bausteinTopic}".
 Respond ONLY with this JSON (no text before/after, no Markdown):
 {
@@ -7494,22 +7168,21 @@ Respond ONLY with this JSON (no text before/after, no Markdown):
     "anwenden": ["Calculate X", "Apply Y to an example"]
   },
 }
-Rules: exactly 2 summary points, exactly ${ST.bausteinPrio === 'hoch' ? 3 : ST.bausteinPrio === 'mittel' ? 2 : 1} subtopics, max 1 item per learning goal category.
+Rules: 4–6 summary points, 3–6 subtopics, 3–5 learning goals.
 All in English, precise, exam-relevant.`;
 
   const content = [];
-  if (ST.planFiles.length) {
-    ST.planFiles.forEach(pf => {
-      if (pf.mode === 'text') content.push({ type: 'text', text: `--- ${pf.name} ---\n${pf.text}` });
-      else if (pf.type === 'application/pdf') content.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: pf.b64 } });
-      else content.push({ type: 'image', source: { type: 'base64', media_type: pf.type, data: pf.b64 } });
-    });
-  }
+  ST.planFiles.forEach(pf => {
+    if (pf.mode === 'text') content.push({ type: 'text', text: `--- ${pf.name} ---\n${pf.text}` });
+    else if (pf.type === 'application/pdf') content.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: pf.b64 } });
+    else content.push({ type: 'image', source: { type: 'base64', media_type: pf.type, data: pf.b64 } });
+  });
   content.push({ type: 'text', text: `Create the overview for the learning module: "${ST.bausteinTopic}" — ${ST.bausteinDesc}` });
 
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
@@ -7648,17 +7321,6 @@ function pickBMode(el) {
   el.classList.add('on');
   ST.bMode = el.dataset.bm;
   document.getElementById('btnBaustein').disabled = false;
-
-  const isPruefe = ST.bMode === 'pruefe';
-  document.querySelectorAll('.bfc[data-bf="mindmap"], .bfc[data-bf="organizer"]').forEach(btn => {
-    btn.style.opacity = isPruefe ? '.35' : '';
-    btn.style.pointerEvents = isPruefe ? 'none' : '';
-  });
-  if (isPruefe) {
-    document.querySelectorAll('.bfc').forEach(c => c.classList.remove('on'));
-    document.querySelector('.bfc[data-bf="text"]').classList.add('on');
-    ST.bFmt = 'text';
-  }
 }
 
 function pickBFmt(el) {
@@ -7674,13 +7336,9 @@ function backToBausteinOverview() {
 }
 
 function backToPlan() {
-  if (ST._pendingPlan) {
-    show('scPrioOverview');
-    setNav('nPlan');
-  } else {
-    show('scPlan');
-    setNav('nPlan');
-  }
+  show('scPlan');
+  setNav('nPlan');
+  setTimeout(() => document.getElementById('planOut').scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
 }
 
 function recordSessionTask(type, name, score) {
@@ -7699,8 +7357,8 @@ function startBaustein() {
   ST.msgs = [];
   ST.sessionTaskScores = [];
 
-  const m = MM[ST.mode] || MM['erklaere'];
-  const f = FM[ST.fmt] || FM['text'];
+  const m = MM[ST.mode];
+  const f = FM[ST.fmt];
   const tag = document.getElementById('chatTag');
   tag.textContent = m.lbl;
   tag.style.cssText = `background:${m.bg};color:${m.tx};border:1px solid ${m.bd}`;
