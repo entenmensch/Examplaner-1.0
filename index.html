@@ -1539,9 +1539,7 @@ const FM = {
 // BOOT
 // ═══════════════════════════════
 window.addEventListener('DOMContentLoaded', () => {
-  const saved = loadSavedPlan();
-  if (saved) { resumeSavedPlan(); }
-  else { show('scPlan'); setNav('nPlan'); renderSavedPlanCard(); }
+  show('scPlan'); setNav('nPlan'); renderSavedPlanCard();
 });
 
 // ═══════════════════════════════
