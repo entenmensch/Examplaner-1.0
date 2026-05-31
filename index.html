@@ -1157,6 +1157,9 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <p class="h1">Dein Lern<em>plan</em></p>
   <div id="prioHead"></div>
   <div class="prio-grid" id="prioGrid"></div>
+  <div style="margin-top:1.4rem;text-align:center">
+    <button class="btn bp" id="btnSavePlanBottom" onclick="savePlan()" style="padding:.72rem 2rem;font-size:.88rem">💾 Plan speichern</button>
+  </div>
 </div>
 
 <!-- ══════ PRIO FAB + SLIDE PANEL ══════ -->
@@ -1425,8 +1428,10 @@ function savePlan() {
       textFiles,
       ts: Date.now()
     }));
-    const btn = document.getElementById('btnSavePlan');
-    if (btn) { btn.textContent = '✓ Gespeichert'; btn.disabled = true; setTimeout(() => { btn.textContent = '💾 Plan speichern'; btn.disabled = false; }, 2000); }
+    ['btnSavePlan', 'btnSavePlanBottom'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) { btn.textContent = '✓ Gespeichert'; btn.disabled = true; setTimeout(() => { btn.textContent = '💾 Plan speichern'; btn.disabled = false; }, 2000); }
+    });
   } catch(e) {}
 }
 const loadSavedPlan = () => { try { return JSON.parse(localStorage.getItem(PK)) || null; } catch { return null; } };
