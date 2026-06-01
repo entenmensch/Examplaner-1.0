@@ -1154,7 +1154,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 
 <!-- ══════ PRIORITY OVERVIEW ══════ -->
 <div class="sc" id="scPrioOverview">
-  <p class="h1">Dein Lern<em>plan</em></p>
+  <p class="h1">Your Study<em> Plan</em></p>
   <div id="prioHead"></div>
   <div class="prio-grid" id="prioGrid"></div>
   <div style="margin-top:1.4rem;text-align:center">
@@ -1386,9 +1386,9 @@ function getReviewStatus(name) {
 }
 function reviewBadgeHtml(status) {
   if (!status) return '';
-  if (status.daysUntil <= 0) return `<span class="rv-badge rv-due">🔁 Heute wiederholen</span>`;
-  if (status.daysUntil === 1) return `<span class="rv-badge rv-soon">in 1 Tag</span>`;
-  return `<span class="rv-badge rv-later">in ${status.daysUntil} Tagen</span>`;
+  if (status.daysUntil <= 0) return `<span class="rv-badge rv-due">🔁 Review today</span>`;
+  if (status.daysUntil === 1) return `<span class="rv-badge rv-soon">in 1 day</span>`;
+  return `<span class="rv-badge rv-later">in ${status.daysUntil} days</span>`;
 }
 function getAggregatedScore(parentName) {
   const entries = Object.values(loadScores()).filter(e => e.parent === parentName);
@@ -1465,11 +1465,11 @@ function renderSavedPlanCard() {
   el.innerHTML = `<div class="draft-card" onclick="resumeSavedPlan()">
     <div class="draft-ico">📋</div>
     <div class="draft-info">
-      <div class="draft-badge">Gespeicherter Plan</div>
+      <div class="draft-badge">Saved Plan</div>
       <div class="draft-topic">${esc(name)}</div>
-      <div class="draft-meta">${examStr} · ${days} Tage · ${total} Themen · ${ago}</div>
+      <div class="draft-meta">${examStr} · ${days} days · ${total} topics · ${ago}</div>
     </div>
-    <button class="draft-del" onclick="event.stopPropagation();softDeletePlan()" title="Löschen">✕</button>
+    <button class="draft-del" onclick="event.stopPropagation();softDeletePlan()" title="Delete">✕</button>
     <div class="draft-arr">→</div>
   </div>`;
 }
@@ -3838,7 +3838,7 @@ function mmStartPhase3(mmId) {
   if (verbindungen.length === 0) {
     pc.innerHTML = `
       <div style="font-size:.65rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:.65rem">Phase 3 — Cross-connections</div>
-      <div style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem">Keine Querverbindungen vorhanden.</div>
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem">No cross-connections available.</div>
       <div id="${mmId}-lernen-area"></div>`;
     mmShowLernenBtn(mmId);
     return;
@@ -5427,13 +5427,13 @@ function updateDays() {
   badge.style.display = 'flex';
   document.getElementById('daysNum').textContent = Math.max(0, days);
   if (days <= 3) {
-    document.getElementById('daysLbl').textContent = '⚠️ Nur noch ' + days + ' Tag' + (days !== 1 ? 'e' : '') + ' ';
+    document.getElementById('daysLbl').textContent = '⚠️ Only ' + days + ' day' + (days !== 1 ? 's' : '') + ' left ';
     badge.className = 'dbadge urg';
   } else if (days <= 7) {
-    document.getElementById('daysLbl').textContent = 'Tage — diese Woche ';
+    document.getElementById('daysLbl').textContent = 'days — this week ';
     badge.className = 'dbadge urg';
   } else {
-    document.getElementById('daysLbl').textContent = 'Tage ';
+    document.getElementById('daysLbl').textContent = 'days ';
     badge.className = 'dbadge';
   }
 }
@@ -5546,7 +5546,7 @@ function renderPlan(plan, name, examStr, days) {
 
   let h = `<div class="plan-head">
     <div class="plan-title">${esc(name)}</div>
-    <div class="plan-meta">${examStr} · ${days} Tage · ~${plan.empfohleneStunden}h · ${plan.gesamtthemen} Themen</div>
+    <div class="plan-meta">${examStr} · ${days} days · ~${plan.empfohleneStunden}h · ${plan.gesamtthemen} topics</div>
     <div class="plan-sum">${esc(plan.zusammenfassung)}</div>
   </div>`;
 
@@ -5606,15 +5606,15 @@ function showPrioOverview(plan, name, examStr, days) {
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.4rem">
       <div>
         <div class="plan-title">${esc(name)}</div>
-        <div class="plan-meta">${examStr} · ${days} Tage · ~${plan.empfohleneStunden}h · ${plan.gesamtthemen} Themen</div>
+        <div class="plan-meta">${examStr} · ${days} days · ~${plan.empfohleneStunden}h · ${plan.gesamtthemen} topics</div>
       </div>
-      <button class="btn bg" id="btnSavePlan" onclick="savePlan()" style="font-size:.72rem;padding:.38rem .85rem;white-space:nowrap;flex-shrink:0">💾 Speichern</button>
+      <button class="btn bg" id="btnSavePlan" onclick="savePlan()" style="font-size:.72rem;padding:.38rem .85rem;white-space:nowrap;flex-shrink:0">💾 Save</button>
     </div>`;
 
   const COLS = [
-    { key: 'hoch',    label: 'Priorität Hoch',    dot: '#C4533A' },
-    { key: 'mittel',  label: 'Priorität Mittel',   dot: '#C8A020' },
-    { key: 'niedrig', label: 'Priorität Niedrig',  dot: '#4A9A5A' },
+    { key: 'hoch',    label: 'High Priority',    dot: '#C4533A' },
+    { key: 'mittel',  label: 'Medium Priority',   dot: '#C8A020' },
+    { key: 'niedrig', label: 'Low Priority',       dot: '#4A9A5A' },
   ];
 
   ST._prioGroups = groups;
@@ -5628,7 +5628,7 @@ function showPrioOverview(plan, name, examStr, days) {
 }
 
 const PRIO_DOTS = { hoch: '#C4533A', mittel: '#C8A020', niedrig: '#4A9A5A' };
-const PRIO_LABELS = { hoch: 'Hoch', mittel: 'Mittel', niedrig: 'Niedrig' };
+const PRIO_LABELS = { hoch: 'High', mittel: 'Medium', niedrig: 'Low' };
 
 function truncW(text, n) {
   if (!text) return '';
@@ -5667,13 +5667,13 @@ function renderPrioGrid() {
                   <button class="prio-move-btn" onclick="movePrioTopic(${idx},'${p}')">
                     <span class="prio-dot" style="background:${PRIO_DOTS[p]};width:7px;height:7px"></span>${PRIO_LABELS[p]}
                   </button>`).join('')}
-                <button class="prio-del-btn" onclick="removePrioTopic(${idx})">× Entfernen</button>
-                <button class="prio-tile-lernen" onclick="openBaustein(${idx})">Lernen →</button>
+                <button class="prio-del-btn" onclick="removePrioTopic(${idx})">× Remove</button>
+                <button class="prio-tile-lernen" onclick="openBaustein(${idx})">Study →</button>
               </div>
             </div>
           </div>`;
         }).join('')
-      : `<span class="prio-empty">Keine Themen</span>`;
+      : `<span class="prio-empty">No Topics</span>`;
     return `
       <div class="prio-col${isCollapsed ? ' collapsed' : ''}">
         <div class="prio-col-head" onclick="togglePrioCol('${col.key}')">
@@ -6228,7 +6228,7 @@ Respond ONLY with this JSON (no text before/after):
   ],
   "spacedRepetition": {
     "fragen":["...","..."],
-    "empfehlung":"z.B. Morgen, in 3 Tagen, in 7 Tagen"
+    "empfehlung":"e.g. Tomorrow, in 3 days, in 7 days"
   }
 }
 Rules: 3–4 quickCheck, 2 activeRecall, 1–2 examSimulation, 2 spacedRepetition questions. All in English. Increasing difficulty. Focus on exam success.`;
@@ -7473,9 +7473,9 @@ function saStartTest() {
 // BAUSTEIN
 // ═══════════════════════════════
 const BPRIO = {
-  hoch:    { cls: 'ph', lbl: '❗ Hoch',    bg: 'var(--red-s)',    tx: 'var(--red)' },
-  mittel:  { cls: 'pm', lbl: '◆ Mittel',  bg: 'var(--erk-bg)',   tx: 'var(--erk-tx)' },
-  niedrig: { cls: 'pl', lbl: '○ Niedrig', bg: 'var(--accent-s)', tx: 'var(--accent)' }
+  hoch:    { cls: 'ph', lbl: '❗ High',    bg: 'var(--red-s)',    tx: 'var(--red)' },
+  mittel:  { cls: 'pm', lbl: '◆ Medium',  bg: 'var(--erk-bg)',   tx: 'var(--erk-tx)' },
+  niedrig: { cls: 'pl', lbl: '○ Low',     bg: 'var(--accent-s)', tx: 'var(--accent)' }
 };
 
 function bausteinHeaderHTML(id) {
