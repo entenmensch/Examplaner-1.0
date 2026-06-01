@@ -1158,7 +1158,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <div id="prioHead"></div>
   <div class="prio-grid" id="prioGrid"></div>
   <div style="margin-top:1.4rem;text-align:center">
-    <button class="btn bp" id="btnSavePlanBottom" onclick="savePlan()" style="padding:.72rem 2rem;font-size:.88rem">💾 Plan speichern</button>
+    <button class="btn bp" id="btnSavePlanBottom" onclick="savePlan()" style="padding:.72rem 2rem;font-size:.88rem">💾 Save plan</button>
   </div>
 </div>
 
@@ -1430,7 +1430,7 @@ function savePlan() {
     }));
     ['btnSavePlan', 'btnSavePlanBottom'].forEach(id => {
       const btn = document.getElementById(id);
-      if (btn) { btn.textContent = '✓ Gespeichert'; btn.disabled = true; setTimeout(() => { btn.textContent = '💾 Plan speichern'; btn.disabled = false; }, 2000); }
+      if (btn) { btn.textContent = '✓ Gespeichert'; btn.disabled = true; setTimeout(() => { btn.textContent = '💾 Save plan'; btn.disabled = false; }, 2000); }
     });
   } catch(e) {}
 }
