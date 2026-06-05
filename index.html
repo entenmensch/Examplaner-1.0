@@ -1196,22 +1196,22 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <div id="prioHead"></div>
   <div class="prio-grid" id="prioGrid"></div>
   <div style="margin-top:1.4rem;text-align:center">
-    <button class="btn bp" id="btnSavePlanBottom" onclick="savePlan()" style="padding:.72rem 2rem;font-size:.88rem">💾 Plan speichern</button>
+    <button class="btn bp" id="btnSavePlanBottom" onclick="savePlan()" style="padding:.72rem 2rem;font-size:.88rem">💾 Save plan</button>
   </div>
 </div>
 
 <!-- ══════ PRIO FAB + SLIDE PANEL ══════ -->
-<button class="prio-fab" id="prioFab" onclick="openPrioAdjust()">✏️ KI-Anpassung</button>
+<button class="prio-fab" id="prioFab" onclick="openPrioAdjust()">✏️ AI Adjust</button>
 <div class="prio-backdrop" id="prioBackdrop" onclick="closePrioAdjust()"></div>
 <div class="prio-slide" id="prioSlide">
   <div class="prio-slide-hd">
-    <span class="prio-slide-title">Plan anpassen</span>
+    <span class="prio-slide-title">Adjust plan</span>
     <button class="prio-slide-close" onclick="closePrioAdjust()">✕</button>
   </div>
-  <textarea class="prio-slide-ta" id="prioAdjustInput" placeholder="z.B. »Kapitel 3 weglassen, das kenne ich schon« · »Mehr Fokus auf Statistik einplanen«" rows="3"></textarea>
+  <textarea class="prio-slide-ta" id="prioAdjustInput" placeholder="e.g. »Skip chapter 3, I already know it« · »Put more focus on statistics«" rows="3"></textarea>
   <div class="prio-slide-ft">
-    <div class="prio-slide-load" id="prioAdjustLoad" style="display:none"><div class="typ" style="display:inline-flex"><span></span><span></span><span></span></div> KI passt an…</div>
-    <button class="btn bp" id="btnPrioAdjust" onclick="applyPrioChange()">Anpassen →</button>
+    <div class="prio-slide-load" id="prioAdjustLoad" style="display:none"><div class="typ" style="display:inline-flex"><span></span><span></span><span></span></div> AI adjusting…</div>
+    <button class="btn bp" id="btnPrioAdjust" onclick="applyPrioChange()">Adjust →</button>
   </div>
 </div>
 
@@ -1474,9 +1474,9 @@ function getReviewStatus(name) {
 }
 function reviewBadgeHtml(status) {
   if (!status) return '';
-  if (status.daysUntil <= 0) return `<span class="rv-badge rv-due">🔁 Heute wiederholen</span>`;
-  if (status.daysUntil === 1) return `<span class="rv-badge rv-soon">in 1 Tag</span>`;
-  return `<span class="rv-badge rv-later">in ${status.daysUntil} Tagen</span>`;
+  if (status.daysUntil <= 0) return `<span class="rv-badge rv-due">🔁 Review today</span>`;
+  if (status.daysUntil === 1) return `<span class="rv-badge rv-soon">in 1 day</span>`;
+  return `<span class="rv-badge rv-later">in ${status.daysUntil} days</span>`;
 }
 function getAggregatedScore(parentName) {
   const entries = Object.values(loadScores()).filter(e => e.parent === parentName);
@@ -1518,7 +1518,7 @@ function savePlan() {
     }));
     ['btnSavePlan', 'btnSavePlanBottom'].forEach(id => {
       const btn = document.getElementById(id);
-      if (btn) { btn.textContent = '✓ Gespeichert'; btn.disabled = true; setTimeout(() => { btn.textContent = '💾 Plan speichern'; btn.disabled = false; }, 2000); }
+      if (btn) { btn.textContent = '✓ Saved'; btn.disabled = true; setTimeout(() => { btn.textContent = '💾 Save plan'; btn.disabled = false; }, 2000); }
     });
   } catch(e) {}
 }
@@ -1540,7 +1540,7 @@ function renderSavedPlanCard() {
   if (!saved) {
     if (ST._deletedPlanBackup) {
       el.innerHTML = `<div class="saved-plan-undo">
-        Plan gelöscht. <button onclick="undoDeletePlan()" class="saved-plan-undo-btn">Wiederherstellen →</button>
+        Plan deleted. <button onclick="undoDeletePlan()" class="saved-plan-undo-btn">Restore →</button>
       </div>`;
     } else {
       el.innerHTML = '';
@@ -1553,11 +1553,11 @@ function renderSavedPlanCard() {
   el.innerHTML = `<div class="draft-card" onclick="resumeSavedPlan()">
     <div class="draft-ico">📋</div>
     <div class="draft-info">
-      <div class="draft-badge">Gespeicherter Plan</div>
+      <div class="draft-badge">Saved Plan</div>
       <div class="draft-topic">${esc(name)}</div>
-      <div class="draft-meta">${examStr} · ${days} Tage · ${total} Themen · ${ago}</div>
+      <div class="draft-meta">${examStr} · ${days} days · ${total} topics · ${ago}</div>
     </div>
-    <button class="draft-del" onclick="event.stopPropagation();softDeletePlan()" title="Löschen">✕</button>
+    <button class="draft-del" onclick="event.stopPropagation();softDeletePlan()" title="Delete">✕</button>
     <div class="draft-arr">→</div>
   </div>`;
 }
@@ -1964,7 +1964,7 @@ async function submitSRAnswer() {
   const fbEl = document.getElementById('srFeedbackWrap');
   fbEl.innerHTML = `<div class="schw-load"><div class="typ" style="justify-content:center;margin-bottom:.5rem"><span></span><span></span><span></span></div>Evaluating...</div>`;
   ta.closest('.f').querySelector('button').disabled = true;
-  const referenz = q.antwort ? `Idealantwort (Referenz): ${q.antwort}` : `Thema: ${q.thema}`;
+  const referenz = q.antwort ? `Ideal answer (reference): ${q.antwort}` : `Topic: ${q.thema}`;
   const sys = `You are a learning coach. Evaluate the student's answer. Respond ONLY with JSON: {"bewertung":7,"feedback":"What was good / what is missing","verbesserte_version":"..."} Rating 1–10.`;
   try {
     const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
@@ -3032,7 +3032,7 @@ function renderMarkmap(wrapperId, rawJson) {
 function buildRadialMindmap(data, wrapperId) {
   if (!window.MM_POS) window.MM_POS = {};
   window.MM_POS[wrapperId] = {};
-  const center = data.zentrum || 'Thema';
+  const center = data.zentrum || 'Topic';
   const branches = data.aste || [];
   const W = 720, H = 480, cx = W/2, cy = H/2;
   const R1 = 112, R2 = 228;
@@ -3133,7 +3133,7 @@ function mmShowDetail(wrapperId, titel, kern, erkl, bsp) {
   panel.style.display = 'block';
   panel.innerHTML = `
     <button class="mm-detail-close" onclick="this.parentElement.style.display='none'">✕</button>
-    <span class="mm-detail-lbl">Begriff</span>
+    <span class="mm-detail-lbl">Concept</span>
     <div class="mm-detail-title">${esc(titel)}</div>
     <span class="mm-detail-lbl">Core</span>
     <div class="mm-detail-body">${esc(kern)}</div>
@@ -3188,7 +3188,7 @@ function orgAppendNode(wrapperId, idx) {
   const pfeilLabel = nextPfeil && typeof nextPfeil === 'object' ? nextPfeil.label : '';
 
   const badgeClass = t === 'entscheidung' ? 'entscheidung' : t === 'ergebnis' ? 'ergebnis' : 'prozess';
-  const badgeLabel = t === 'entscheidung' ? 'Entscheidung' : t === 'ergebnis' ? 'Ergebnis' : 'Prozess';
+  const badgeLabel = t === 'entscheidung' ? 'Decision' : t === 'ergebnis' ? 'Result' : 'Process';
   const numClass   = t === 'entscheidung' ? 'pru' : t === 'ergebnis' ? 'str' : '';
 
   const nodeId = `${wrapperId}-node-${idx}`;
@@ -3722,7 +3722,7 @@ Rating 1–10. In English.`;
     const json = JSON.parse(data.content[0].text.match(/\{[\s\S]*\}/)[0]);
     const score = Math.min(10, Math.max(1, json.bewertung || 5));
     const scoreColor = score >= 7 ? 'var(--accent)' : score >= 5 ? '#E8A020' : 'var(--red)';
-    recordSessionTask('Generate Example', ST.bausteinFocusTopic || ST.topic || 'Beispiel', score);
+    recordSessionTask('Generate Example', ST.bausteinFocusTopic || ST.topic || 'Example', score);
     const recallDiv = bub ? bub.querySelector('[id^="lr-"]') : null;
     const recallId = recallDiv ? recallDiv.id : null;
     fbEl.innerHTML = `
@@ -4189,7 +4189,7 @@ function mmStartPhase3(mmId) {
   if (verbindungen.length === 0) {
     pc.innerHTML = `
       <div style="font-size:.65rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:.65rem">Phase 3 — Cross-connections</div>
-      <div style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem">Keine Querverbindungen vorhanden.</div>
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem">No cross-connections available.</div>
       <div id="${mmId}-lernen-area"></div>`;
     mmShowLernenBtn(mmId);
     return;
@@ -4396,7 +4396,7 @@ function mmVerbSkip(mmId, idx) {
   const wrap = document.getElementById(mmId);
   if (!wrap) return;
   const v = wrap._mmData && wrap._mmData.verbindungen && wrap._mmData.verbindungen[idx];
-  if (v) recordSessionTask('Querverbindung', `${v.von} → ${v.zu}`, 0);
+  if (v) recordSessionTask('Cross-connection', `${v.von} → ${v.zu}`, 0);
   mmVerbCollapseCard(mmId, idx, v ? `${v.von} ${v.label} ${v.zu} — skipped` : '—');
   wrap._mmVerbIdx = (wrap._mmVerbIdx || 0) + 1;
   mmVerbRenderCard(mmId);
@@ -4480,7 +4480,7 @@ function mmVerbRenderFeedback(mmId, idx, attempt, data) {
   const wrap = document.getElementById(mmId);
   if (wrap) {
     const v = wrap._mmData && wrap._mmData.verbindungen && wrap._mmData.verbindungen[idx];
-    if (v) recordSessionTask('Querverbindung', `${v.von} → ${v.zu}`, score);
+    if (v) recordSessionTask('Cross-connection', `${v.von} → ${v.zu}`, score);
   }
   const sc = score >= 8 ? 'rs-high' : score >= 5 ? 'rs-mid' : 'rs-low';
   // Save best summary for collapse
@@ -4700,7 +4700,7 @@ function orgReihPickChip(rId, stepIdx) {
       const total = schritte.length;
       const errors = bub._orgReihenErrors || 0;
       const reihScore = Math.max(0, 10 - (errors / Math.max(total, 1)) * 10);
-      recordSessionTask('Organizer Reihenfolge', bub._orgData?.titel || 'Reihenfolge', reihScore);
+      recordSessionTask('Organizer Sequence', bub._orgData?.titel || 'Sequence', reihScore);
       setTimeout(() => startOrgSchrittRecall(bub), 1300);
     }
   } else {
@@ -5121,7 +5121,7 @@ function orgRestartFlow(bub, anders) {
 async function orgRegenerateAsync(bub) {
   const schritte = (bub._orgData && bub._orgData.schritte) || [];
   if (!schritte.length) return;
-  const stepsDesc = schritte.map((s, i) => `Schritt ${i+1} "${s.label}": ${s.kern || s.erklaerung || ''}`).join('\n');
+  const stepsDesc = schritte.map((s, i) => `Step ${i+1} "${s.label}": ${s.kern || s.erklaerung || ''}`).join('\n');
   const sys = `You are a learning coach. Rephrase the core statements of the following process steps using completely different words, different metaphors and a different explanatory approach — the content remains identical, only the language changes.
 Respond ONLY with JSON (no text before/after):
 {"schritte":[{"kern":"new formulation"},{"kern":"new formulation"},...]}
@@ -5318,7 +5318,7 @@ function mmZuordAssign(zId, branchIdx) {
       const total = bub._zuordNodes.length;
       const errors = bub._zuordErrors || 0;
       const zuordScore = Math.max(0, 10 - (errors / Math.max(total, 1)) * 10);
-      recordSessionTask('Mindmap Assignment', bub._mmData?.zentrum || 'Zuordnung', zuordScore);
+      recordSessionTask('Mindmap Assignment', bub._mmData?.zentrum || 'Assignment', zuordScore);
       setTimeout(() => startMmBegriffQuiz(bub), 1200);
     }
   } else {
@@ -5712,7 +5712,7 @@ function mmVstFinalScore(vstId, bub) {
   const knotenScore = branchScores.length > 0
     ? branchScores.reduce((s, v) => s + v, 0) / branchScores.length
     : 10;
-  recordSessionTask('Knoten-Recall', bub._mmData?.zentrum || 'Knoten', knotenScore);
+  recordSessionTask('Node Recall', bub._mmData?.zentrum || 'Node', knotenScore);
 }
 
 function addUser(text) {
@@ -5787,13 +5787,13 @@ function updateDays() {
   badge.style.display = 'flex';
   document.getElementById('daysNum').textContent = Math.max(0, days);
   if (days <= 3) {
-    document.getElementById('daysLbl').textContent = '⚠️ Nur noch ' + days + ' Tag' + (days !== 1 ? 'e' : '') + ' ';
+    document.getElementById('daysLbl').textContent = '⚠️ Only ' + days + ' day' + (days !== 1 ? 's' : '') + ' left ';
     badge.className = 'dbadge urg';
   } else if (days <= 7) {
-    document.getElementById('daysLbl').textContent = 'Tage — diese Woche ';
+    document.getElementById('daysLbl').textContent = 'days — this week ';
     badge.className = 'dbadge urg';
   } else {
-    document.getElementById('daysLbl').textContent = 'Tage ';
+    document.getElementById('daysLbl').textContent = 'days ';
     badge.className = 'dbadge';
   }
 }
@@ -5906,7 +5906,7 @@ function renderPlan(plan, name, examStr, days) {
 
   let h = `<div class="plan-head">
     <div class="plan-title">${esc(name)}</div>
-    <div class="plan-meta">${examStr} · ${days} Tage · ~${plan.empfohleneStunden}h · ${plan.gesamtthemen} Themen</div>
+    <div class="plan-meta">${examStr} · ${days} days · ~${plan.empfohleneStunden}h · ${plan.gesamtthemen} topics</div>
     <div class="plan-sum">${esc(plan.zusammenfassung)}</div>
   </div>`;
 
@@ -5966,15 +5966,15 @@ function showPrioOverview(plan, name, examStr, days) {
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.4rem">
       <div>
         <div class="plan-title">${esc(name)}</div>
-        <div class="plan-meta">${examStr} · ${days} Tage · ~${plan.empfohleneStunden}h · ${plan.gesamtthemen} Themen</div>
+        <div class="plan-meta">${examStr} · ${days} days · ~${plan.empfohleneStunden}h · ${plan.gesamtthemen} topics</div>
       </div>
-      <button class="btn bg" id="btnSavePlan" onclick="savePlan()" style="font-size:.72rem;padding:.38rem .85rem;white-space:nowrap;flex-shrink:0">💾 Speichern</button>
+      <button class="btn bg" id="btnSavePlan" onclick="savePlan()" style="font-size:.72rem;padding:.38rem .85rem;white-space:nowrap;flex-shrink:0">💾 Save</button>
     </div>`;
 
   const COLS = [
-    { key: 'hoch',    label: 'Priorität Hoch',    dot: '#C4533A' },
-    { key: 'mittel',  label: 'Priorität Mittel',   dot: '#C8A020' },
-    { key: 'niedrig', label: 'Priorität Niedrig',  dot: '#4A9A5A' },
+    { key: 'hoch',    label: 'High Priority',    dot: '#C4533A' },
+    { key: 'mittel',  label: 'Medium Priority',   dot: '#C8A020' },
+    { key: 'niedrig', label: 'Low Priority',  dot: '#4A9A5A' },
   ];
 
   ST._prioGroups = groups;
@@ -5988,7 +5988,7 @@ function showPrioOverview(plan, name, examStr, days) {
 }
 
 const PRIO_DOTS = { hoch: '#C4533A', mittel: '#C8A020', niedrig: '#4A9A5A' };
-const PRIO_LABELS = { hoch: 'Hoch', mittel: 'Mittel', niedrig: 'Niedrig' };
+const PRIO_LABELS = { hoch: 'High', mittel: 'Medium', niedrig: 'Low' };
 
 function truncW(text, n) {
   if (!text) return '';
@@ -6027,13 +6027,13 @@ function renderPrioGrid() {
                   <button class="prio-move-btn" onclick="movePrioTopic(${idx},'${p}')">
                     <span class="prio-dot" style="background:${PRIO_DOTS[p]};width:7px;height:7px"></span>${PRIO_LABELS[p]}
                   </button>`).join('')}
-                <button class="prio-del-btn" onclick="removePrioTopic(${idx})">× Entfernen</button>
-                <button class="prio-tile-lernen" onclick="openBaustein(${idx})">Lernen →</button>
+                <button class="prio-del-btn" onclick="removePrioTopic(${idx})">× Remove</button>
+                <button class="prio-tile-lernen" onclick="openBaustein(${idx})">Learn →</button>
               </div>
             </div>
           </div>`;
         }).join('')
-      : `<span class="prio-empty">Keine Themen</span>`;
+      : `<span class="prio-empty">No topics</span>`;
     return `
       <div class="prio-col${isCollapsed ? ' collapsed' : ''}">
         <div class="prio-col-head" onclick="togglePrioCol('${col.key}')">
@@ -6141,7 +6141,7 @@ Apply the change and return the updated plan as valid JSON in a code block. Keep
     document.getElementById('prioAdjustInput').value = '';
     showPrioOverview(json, name, examStr, days);
   } catch (e) {
-    alert('Fehler beim Anpassen: ' + e.message);
+    alert('Error adjusting: ' + e.message);
   } finally {
     btn.disabled = false;
     loadEl.style.display = 'none';
@@ -6588,7 +6588,7 @@ Respond ONLY with this JSON (no text before/after):
   ],
   "spacedRepetition": {
     "fragen":["...","..."],
-    "empfehlung":"z.B. Morgen, in 3 Tagen, in 7 Tagen"
+    "empfehlung":"e.g. Tomorrow, in 3 days, in 7 days"
   }
 }
 Rules: 3–4 quickCheck, 2 activeRecall, 1–2 examSimulation, 2 spacedRepetition questions. All in English. Increasing difficulty. Focus on exam success.`;
@@ -6737,12 +6737,12 @@ function renderTest(data) {
       <span class="test-sec-sub">Automatically saved — due at the right time</span>
     </div>
     <div class="spr-card">
-      <div style="font-size:.75rem;font-weight:600;color:var(--pru-tx);margin-bottom:.6rem">Wiederholungsfragen</div>`;
+      <div style="font-size:.75rem;font-weight:600;color:var(--pru-tx);margin-bottom:.6rem">Review questions</div>`;
   (sr.fragen || []).forEach((f, i) => {
     const srId = getSRIdForFrage(f, thema);
     h += `<div class="spr-q-row">
       <div class="spr-q-text">${esc(f)}</div>
-      <button class="spr-merken-btn added" id="spr-btn-${i}">✓ Gespeichert</button>
+      <button class="spr-merken-btn added" id="spr-btn-${i}">✓ Saved</button>
     </div>`;
   });
   h += `</div></div>`;
@@ -7130,7 +7130,7 @@ async function loadSchwaechen() {
   out.innerHTML = `<div class="schw-load"><div class="typ" style="justify-content:center;margin-bottom:.5rem"><span></span><span></span><span></span></div>AI analyzing your results...</div>`;
 
   const t = ST.currentTestTopic;
-  const topicName = t ? t.name : ST.bausteinFocusTopic || 'Unbekanntes Thema';
+  const topicName = t ? t.name : ST.bausteinFocusTopic || 'Unknown topic';
   const topicTags = (t && t.tags || []).join(', ');
 
   // Ergebnisse zusammenbauen
@@ -7646,7 +7646,7 @@ function renderGezieltOrganizer(container, data) {
 // SESSION ANALYSIS
 // ═══════════════════════════════
 function startSessionAnalysis() {
-  const topic = ST.bausteinFocusTopic || 'Unbekanntes Thema';
+  const topic = ST.bausteinFocusTopic || 'Unknown topic';
   document.getElementById('saHeader').innerHTML =
     `<span class="bh-name">${esc(topic)}</span>
      <span class="bh-desc" style="color:var(--muted);font-size:.78rem">Evaluation of your learning session</span>`;
@@ -7833,9 +7833,9 @@ function saStartTest() {
 // BAUSTEIN
 // ═══════════════════════════════
 const BPRIO = {
-  hoch:    { cls: 'ph', lbl: '❗ Hoch',    bg: 'var(--red-s)',    tx: 'var(--red)' },
-  mittel:  { cls: 'pm', lbl: '◆ Mittel',  bg: 'var(--erk-bg)',   tx: 'var(--erk-tx)' },
-  niedrig: { cls: 'pl', lbl: '○ Niedrig', bg: 'var(--accent-s)', tx: 'var(--accent)' }
+  hoch:    { cls: 'ph', lbl: '❗ High',    bg: 'var(--red-s)',    tx: 'var(--red)' },
+  mittel:  { cls: 'pm', lbl: '◆ Medium',  bg: 'var(--erk-bg)',   tx: 'var(--erk-tx)' },
+  niedrig: { cls: 'pl', lbl: '○ Low', bg: 'var(--accent-s)', tx: 'var(--accent)' }
 };
 
 function bausteinHeaderHTML(id) {
