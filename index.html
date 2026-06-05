@@ -3369,6 +3369,12 @@ Analyze each main point of the student${isQuestion ? "'s answer" : ''}. Rating 1
     bub._recallScore = score;
     recordSessionTask('Text-Recall', ST.bausteinFocusTopic || ST.topic || 'Recall', score);
 
+    // Practice mode: walk through 3 questions before continuing to the deepening phases
+    const qNum = bub._qNum || 1;
+    const nextBtnHtml = (isQuestion && qNum < 3)
+      ? `<button class="lernen-submit" id="${recallId}-next" onclick="nextPracticeQuestion('${recallId}')">Next Question →</button>`
+      : `<button class="lernen-submit" onclick="startElaborationPhase('${recallId}')">Continue: Elaboration →</button>`;
+
     fbEl.innerHTML = `
       <div class="lernen-fb">
         <div class="lernen-fb-score">
@@ -3381,7 +3387,7 @@ Analyze each main point of the student${isQuestion ? "'s answer" : ''}. Rating 1
         <div class="lernen-original-lbl">${isQuestion ? 'Question' : 'Original Text'}</div>
         <div class="lernen-original">${bub._originalContent ? bub._originalContent.replace(/<button[^>]*>.*?<\/button>/gs,'') : esc(originalText)}</div>
         <div style="margin-top:.85rem">
-          <button class="lernen-submit" onclick="startElaborationPhase('${recallId}')">Continue: Elaboration →</button>
+          ${nextBtnHtml}
         </div>
       </div>`;
 
@@ -3390,6 +3396,54 @@ Analyze each main point of the student${isQuestion ? "'s answer" : ''}. Rating 1
   } catch(e) {
     fbEl.innerHTML = `<div style="color:var(--red);font-size:.8rem">Error: ${esc(e.message)}</div>`;
     if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Try again →'; }
+  }
+}
+
+// Practice mode: generate the next question (Q2/Q3) on demand, grounded in the material
+async function nextPracticeQuestion(recallId) {
+  const recallDiv = document.getElementById(recallId);
+  const bub = recallDiv ? recallDiv.closest('.bub') : null;
+  if (!bub) return;
+  const qNum = (bub._qNum || 1) + 1;
+
+  const btn = document.getElementById(`${recallId}-next`);
+  if (btn) { btn.disabled = true; btn.textContent = 'Loading next question…'; }
+
+  const level = qNum >= 3
+    ? 'Make it integrative: have the student connect two concepts, or reconstruct a process/sequence and explain why the order matters.'
+    : 'Make it understanding-level: have the student explain WHY or HOW something works.';
+  const sys = `You are an exam coach quizzing a student on the material in this conversation. Output EXACTLY ONE new practice question and NOTHING else — no intro, no feedback, no answer. It must differ from earlier questions and stay on the same topic. ${level} Start the question with "Q${qNum}: " and wrap ONLY the 1-2 key technical terms in **double asterisks** — never the whole question. In English.`;
+  const ask = `Give me practice question Q${qNum} of 3 now.`;
+
+  try {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+      method: 'POST',
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 400, system: sys, messages: ST.msgs.concat([{ role: 'user', content: ask }]) })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
+    const data = await res.json();
+    const qText = data.content.map(b => b.text || '').join('').trim();
+    if (!qText) throw new Error('No question returned');
+
+    // keep the conversation alternating so the next click stays valid
+    ST.msgs.push({ role: 'user', content: ask });
+    ST.msgs.push({ role: 'assistant', content: qText });
+
+    bub._qNum = qNum;
+    bub._originalText = qText;
+    bub._originalContent = md2h(qText);
+    bub._versuche = 0;
+    bub._isQuestion = true;
+    startRecallPhase(bub, true);
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Next Question →'; }
+    const fbEl = document.getElementById(`${recallId}-fb`);
+    if (fbEl) {
+      const errDiv = document.createElement('div');
+      errDiv.style.cssText = 'color:var(--red);font-size:.8rem;margin-top:.5rem';
+      errDiv.textContent = 'Could not load next question: ' + e.message;
+      fbEl.appendChild(errDiv);
+    }
   }
 }
 
@@ -3534,9 +3588,10 @@ function startRecallPhase(bub, showQuestion) {
   let promptText = 'Recall in your own words what you understood about this topic. Use these terms as orientation:';
   let placeholder = 'Write down everything you still remember...';
   if (showQuestion) {
+    if (!bub._qNum) bub._qNum = 1;
     const qHtml = (bub._originalContent || '').replace(/<button[^>]*>[\s\S]*?<\/button>/g, '').trim();
     questionHtml = `<div class="lernen-original" style="margin-bottom:.75rem">${qHtml || esc(text)}</div>`;
-    phaseLabel = 'Practice — Your Answer';
+    phaseLabel = `Practice — Question ${bub._qNum} of 3`;
     promptText = 'Answer this question in your own words:';
     placeholder = 'Write your answer...';
     bub._isQuestion = true;
