@@ -2673,7 +2673,7 @@ function pickFmt(el) {
 // ═══════════════════════════════
 const MPROMPT = {
   erklaere: 'MODE: Explain to Me — Explain clearly with 1-2 concrete everyday analogies.',
-  pruefe:   'MODE: Practice — Progressive difficulty, one question at a time. Start immediately with Q1, no introduction. Q1 = pure recall (define or name something). Q2 = understanding (explain why/how). Q3 = integrative: ask the student to either (a) explain a connection between two concepts from this topic ("How does X relate to Y and what follows from that?") OR (b) reconstruct a process/sequence ("Describe the steps from X to Z and explain why the order matters"). Choose whichever fits the topic better. After each answer: 1 sentence of feedback. If the answer is wrong or incomplete, do NOT move to the next question — instead ask one targeted follow-up drilling into exactly the gap, then proceed. Never show more than one question at a time.',
+  pruefe:   'MODE: Practice — Progressive difficulty, one question at a time. Start immediately with Q1, no introduction. Q1 = pure recall (define or name something). Q2 = understanding (explain why/how). Q3 = integrative: ask the student to either (a) explain a connection between two concepts from this topic ("How does X relate to Y and what follows from that?") OR (b) reconstruct a process/sequence ("Describe the steps from X to Z and explain why the order matters"). Choose whichever fits the topic better. After each answer: 1 sentence of feedback. If the answer is wrong or incomplete, do NOT move to the next question — instead ask one targeted follow-up drilling into exactly the gap, then proceed. Never show more than one question at a time. When asking a question, wrap ONLY the 1-2 key technical terms inside the question in **double asterisks** — NEVER put the entire question in asterisks.',
   struktur: 'MODE: Organize — Clear overview, tables when appropriate.',
   vernetze: 'MODE: Connect — Brief explanation, then 3 explicit connections (🔗 1/2/3).',
   story:    'MODE: Tell Me a Story — Story with concrete characters, then 3 key points.'
@@ -3318,7 +3318,11 @@ async function submitLernenRecall(recallId) {
   bub._versuche++;
   const versuch = bub._versuche;
 
-  const sys = `You are a learning assistant. Evaluate how well the student reproduced a text from memory.
+  const isQuestion = bub._isQuestion;
+  const evalIntro = isQuestion
+    ? `You are a learning coach. Evaluate the student's ANSWER to the question below — judge correctness and completeness, not memorization.`
+    : `You are a learning assistant. Evaluate how well the student reproduced a text from memory.`;
+  const sys = `${evalIntro}
 Respond ONLY with this JSON (no text before/after):
 {
   "bewertung": 7,
@@ -3330,14 +3334,17 @@ Respond ONLY with this JSON (no text before/after):
   ]
 }
 status is EXACTLY ONE of: richtig | unvollstaendig | falsch
-Analyze each main point of the student. Rating 1–10. In English.`;
+Analyze each main point of the student${isQuestion ? "'s answer" : ''}. Rating 1–10. In English.`;
+  const userMsg = isQuestion
+    ? `Question:\n${originalText}\n\nStudent's answer:\n${answer}`
+    : `Original text:\n${originalText}\n\nStudent's reproduction:\n${answer}`;
 
   try {
     const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 800, system: sys, messages: [{
         role: 'user',
-        content: `Original text:\n${originalText}\n\nStudent's reproduction:\n${answer}`
+        content: userMsg
       }]})
     });
     const data = await res.json();
@@ -3371,7 +3378,7 @@ Analyze each main point of the student. Rating 1–10. In English.`;
         <div class="lernen-fb-text">${esc(json.feedback)}</div>
         <div class="lernen-original-lbl">Your Answer — Analysis</div>
         <div class="lernen-original" style="margin-bottom:.75rem">${annotated}</div>
-        <div class="lernen-original-lbl">Original Text</div>
+        <div class="lernen-original-lbl">${isQuestion ? 'Question' : 'Original Text'}</div>
         <div class="lernen-original">${bub._originalContent ? bub._originalContent.replace(/<button[^>]*>.*?<\/button>/gs,'') : esc(originalText)}</div>
         <div style="margin-top:.85rem">
           <button class="lernen-submit" onclick="startElaborationPhase('${recallId}')">Continue: Elaboration →</button>
@@ -3409,7 +3416,7 @@ function startLernenFlow(btn, text, bub, h) {
   if (!isPruefe && begriffe.length >= 2) {
     startLueckentext(bub, begriffe, h);
   } else {
-    startRecallPhase(bub);
+    startRecallPhase(bub, isPruefe);
   }
 }
 
@@ -3502,7 +3509,7 @@ function lueckenWeiter(lueckenId) {
   startRecallPhase(bub);
 }
 
-function startRecallPhase(bub) {
+function startRecallPhase(bub, showQuestion) {
   const text = bub._originalText || '';
   const begriffe = [];
   const matches = text.matchAll(/\*\*(.+?)\*\*/g);
@@ -3521,16 +3528,31 @@ function startRecallPhase(bub) {
   const chipsHtml = begriffe.length
     ? `<div class="lernen-begriffe">${begriffe.map(b => `<div class="lernen-chip">${esc(b)}</div>`).join('')}</div>`
     : '';
+
+  // Practice mode (pruefe): keep the original question visible and frame it as answering THAT question
+  let questionHtml = '', phaseLabel = 'Phase 2 — Recall';
+  let promptText = 'Recall in your own words what you understood about this topic. Use these terms as orientation:';
+  let placeholder = 'Write down everything you still remember...';
+  if (showQuestion) {
+    const qHtml = (bub._originalContent || '').replace(/<button[^>]*>[\s\S]*?<\/button>/g, '').trim();
+    questionHtml = `<div class="lernen-original" style="margin-bottom:.75rem">${qHtml || esc(text)}</div>`;
+    phaseLabel = 'Practice — Your Answer';
+    promptText = 'Answer this question in your own words:';
+    placeholder = 'Write your answer...';
+    bub._isQuestion = true;
+  }
+
   const recallDiv = document.createElement('div');
   recallDiv.className = 'lernen-recall-wrap';
   recallDiv.id = recallId;
   recallDiv.innerHTML = `
     <div class="mm-quiz-header" style="margin-bottom:.6rem">
-      <span class="mm-quiz-lbl">Phase 2 — Recall</span>
+      <span class="mm-quiz-lbl">${phaseLabel}</span>
     </div>
-    <div style="font-size:.75rem;color:var(--muted);margin-bottom:.6rem">Recall in your own words what you understood about this topic. Use these terms as orientation:</div>
-    ${chipsHtml}
-    <textarea class="lernen-ta" id="${recallId}-ta" placeholder="Write down everything you still remember..."></textarea>
+    ${questionHtml}
+    <div style="font-size:.75rem;color:var(--muted);margin-bottom:.6rem">${promptText}</div>
+    ${showQuestion ? '' : chipsHtml}
+    <textarea class="lernen-ta" id="${recallId}-ta" placeholder="${placeholder}"></textarea>
     <div class="lernen-actions">
       <button class="lernen-submit" id="${recallId}-btn" onclick="submitLernenRecall('${recallId}')">Evaluate →</button>
     </div>
@@ -8130,9 +8152,12 @@ function md2h(t) {
   // Section headers like **Kern:** **Erklärung:** **Beispiel:** → styled block
   t = t.replace(/\*\*(Kern|Erklärung|Beispiel|Zusammenfassung|Hinweis|Core|Explanation|Example|Summary|Note):\*\*/g,
     '<span style="display:block;font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-top:1.1rem;margin-bottom:.2rem">$1</span>');
-  // Remaining **bold** → colored highlight
-  t = t.replace(/\*\*(.+?)\*\*/g,
-    '<strong style="color:var(--accent-m);background:var(--accent-s);padding:.05em .3em;border-radius:4px;font-weight:600">$1</strong>');
+  // Remaining **bold** → colored highlight (but only for short key terms;
+  // a long span like a whole bolded question stays plain bold, no green block)
+  t = t.replace(/\*\*(.+?)\*\*/g, (_, inner) =>
+    inner.length > 45
+      ? `<strong style="font-weight:600">${inner}</strong>`
+      : `<strong style="color:var(--accent-m);background:var(--accent-s);padding:.05em .3em;border-radius:4px;font-weight:600">${inner}</strong>`);
   t = t.replace(/\*(.+?)\*/g,'<em>$1</em>');
   t = t.replace(/`(.+?)`/g,'<code style="background:var(--border);padding:.1em .3em;border-radius:4px;font-size:.85em">$1</code>');
   t = t.replace(/^#{1,3}\s+(.+)$/gm,'<strong style="font-family:var(--serif);font-size:1.05em;display:block;margin-top:.8rem">$1</strong>');
