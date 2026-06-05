@@ -189,6 +189,27 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 
 /* multi-file list */
 .flist{display:flex;flex-direction:column;gap:.45rem;margin-top:.7rem}
+
+/* ── PHOTO DROPZONE ── */
+.dz-photo{border:2px dashed #C8A96E;border-radius:14px;background:#FFFDF8;padding:2.2rem 1.5rem;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+.dz-photo:hover,.dz-photo.drag{border-color:#A07840;background:#FDF5E6}
+.dz-photo input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.photo-thumb-list{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:.75rem}
+.photo-thumb{position:relative;width:72px;height:72px;border-radius:9px;overflow:hidden;border:1.5px solid var(--border);flex-shrink:0}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-thumb-del{position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.55);border:none;color:#fff;font-size:.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0}
+.photo-thumb-del:hover{background:var(--red)}
+.photo-merge-bar{display:flex;align-items:center;justify-content:space-between;margin-top:.75rem;padding:.65rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;gap:.6rem;flex-wrap:wrap}
+.photo-merge-info{font-size:.75rem;color:var(--muted);flex:1}
+.photo-merge-info strong{color:var(--text)}
+.btn-merge{background:#A07840;color:#fff;border:none;border-radius:8px;padding:.52rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;font-family:var(--sans);transition:background .15s;white-space:nowrap}
+.btn-merge:hover:not(:disabled){background:#7A5A2A}
+.btn-merge:disabled{opacity:.4;cursor:not-allowed}
+.photo-done-bar{display:flex;align-items:center;gap:.6rem;margin-top:.7rem;padding:.65rem 1rem;background:#EDF5EE;border:1px solid var(--str-bd);border-radius:10px}
+.photo-done-ico{font-size:1.1rem;flex-shrink:0}
+.photo-done-info{flex:1;font-size:.76rem;color:var(--str-tx);font-weight:500}
+.photo-done-del{background:none;border:none;color:var(--muted2);font-size:.95rem;cursor:pointer;flex-shrink:0;transition:color .14s;padding:0}
+.photo-done-del:hover{color:var(--red)}
 .fitem{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;animation:fu .2s ease}
 .fitem-ico{font-size:1.25rem;flex-shrink:0}
 .fitem-info{flex:1;min-width:0}
@@ -926,6 +947,8 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <div class="navlinks">
     <button class="nl on" id="nPlan" onclick="goPlaner()">📅 Exam Planner</button>
 
+    <button class="nl" id="nFeedback" onclick="window.open('https://forms.gle/wZ2YNpBFRfYa3Vcm8', '_blank')">Give Feedback</button>
+
     <button class="nl" id="nSettings" onclick="editSetup()">⚙️</button>
   </div>
 </nav>
@@ -979,6 +1002,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 
   <div class="f">
     <span class="lbl">Files <span id="fileCountLbl" style="color:var(--accent);font-weight:600"></span></span>
+    <div class="dz-s" style="margin:.4rem 0 .5rem">🔒 Please avoid uploading materials with personal information (names, addresses, photos, grades).</div>
     <div class="dz" id="dz1" ondragover="onDrag(event,'dz1',true)" ondragleave="onDrag(event,'dz1',false)" ondrop="onDropMulti(event,'sess')">
       <input type="file" id="f1" accept=".pdf,.png,.jpg,.jpeg,.webp" multiple onchange="onFilesChosen(this.files,'sess')">
       <span class="dz-ico">📎</span>
@@ -1129,14 +1153,28 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 
   <div class="f">
     <span class="lbl">Upload Material <span id="planFileCountLbl" style="color:var(--accent);font-weight:600"></span></span>
+    <div class="dz-s" style="margin:.4rem 0 .5rem">🔒 Please avoid uploading materials with personal information (names, addresses, photos, grades).</div>
     <div class="dz" id="dz2" ondragover="onDrag(event,'dz2',true)" ondragleave="onDrag(event,'dz2',false)" ondrop="onDropMulti(event,'plan')">
-      <input type="file" id="f2" accept=".pdf,.png,.jpg,.jpeg,.webp" multiple onchange="onFilesChosen(this.files,'plan')">
+      <input type="file" id="f2" accept=".pdf" multiple onchange="onFilesChosen(this.files,'plan')">
       <span class="dz-ico">📎</span>
       <div class="dz-t">Drop script, notes, or textbook</div>
-      <div class="dz-s">PDF, PNG, JPG · multiple files allowed · max. 50 MB · max. 100 pages per PDF</div>
+      <div class="dz-s">PDF · multiple files allowed · max. 50 MB · max. 100 pages per PDF</div>
       <div class="dz-s" style="margin-top:.35rem;color:var(--muted)">💡 PowerPoint or Word? Export as PDF first.</div>
     </div>
     <div class="flist" id="flist2"></div>
+  </div>
+
+  <div class="f" style="margin-top:.2rem">
+    <span class="lbl">📷 Photos &amp; Worksheets <span id="photoCountLbl" style="color:#A07840;font-weight:600"></span></span>
+    <div class="dz-s" style="margin:.4rem 0 .5rem">Have photos of book pages or handwritten worksheets? Drop them here — they'll be compressed and added as material.</div>
+    <div class="dz-photo" id="dzPhoto" ondragover="onDragPhoto(event,true)" ondragleave="onDragPhoto(event,false)" ondrop="onDropPhoto(event)">
+      <input type="file" id="fPhoto" accept="image/*" multiple onchange="onPhotosChosen(this.files)">
+      <span class="dz-ico">📷</span>
+      <div class="dz-t" style="font-family:var(--serif);font-size:1.05rem;font-weight:500;margin-bottom:.25rem">Drop photos or click</div>
+      <div class="dz-s">JPG, PNG · multiple allowed · auto-compressed</div>
+    </div>
+    <div class="photo-thumb-list" id="photoThumbList"></div>
+    <div id="photoMergeBar" style="display:none"></div>
   </div>
 
   <div class="f">
@@ -1154,11 +1192,11 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 
 <!-- ══════ PRIORITY OVERVIEW ══════ -->
 <div class="sc" id="scPrioOverview">
-  <p class="h1">Your Study<em> Plan</em></p>
+  <p class="h1">Your study<em>plan</em></p>
   <div id="prioHead"></div>
   <div class="prio-grid" id="prioGrid"></div>
   <div style="margin-top:1.4rem;text-align:center">
-    <button class="btn bp" id="btnSavePlanBottom" onclick="savePlan()" style="padding:.72rem 2rem;font-size:.88rem">💾 Save plan</button>
+    <button class="btn bp" id="btnSavePlanBottom" onclick="savePlan()" style="padding:.72rem 2rem;font-size:.88rem">💾 Plan speichern</button>
   </div>
 </div>
 
@@ -1346,8 +1384,58 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 
 <script>
 // ═══════════════════════════════
-// API KEY — wird in localStorage gespeichert
+// API CLIENT — Token + Fetch-Wrapper für Rate Limiting
 // ═══════════════════════════════
+const CLIENT_TOKEN = (() => {
+  let t = localStorage.getItem('studyai_client_token');
+  if (!t) {
+    t = 'u_' + Math.random().toString(36).slice(2, 14) + '_' + Date.now().toString(36);
+    localStorage.setItem('studyai_client_token', t);
+  }
+  return t;
+})();
+
+const WORKER_URL = 'learnassistet.leandroprokop.workers.dev';
+
+// Toast für Rate-Limit-Meldungen
+function showRateLimitToast(message) {
+  const existing = document.getElementById('rate-limit-toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.id = 'rate-limit-toast';
+  toast.style.cssText = 'position:fixed;top:20px;right:20px;max-width:360px;background:#C4533A;color:#fff;padding:14px 18px;border-radius:10px;font-family:sans-serif;font-size:14px;box-shadow:0 4px 14px rgba(0,0,0,0.15);z-index:99999;line-height:1.5';
+  toast.innerHTML = '<strong>Limit reached</strong><br>' + message;
+  document.body.appendChild(toast);
+  setTimeout(() => { if (toast.parentNode) toast.remove(); }, 7000);
+}
+
+// Globaler fetch-Wrapper: fügt automatisch Token-Header zu Worker-Calls hinzu
+// und behandelt 429-Rate-Limit-Antworten einheitlich
+const _origFetch = window.fetch;
+window.fetch = async function(url, opts = {}) {
+  if (typeof url === 'string' && url.includes(WORKER_URL)) {
+    opts.headers = Object.assign({}, opts.headers || {}, {
+      'X-Client-Token': CLIENT_TOKEN,
+      'Content-Type': 'application/json',
+    });
+    const res = await _origFetch.call(this, url, opts);
+    if (res.status === 429) {
+      try {
+        const data = await res.clone().json();
+        const msg = data.error || 'You have reached the request limit. Please try again later.';
+        showRateLimitToast(msg);
+        // In Anthropic-kompatibles Error-Format umpacken, damit bestehende
+        // Error-Handler die Message korrekt anzeigen
+        return new Response(
+          JSON.stringify({ error: { message: msg, type: 'rate_limit_error' } }),
+          { status: 429, headers: { 'Content-Type': 'application/json' } }
+        );
+      } catch {}
+    }
+    return res;
+  }
+  return _origFetch.call(this, url, opts);
+};
 
 // ═══════════════════════════════
 // STORAGE
@@ -1386,9 +1474,9 @@ function getReviewStatus(name) {
 }
 function reviewBadgeHtml(status) {
   if (!status) return '';
-  if (status.daysUntil <= 0) return `<span class="rv-badge rv-due">🔁 Review today</span>`;
-  if (status.daysUntil === 1) return `<span class="rv-badge rv-soon">in 1 day</span>`;
-  return `<span class="rv-badge rv-later">in ${status.daysUntil} days</span>`;
+  if (status.daysUntil <= 0) return `<span class="rv-badge rv-due">🔁 Heute wiederholen</span>`;
+  if (status.daysUntil === 1) return `<span class="rv-badge rv-soon">in 1 Tag</span>`;
+  return `<span class="rv-badge rv-later">in ${status.daysUntil} Tagen</span>`;
 }
 function getAggregatedScore(parentName) {
   const entries = Object.values(loadScores()).filter(e => e.parent === parentName);
@@ -1430,7 +1518,7 @@ function savePlan() {
     }));
     ['btnSavePlan', 'btnSavePlanBottom'].forEach(id => {
       const btn = document.getElementById(id);
-      if (btn) { btn.textContent = '✓ Gespeichert'; btn.disabled = true; setTimeout(() => { btn.textContent = '💾 Save plan'; btn.disabled = false; }, 2000); }
+      if (btn) { btn.textContent = '✓ Gespeichert'; btn.disabled = true; setTimeout(() => { btn.textContent = '💾 Plan speichern'; btn.disabled = false; }, 2000); }
     });
   } catch(e) {}
 }
@@ -1465,11 +1553,11 @@ function renderSavedPlanCard() {
   el.innerHTML = `<div class="draft-card" onclick="resumeSavedPlan()">
     <div class="draft-ico">📋</div>
     <div class="draft-info">
-      <div class="draft-badge">Saved Plan</div>
+      <div class="draft-badge">Gespeicherter Plan</div>
       <div class="draft-topic">${esc(name)}</div>
-      <div class="draft-meta">${examStr} · ${days} days · ${total} topics · ${ago}</div>
+      <div class="draft-meta">${examStr} · ${days} Tage · ${total} Themen · ${ago}</div>
     </div>
-    <button class="draft-del" onclick="event.stopPropagation();softDeletePlan()" title="Delete">✕</button>
+    <button class="draft-del" onclick="event.stopPropagation();softDeletePlan()" title="Löschen">✕</button>
     <div class="draft-arr">→</div>
   </div>`;
 }
@@ -1509,6 +1597,8 @@ const ST = {
   msgs: [],
   // planer — array of {b64, type, name, size}
   planFiles: [],
+  photoQueue: [],
+  photoMerged: false,
   currentPlan: null, allTopics: [],
   testBausteinIdx: -1, testMcCorrect: 0, testMcAnswered: 0, testMcTotal: 0, testIsSubtopic: false,
   testRecallData: [], testExamData: [], testMcData: [],
@@ -2126,10 +2216,12 @@ function onDropMulti(e, ctx) {
 }
 
 function onFilesChosen(files, ctx) {
-  const ok = ['application/pdf','image/png','image/jpeg','image/webp'];
-  const MAX = 50 * 1024 * 1024; // 50MB — text extraction removes size bottleneck
+  const okAll  = ['application/pdf','image/png','image/jpeg','image/webp'];
+  const okPlan = ['application/pdf'];
+  const ok = ctx === 'plan' ? okPlan : okAll;
+  const MAX = 50 * 1024 * 1024;
   Array.from(files).forEach(file => {
-    if (!ok.includes(file.type)) { showErr(`${file.name}: Only PDF, PNG, JPG, WEBP.`); return; }
+    if (!ok.includes(file.type)) { showErr(`${file.name}: Only PDF allowed here. Use the photo box below for images.`); return; }
     if (file.size > MAX) { showErr(`${file.name}: Too large — max. 50 MB.`); return; }
     hideErr();
 
@@ -2274,6 +2366,265 @@ function renderFileList(ctx) {
     list.appendChild(add);
   }
 }
+
+// ═══════════════════════════════
+// PHOTO UPLOAD — compress + merge into planFiles
+// ═══════════════════════════════
+ST.photoQueue = []; // [{name, dataUrl, b64, type}]
+ST.photoMerged = false;
+
+function onDragPhoto(e, on) {
+  e.preventDefault();
+  document.getElementById('dzPhoto').classList.toggle('drag', on);
+}
+
+function onDropPhoto(e) {
+  e.preventDefault();
+  onDragPhoto(e, false);
+  if (e.dataTransfer.files.length) onPhotosChosen(e.dataTransfer.files);
+}
+
+function onPhotosChosen(files) {
+  const ok = ['image/jpeg','image/jpg','image/png','image/webp','image/heic','image/heif'];
+  Array.from(files).forEach(file => {
+    const type = file.type || 'image/jpeg';
+    if (!ok.some(t => type.includes(t.split('/')[1])) && !file.name.match(/\.(jpg|jpeg|png|webp|heic|heif)$/i)) {
+      showErr(`${file.name}: Only image files (JPG, PNG, WEBP).`); return;
+    }
+    if (ST.photoQueue.find(p => p.name === file.name)) return; // skip duplicate
+    compressAndQueuePhoto(file);
+  });
+  document.getElementById('fPhoto').value = '';
+}
+
+function compressAndQueuePhoto(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      // Compress: max 1100px on longest side
+      const MAX = 1100;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else        { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+      const b64 = dataUrl.split(',')[1];
+      ST.photoQueue.push({ name: file.name, dataUrl, b64, type: 'image/jpeg' });
+      // If photos were previously merged, reset merge state
+      if (ST.photoMerged) removeMergedPhoto();
+      renderPhotoUI();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeQueuedPhoto(name) {
+  ST.photoQueue = ST.photoQueue.filter(p => p.name !== name);
+  if (ST.photoMerged) removeMergedPhoto();
+  renderPhotoUI();
+}
+
+function removeMergedPhoto() {
+  // Remove the merged photo entry from planFiles
+  ST.planFiles = ST.planFiles.filter(f => f.name !== '__photos_merged__.pdf');
+  ST.photoMerged = false;
+  renderFileList('plan');
+}
+
+function mergePhotosIntoPlan() {
+  if (!ST.photoQueue.length) return;
+  const btn = document.querySelector('.btn-merge');
+  if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
+
+  // Build a simple PDF using raw PDF syntax — one image per page
+  // We use the canvas approach: draw each image onto a standard A4-ish canvas
+  const PAGE_W = 794, PAGE_H = 1123; // approx A4 at 96dpi
+
+  const promises = ST.photoQueue.map(p => new Promise(res => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      // Fit image into page, preserve aspect ratio
+      let iw = img.width, ih = img.height;
+      const scale = Math.min(PAGE_W / iw, PAGE_H / ih, 1);
+      const dw = Math.round(iw * scale), dh = Math.round(ih * scale);
+      canvas.width = PAGE_W; canvas.height = PAGE_H;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, PAGE_W, PAGE_H);
+      const ox = Math.round((PAGE_W - dw) / 2);
+      const oy = Math.round((PAGE_H - dh) / 2);
+      ctx.drawImage(img, ox, oy, dw, dh);
+      res(canvas.toDataURL('image/jpeg', 0.82).split(',')[1]);
+    };
+    img.src = p.dataUrl;
+  }));
+
+  Promise.all(promises).then(pageB64s => {
+    // Build minimal valid PDF with one JPEG image per page
+    const pdfBytes = buildPhotoPDF(pageB64s, PAGE_W, PAGE_H);
+    const b64pdf = btoa(String.fromCharCode(...pdfBytes));
+
+    // Remove old merged entry if exists
+    ST.planFiles = ST.planFiles.filter(f => f.name !== '__photos_merged__.pdf');
+
+    ST.planFiles.push({
+      name: '__photos_merged__.pdf',
+      size: Math.round(pdfBytes.length / 1024),
+      type: 'application/pdf',
+      processing: false,
+      mode: 'image',
+      text: null,
+      b64: b64pdf,
+      pages: pageB64s.length,
+      isPhotoMerge: true
+    });
+    ST.photoMerged = true;
+    renderFileList('plan');
+    renderPhotoUI();
+  });
+}
+
+function buildPhotoPDF(jpegB64Array, pw, ph) {
+  // Minimal PDF builder — one JPEG image per page
+  const enc = s => s.split('').map(c => c.charCodeAt(0));
+  const str = s => enc(s);
+
+  let body = '';
+  const objOffsets = [];
+  let xrefPos = 0;
+
+  // We'll accumulate PDF as a string then convert to bytes at end
+  const parts = [];
+  const push = s => parts.push(s);
+
+  push('%PDF-1.4\n');
+
+  const numPages = jpegB64Array.length;
+  // Object numbering: 1=catalog, 2=pages, 3..=(page+image pairs, 2 objs each)
+  // page i → obj 3+i*2 (page dict), obj 4+i*2 (image XObject)
+  const catalogObj = 1, pagesObj = 2;
+  const pageObjs = jpegB64Array.map((_, i) => 3 + i * 2);
+  const imgObjs  = jpegB64Array.map((_, i) => 4 + i * 2);
+  const totalObjs = 2 + numPages * 2;
+
+  const offsets = {};
+  const getOffset = () => parts.reduce((a, s) => a + s.length, 0);
+
+  // Catalog
+  offsets[catalogObj] = getOffset();
+  push(`${catalogObj} 0 obj\n<< /Type /Catalog /Pages ${pagesObj} 0 R >>\nendobj\n`);
+
+  // Pages
+  offsets[pagesObj] = getOffset();
+  const kidsRef = pageObjs.map(n => `${n} 0 R`).join(' ');
+  push(`${pagesObj} 0 obj\n<< /Type /Pages /Kids [${kidsRef}] /Count ${numPages} >>\nendobj\n`);
+
+  // Each page + image
+  jpegB64Array.forEach((b64, i) => {
+    const imgBytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    const imgLen = imgBytes.length;
+    const pageObj = pageObjs[i];
+    const imgObj  = imgObjs[i];
+
+    // Content stream: draw image scaled to full page
+    const content = `q ${pw} 0 0 ${ph} 0 0 cm /Im${i} Do Q\n`;
+    const contentLen = content.length;
+
+    // Content stream object (inline before page for simplicity — use a temp obj number)
+    const contentObj = totalObjs + 1 + i;
+    offsets[contentObj] = getOffset();
+    push(`${contentObj} 0 obj\n<< /Length ${contentLen} >>\nstream\n${content}endstream\nendobj\n`);
+
+    // Page object
+    offsets[pageObj] = getOffset();
+    push(`${pageObj} 0 obj\n<< /Type /Page /Parent ${pagesObj} 0 R /MediaBox [0 0 ${pw} ${ph}] /Contents ${contentObj} 0 R /Resources << /XObject << /Im${i} ${imgObj} 0 R >> >> >>\nendobj\n`);
+
+    // Image XObject
+    offsets[imgObj] = getOffset();
+    // We need binary image data — convert b64 to binary string carefully
+    const imgHeader = `${imgObj} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${pw} /Height ${ph} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imgLen} >>\nstream\n`;
+    push(imgHeader);
+    // Mark position for binary insertion
+    parts.push({ binary: imgBytes });
+    push(`\nendstream\nendobj\n`);
+  });
+
+  // xref
+  const xrefOffset = parts.reduce((a, p) => a + (typeof p === 'string' ? p.length : p.binary.length), 0);
+  const allObjs = [catalogObj, pagesObj, ...pageObjs, ...imgObjs, ...Array.from({length: numPages}, (_, i) => totalObjs + 1 + i)];
+  allObjs.sort((a, b) => a - b);
+
+  push(`xref\n0 ${allObjs[allObjs.length - 1] + 1}\n`);
+  push(`0000000000 65535 f \n`);
+  for (let n = 1; n <= allObjs[allObjs.length - 1]; n++) {
+    const off = offsets[n];
+    if (off !== undefined) {
+      push(String(off).padStart(10, '0') + ` 00000 n \n`);
+    } else {
+      push(`0000000000 65535 f \n`);
+    }
+  }
+  push(`trailer\n<< /Size ${allObjs[allObjs.length - 1] + 1} /Root ${catalogObj} 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`);
+
+  // Now assemble into Uint8Array
+  const totalLen = parts.reduce((a, p) => a + (typeof p === 'string' ? p.length : p.binary.length), 0);
+  const out = new Uint8Array(totalLen);
+  let pos = 0;
+  parts.forEach(p => {
+    if (typeof p === 'string') {
+      for (let i = 0; i < p.length; i++) out[pos++] = p.charCodeAt(i) & 0xff;
+    } else {
+      out.set(p.binary, pos);
+      pos += p.binary.length;
+    }
+  });
+  return out;
+}
+
+function renderPhotoUI() {
+  const thumbList = document.getElementById('photoThumbList');
+  const mergeBar  = document.getElementById('photoMergeBar');
+  const countLbl  = document.getElementById('photoCountLbl');
+
+  countLbl.textContent = ST.photoQueue.length > 0 ? `(${ST.photoQueue.length})` : '';
+
+  // Thumbnails
+  thumbList.innerHTML = '';
+  ST.photoQueue.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'photo-thumb';
+    div.innerHTML = `<img src="${p.dataUrl}" alt="${esc(p.name)}"><button class="photo-thumb-del" onclick="removeQueuedPhoto('${esc(p.name)}')" title="Remove">✕</button>`;
+    thumbList.appendChild(div);
+  });
+
+  // Merge bar / done bar
+  if (ST.photoQueue.length === 0) {
+    mergeBar.style.display = 'none';
+    mergeBar.innerHTML = '';
+    document.getElementById('dzPhoto').style.opacity = '1';
+    return;
+  }
+
+  document.getElementById('dzPhoto').style.opacity = '0.6';
+
+  if (ST.photoMerged) {
+    mergeBar.style.display = 'block';
+    mergeBar.innerHTML = `<div class="photo-done-bar"><span class="photo-done-ico">✅</span><div class="photo-done-info">${ST.photoQueue.length} photo${ST.photoQueue.length > 1 ? 's' : ''} added as material</div><button class="photo-done-del" onclick="removeMergedPhoto();renderPhotoUI();" title="Remove">✕</button></div>`;
+  } else {
+    mergeBar.style.display = 'block';
+    mergeBar.innerHTML = `<div class="photo-merge-bar"><div class="photo-merge-info"><strong>${ST.photoQueue.length} photo${ST.photoQueue.length > 1 ? 's' : ''}</strong> ready · will be compressed automatically</div><button class="btn-merge" onclick="mergePhotosIntoPlan()">Add as material →</button></div>`;
+  }
+}
+
+// Reset photo state when plan screen is reset
+const _origResetPlan = typeof resetPlan === 'function' ? resetPlan : null;
 
 // ═══════════════════════════════
 // SESSION FLOW
@@ -3838,7 +4189,7 @@ function mmStartPhase3(mmId) {
   if (verbindungen.length === 0) {
     pc.innerHTML = `
       <div style="font-size:.65rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:.65rem">Phase 3 — Cross-connections</div>
-      <div style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem">No cross-connections available.</div>
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem">Keine Querverbindungen vorhanden.</div>
       <div id="${mmId}-lernen-area"></div>`;
     mmShowLernenBtn(mmId);
     return;
@@ -5415,6 +5766,15 @@ function resetPlaner() {
   document.getElementById('f2').value = '';
   document.getElementById('daysBadge').style.display = 'none';
   document.getElementById('planOut').innerHTML = '';
+  // Reset photo state
+  ST.photoQueue = [];
+  ST.photoMerged = false;
+  document.getElementById('photoThumbList').innerHTML = '';
+  document.getElementById('photoMergeBar').innerHTML = '';
+  document.getElementById('photoMergeBar').style.display = 'none';
+  document.getElementById('photoCountLbl').textContent = '';
+  document.getElementById('dzPhoto').style.opacity = '1';
+  document.getElementById('fPhoto').value = '';
 }
 
 function updateDays() {
@@ -5427,13 +5787,13 @@ function updateDays() {
   badge.style.display = 'flex';
   document.getElementById('daysNum').textContent = Math.max(0, days);
   if (days <= 3) {
-    document.getElementById('daysLbl').textContent = '⚠️ Only ' + days + ' day' + (days !== 1 ? 's' : '') + ' left ';
+    document.getElementById('daysLbl').textContent = '⚠️ Nur noch ' + days + ' Tag' + (days !== 1 ? 'e' : '') + ' ';
     badge.className = 'dbadge urg';
   } else if (days <= 7) {
-    document.getElementById('daysLbl').textContent = 'days — this week ';
+    document.getElementById('daysLbl').textContent = 'Tage — diese Woche ';
     badge.className = 'dbadge urg';
   } else {
-    document.getElementById('daysLbl').textContent = 'days ';
+    document.getElementById('daysLbl').textContent = 'Tage ';
     badge.className = 'dbadge';
   }
 }
@@ -5546,7 +5906,7 @@ function renderPlan(plan, name, examStr, days) {
 
   let h = `<div class="plan-head">
     <div class="plan-title">${esc(name)}</div>
-    <div class="plan-meta">${examStr} · ${days} days · ~${plan.empfohleneStunden}h · ${plan.gesamtthemen} topics</div>
+    <div class="plan-meta">${examStr} · ${days} Tage · ~${plan.empfohleneStunden}h · ${plan.gesamtthemen} Themen</div>
     <div class="plan-sum">${esc(plan.zusammenfassung)}</div>
   </div>`;
 
@@ -5606,15 +5966,15 @@ function showPrioOverview(plan, name, examStr, days) {
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.4rem">
       <div>
         <div class="plan-title">${esc(name)}</div>
-        <div class="plan-meta">${examStr} · ${days} days · ~${plan.empfohleneStunden}h · ${plan.gesamtthemen} topics</div>
+        <div class="plan-meta">${examStr} · ${days} Tage · ~${plan.empfohleneStunden}h · ${plan.gesamtthemen} Themen</div>
       </div>
-      <button class="btn bg" id="btnSavePlan" onclick="savePlan()" style="font-size:.72rem;padding:.38rem .85rem;white-space:nowrap;flex-shrink:0">💾 Save</button>
+      <button class="btn bg" id="btnSavePlan" onclick="savePlan()" style="font-size:.72rem;padding:.38rem .85rem;white-space:nowrap;flex-shrink:0">💾 Speichern</button>
     </div>`;
 
   const COLS = [
-    { key: 'hoch',    label: 'High Priority',    dot: '#C4533A' },
-    { key: 'mittel',  label: 'Medium Priority',   dot: '#C8A020' },
-    { key: 'niedrig', label: 'Low Priority',       dot: '#4A9A5A' },
+    { key: 'hoch',    label: 'Priorität Hoch',    dot: '#C4533A' },
+    { key: 'mittel',  label: 'Priorität Mittel',   dot: '#C8A020' },
+    { key: 'niedrig', label: 'Priorität Niedrig',  dot: '#4A9A5A' },
   ];
 
   ST._prioGroups = groups;
@@ -5628,7 +5988,7 @@ function showPrioOverview(plan, name, examStr, days) {
 }
 
 const PRIO_DOTS = { hoch: '#C4533A', mittel: '#C8A020', niedrig: '#4A9A5A' };
-const PRIO_LABELS = { hoch: 'High', mittel: 'Medium', niedrig: 'Low' };
+const PRIO_LABELS = { hoch: 'Hoch', mittel: 'Mittel', niedrig: 'Niedrig' };
 
 function truncW(text, n) {
   if (!text) return '';
@@ -5667,13 +6027,13 @@ function renderPrioGrid() {
                   <button class="prio-move-btn" onclick="movePrioTopic(${idx},'${p}')">
                     <span class="prio-dot" style="background:${PRIO_DOTS[p]};width:7px;height:7px"></span>${PRIO_LABELS[p]}
                   </button>`).join('')}
-                <button class="prio-del-btn" onclick="removePrioTopic(${idx})">× Remove</button>
-                <button class="prio-tile-lernen" onclick="openBaustein(${idx})">Study →</button>
+                <button class="prio-del-btn" onclick="removePrioTopic(${idx})">× Entfernen</button>
+                <button class="prio-tile-lernen" onclick="openBaustein(${idx})">Lernen →</button>
               </div>
             </div>
           </div>`;
         }).join('')
-      : `<span class="prio-empty">No Topics</span>`;
+      : `<span class="prio-empty">Keine Themen</span>`;
     return `
       <div class="prio-col${isCollapsed ? ' collapsed' : ''}">
         <div class="prio-col-head" onclick="togglePrioCol('${col.key}')">
@@ -6228,7 +6588,7 @@ Respond ONLY with this JSON (no text before/after):
   ],
   "spacedRepetition": {
     "fragen":["...","..."],
-    "empfehlung":"e.g. Tomorrow, in 3 days, in 7 days"
+    "empfehlung":"z.B. Morgen, in 3 Tagen, in 7 Tagen"
   }
 }
 Rules: 3–4 quickCheck, 2 activeRecall, 1–2 examSimulation, 2 spacedRepetition questions. All in English. Increasing difficulty. Focus on exam success.`;
@@ -7473,9 +7833,9 @@ function saStartTest() {
 // BAUSTEIN
 // ═══════════════════════════════
 const BPRIO = {
-  hoch:    { cls: 'ph', lbl: '❗ High',    bg: 'var(--red-s)',    tx: 'var(--red)' },
-  mittel:  { cls: 'pm', lbl: '◆ Medium',  bg: 'var(--erk-bg)',   tx: 'var(--erk-tx)' },
-  niedrig: { cls: 'pl', lbl: '○ Low',     bg: 'var(--accent-s)', tx: 'var(--accent)' }
+  hoch:    { cls: 'ph', lbl: '❗ Hoch',    bg: 'var(--red-s)',    tx: 'var(--red)' },
+  mittel:  { cls: 'pm', lbl: '◆ Mittel',  bg: 'var(--erk-bg)',   tx: 'var(--erk-tx)' },
+  niedrig: { cls: 'pl', lbl: '○ Niedrig', bg: 'var(--accent-s)', tx: 'var(--accent)' }
 };
 
 function bausteinHeaderHTML(id) {
@@ -7859,5 +8219,7 @@ function bumpStreak(d) {
 function showErr(m) { const b = document.getElementById('errBar'); b.textContent = m; b.classList.add('on'); }
 function hideErr() { document.getElementById('errBar').classList.remove('on'); }
 </script>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "433a282998cb47c9873f68ee6c66aed1"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

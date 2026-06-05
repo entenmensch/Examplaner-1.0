@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RR7LKKG495"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-RR7LKKG495');
+</script>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +35,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15
 .wrap{max-width:680px;margin:0 auto;padding:0 1.5rem 6rem}
 
 /* NAV */
-.nav{padding:2.5rem 0 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);margin-bottom:2rem;gap:1rem;flex-wrap:wrap}
+.nav{padding:2.5rem 0 1.5rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;border-bottom:1px solid var(--border);margin-bottom:2rem;gap:1rem}
+.nav .logo{grid-column:2;text-align:center}
+.nav .navlinks{grid-column:3;justify-self:end}
 .logo{font-family:var(--serif);font-size:1.5rem;font-weight:500;letter-spacing:-.02em;white-space:nowrap}
 .logo em{color:var(--accent);font-style:italic}
 .navlinks{display:flex;gap:.4rem;flex-wrap:wrap}
@@ -179,6 +189,27 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 
 /* multi-file list */
 .flist{display:flex;flex-direction:column;gap:.45rem;margin-top:.7rem}
+
+/* ── PHOTO DROPZONE ── */
+.dz-photo{border:2px dashed #C8A96E;border-radius:14px;background:#FFFDF8;padding:2.2rem 1.5rem;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+.dz-photo:hover,.dz-photo.drag{border-color:#A07840;background:#FDF5E6}
+.dz-photo input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.photo-thumb-list{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:.75rem}
+.photo-thumb{position:relative;width:72px;height:72px;border-radius:9px;overflow:hidden;border:1.5px solid var(--border);flex-shrink:0}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-thumb-del{position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.55);border:none;color:#fff;font-size:.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0}
+.photo-thumb-del:hover{background:var(--red)}
+.photo-merge-bar{display:flex;align-items:center;justify-content:space-between;margin-top:.75rem;padding:.65rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;gap:.6rem;flex-wrap:wrap}
+.photo-merge-info{font-size:.75rem;color:var(--muted);flex:1}
+.photo-merge-info strong{color:var(--text)}
+.btn-merge{background:#A07840;color:#fff;border:none;border-radius:8px;padding:.52rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;font-family:var(--sans);transition:background .15s;white-space:nowrap}
+.btn-merge:hover:not(:disabled){background:#7A5A2A}
+.btn-merge:disabled{opacity:.4;cursor:not-allowed}
+.photo-done-bar{display:flex;align-items:center;gap:.6rem;margin-top:.7rem;padding:.65rem 1rem;background:#EDF5EE;border:1px solid var(--str-bd);border-radius:10px}
+.photo-done-ico{font-size:1.1rem;flex-shrink:0}
+.photo-done-info{flex:1;font-size:.76rem;color:var(--str-tx);font-weight:500}
+.photo-done-del{background:none;border:none;color:var(--muted2);font-size:.95rem;cursor:pointer;flex-shrink:0;transition:color .14s;padding:0}
+.photo-done-del:hover{color:var(--red)}
 .fitem{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;animation:fu .2s ease}
 .fitem-ico{font-size:1.25rem;flex-shrink:0}
 .fitem-info{flex:1;min-width:0}
@@ -855,6 +886,55 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .ttag{font-size:.58rem;font-weight:500;padding:.08rem .48rem;border-radius:100px;border:1px solid var(--border);color:var(--muted);background:var(--bg)}
 .ttime{flex-shrink:0;font-size:.68rem;color:var(--muted2);white-space:nowrap;margin-top:2px}
 .plan-tip{font-size:.75rem;color:var(--muted);line-height:1.6;padding:.72rem .95rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);margin-top:.9rem}
+
+/* ── PRIORITY OVERVIEW ── */
+.prio-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;display:inline-block}
+.prio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.6rem;align-items:start}
+@media(max-width:600px){.prio-grid{grid-template-columns:1fr}}
+.prio-col{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.9rem;transition:all .2s}
+.prio-col-head{display:flex;align-items:center;gap:.45rem;margin-bottom:.75rem;padding-bottom:.6rem;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+.prio-col-head:hover .prio-col-toggle{color:var(--text)}
+.prio-col-title{font-size:.75rem;font-weight:600;letter-spacing:.02em;flex:1;color:var(--text)}
+.prio-col-count{font-size:.6rem;color:var(--muted2);white-space:nowrap}
+.prio-col-toggle{font-size:.7rem;color:var(--muted2);transition:transform .2s;flex-shrink:0}
+.prio-col.collapsed{padding:.7rem .75rem}
+.prio-col.collapsed .prio-col-head{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.prio-col.collapsed .prio-col-title{display:none}
+.prio-col.collapsed .prio-col-count{display:none}
+.prio-col.collapsed .prio-col-toggle{transform:rotate(180deg)}
+.prio-col.collapsed .prio-col-tiles{display:none}
+.prio-tile{background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:.45rem;overflow:hidden}
+.prio-tile-hd{padding:.7rem .8rem .1rem}
+.prio-tile-name{font-size:.82rem;font-weight:600;color:var(--text);line-height:1.4}
+.prio-tile-bd{padding:.1rem .8rem .75rem;border-top:1px solid var(--border);margin-top:.6rem}
+.prio-tile-desc{font-size:.72rem;color:var(--muted);line-height:1.5;margin:.45rem 0 .65rem}
+.prio-tile-actions{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center}
+.prio-tile-lernen{font-size:.68rem;font-weight:600;padding:.28rem .7rem;border-radius:100px;background:var(--accent);color:#fff;border:none;cursor:pointer;font-family:var(--sans);transition:background .14s;margin-left:auto}
+.prio-tile-lernen:hover{background:var(--accent-m)}
+.prio-move-btn{display:inline-flex;align-items:center;gap:.28rem;font-size:.65rem;font-weight:500;padding:.25rem .55rem;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-family:var(--sans);transition:all .14s}
+.prio-move-btn:hover{border-color:var(--border2);color:var(--text)}
+.prio-del-btn{font-size:.65rem;font-weight:500;padding:.25rem .55rem;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-family:var(--sans);transition:all .14s}
+.prio-del-btn:hover{border-color:var(--red);color:var(--red)}
+.prio-empty{font-size:.73rem;color:var(--muted2);padding:1rem 0;display:block;text-align:center}
+.prio-modify{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.15rem 1.25rem}
+.prio-modify-lbl{font-family:var(--serif);font-size:1rem;font-weight:500;margin-bottom:.75rem;display:block}
+.saved-plan-undo{font-size:.78rem;color:var(--muted);padding:.65rem .9rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem}
+.saved-plan-undo-btn{background:none;border:none;color:var(--accent);font-size:.78rem;font-weight:600;cursor:pointer;font-family:var(--sans);padding:0}
+/* ── FAB + SLIDE PANEL ── */
+.prio-fab{display:none;position:fixed;bottom:2rem;right:2rem;z-index:90;background:var(--accent);color:#fff;border:none;border-radius:100px;padding:.65rem 1.25rem;font-size:.8rem;font-weight:600;font-family:var(--sans);cursor:pointer;box-shadow:0 4px 20px rgba(29,61,42,.28);transition:all .18s;align-items:center;gap:.4rem}
+.prio-fab:hover{background:var(--accent-m);transform:translateY(-2px);box-shadow:0 6px 28px rgba(29,61,42,.32)}
+.prio-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.22);z-index:200;backdrop-filter:blur(2px);animation:fu .2s ease}
+.prio-backdrop.open{display:block}
+.prio-slide{position:fixed;bottom:0;left:0;right:0;z-index:201;background:var(--surface);border-radius:18px 18px 0 0;padding:1.4rem 1.5rem 2.2rem;box-shadow:0 -6px 36px rgba(0,0,0,.13);transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1)}
+.prio-slide.open{transform:translateY(0)}
+.prio-slide-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.prio-slide-title{font-family:var(--serif);font-size:1.1rem;font-weight:500}
+.prio-slide-close{background:none;border:1px solid var(--border);border-radius:50%;width:28px;height:28px;color:var(--muted);font-size:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .14s}
+.prio-slide-close:hover{border-color:var(--border2);color:var(--text)}
+.prio-slide-ta{width:100%;resize:none;min-height:76px;margin-bottom:1rem;border-radius:var(--r);border:1px solid var(--border);padding:.72rem 1rem;font-family:var(--sans);font-size:.9rem;color:var(--text);outline:none;background:var(--bg);transition:border-color .2s}
+.prio-slide-ta:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(29,61,42,.08)}
+.prio-slide-ft{display:flex;align-items:center;gap:.75rem}
+.prio-slide-load{font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:.5rem;flex:1}
 </style>
 <!-- PDF.js für Text-Extraktion -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -867,6 +947,8 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <div class="navlinks">
     <button class="nl on" id="nPlan" onclick="goPlaner()">📅 Exam Planner</button>
 
+    <button class="nl" id="nFeedback" onclick="window.open('https://forms.gle/wZ2YNpBFRfYa3Vcm8', '_blank')">Give Feedback</button>
+
     <button class="nl" id="nSettings" onclick="editSetup()">⚙️</button>
   </div>
 </nav>
@@ -874,7 +956,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 <div class="err" id="errBar"></div>
 
 <!-- ══════ SETUP ══════ -->
-<div class="sc on" id="scSetup">
+<div class="sc" id="scSetup">
   <p class="h1">Get<em>started</em></p>
   <p class="sub">No name, no email. Just your field of study — so the AI has the right context.</p>
 
@@ -897,11 +979,6 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
     <input type="text" id="inSG" placeholder="e.g. International Management, Business Administration, Psychology...">
   </div>
 
-  <div class="f">
-    <label class="lbl">Anthropic API Key</label>
-    <input type="password" id="inApiKey" placeholder="sk-ant-...">
-    <div class="hint">Stored only locally in your browser — never transmitted. <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">Create key →</a></div>
-  </div>
 
   <div class="brow">
     <button class="btn bp" onclick="saveSetup()">Save →</button>
@@ -925,11 +1002,12 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 
   <div class="f">
     <span class="lbl">Files <span id="fileCountLbl" style="color:var(--accent);font-weight:600"></span></span>
+    <div class="dz-s" style="margin:.4rem 0 .5rem">🔒 Please avoid uploading materials with personal information (names, addresses, photos, grades).</div>
     <div class="dz" id="dz1" ondragover="onDrag(event,'dz1',true)" ondragleave="onDrag(event,'dz1',false)" ondrop="onDropMulti(event,'sess')">
       <input type="file" id="f1" accept=".pdf,.png,.jpg,.jpeg,.webp" multiple onchange="onFilesChosen(this.files,'sess')">
       <span class="dz-ico">📎</span>
       <div class="dz-t">Drop files or click</div>
-      <div class="dz-s">PDF, PNG, JPG, WEBP · max. 32 MB per file · multiple allowed</div>
+      <div class="dz-s">PDF, PNG, JPG, WEBP · max. 50 MB · max. 100 pages per PDF · multiple allowed</div>
       <div class="dz-s" style="margin-top:.35rem;color:var(--muted)">💡 PowerPoint or Word? Export as PDF first.</div>
     </div>
     <div class="flist" id="flist1"></div>
@@ -1035,9 +1113,11 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 </div>
 
 <!-- ══════ EXAM PLANNER ══════ -->
-<div class="sc" id="scPlan">
+<div class="sc on" id="scPlan">
   <p class="h1">Exam<em>planner</em></p>
   <p class="sub">Upload your material and enter the exam date. The AI analyzes the content and creates a study plan — sorted by relevance and remaining time.</p>
+
+  <div id="savedPlanArea"></div>
 
   <div class="daterow">
     <div class="f">
@@ -1073,14 +1153,28 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 
   <div class="f">
     <span class="lbl">Upload Material <span id="planFileCountLbl" style="color:var(--accent);font-weight:600"></span></span>
+    <div class="dz-s" style="margin:.4rem 0 .5rem">🔒 Please avoid uploading materials with personal information (names, addresses, photos, grades).</div>
     <div class="dz" id="dz2" ondragover="onDrag(event,'dz2',true)" ondragleave="onDrag(event,'dz2',false)" ondrop="onDropMulti(event,'plan')">
-      <input type="file" id="f2" accept=".pdf,.png,.jpg,.jpeg,.webp" multiple onchange="onFilesChosen(this.files,'plan')">
+      <input type="file" id="f2" accept=".pdf" multiple onchange="onFilesChosen(this.files,'plan')">
       <span class="dz-ico">📎</span>
       <div class="dz-t">Drop script, notes, or textbook</div>
-      <div class="dz-s">PDF, PNG, JPG · multiple files allowed · max. 32 MB per file</div>
+      <div class="dz-s">PDF · multiple files allowed · max. 50 MB · max. 100 pages per PDF</div>
       <div class="dz-s" style="margin-top:.35rem;color:var(--muted)">💡 PowerPoint or Word? Export as PDF first.</div>
     </div>
     <div class="flist" id="flist2"></div>
+  </div>
+
+  <div class="f" style="margin-top:.2rem">
+    <span class="lbl">📷 Photos &amp; Worksheets <span id="photoCountLbl" style="color:#A07840;font-weight:600"></span></span>
+    <div class="dz-s" style="margin:.4rem 0 .5rem">Have photos of book pages or handwritten worksheets? Drop them here — they'll be compressed and added as material.</div>
+    <div class="dz-photo" id="dzPhoto" ondragover="onDragPhoto(event,true)" ondragleave="onDragPhoto(event,false)" ondrop="onDropPhoto(event)">
+      <input type="file" id="fPhoto" accept="image/*" multiple onchange="onPhotosChosen(this.files)">
+      <span class="dz-ico">📷</span>
+      <div class="dz-t" style="font-family:var(--serif);font-size:1.05rem;font-weight:500;margin-bottom:.25rem">Drop photos or click</div>
+      <div class="dz-s">JPG, PNG · multiple allowed · auto-compressed</div>
+    </div>
+    <div class="photo-thumb-list" id="photoThumbList"></div>
+    <div id="photoMergeBar" style="display:none"></div>
   </div>
 
   <div class="f">
@@ -1096,6 +1190,31 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <div class="plan-out" id="planOut"></div>
 </div>
 
+<!-- ══════ PRIORITY OVERVIEW ══════ -->
+<div class="sc" id="scPrioOverview">
+  <p class="h1">Dein Lern<em>plan</em></p>
+  <div id="prioHead"></div>
+  <div class="prio-grid" id="prioGrid"></div>
+  <div style="margin-top:1.4rem;text-align:center">
+    <button class="btn bp" id="btnSavePlanBottom" onclick="savePlan()" style="padding:.72rem 2rem;font-size:.88rem">💾 Plan speichern</button>
+  </div>
+</div>
+
+<!-- ══════ PRIO FAB + SLIDE PANEL ══════ -->
+<button class="prio-fab" id="prioFab" onclick="openPrioAdjust()">✏️ KI-Anpassung</button>
+<div class="prio-backdrop" id="prioBackdrop" onclick="closePrioAdjust()"></div>
+<div class="prio-slide" id="prioSlide">
+  <div class="prio-slide-hd">
+    <span class="prio-slide-title">Plan anpassen</span>
+    <button class="prio-slide-close" onclick="closePrioAdjust()">✕</button>
+  </div>
+  <textarea class="prio-slide-ta" id="prioAdjustInput" placeholder="z.B. »Kapitel 3 weglassen, das kenne ich schon« · »Mehr Fokus auf Statistik einplanen«" rows="3"></textarea>
+  <div class="prio-slide-ft">
+    <div class="prio-slide-load" id="prioAdjustLoad" style="display:none"><div class="typ" style="display:inline-flex"><span></span><span></span><span></span></div> KI passt an…</div>
+    <button class="btn bp" id="btnPrioAdjust" onclick="applyPrioChange()">Anpassen →</button>
+  </div>
+</div>
+
 <!-- ══════ TARGETED LEARNING ══════ -->
 <div class="sc" id="scGezielt">
   <p class="h1">Targeted<em>learning</em></p>
@@ -1104,7 +1223,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <div id="glPhases"></div>
   <div id="glDrillArea"></div>
   <div class="brow" style="margin-top:1rem">
-    <button class="btn bg" onclick="show('scPlan');setNav('nPlan')">← Back to Plan</button>
+    <button class="btn bg" onclick="backToPlan()">← Back to Plan</button>
   </div>
 </div>
 
@@ -1195,7 +1314,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <div id="srFeedbackWrap"></div>
   <div id="srDoneWrap" style="display:none"></div>
   <div class="brow" id="srBtns" style="display:none">
-    <button class="btn bg" onclick="goPlaner()">← Exam Planner</button>
+    <button class="btn bg" onclick="backToPlan()">← Exam Planner</button>
     <button class="btn bp" id="srNextBtn" onclick="srNextQuestion()">Next Question →</button>
   </div>
 </div>
@@ -1205,7 +1324,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <p class="h1">SR-<em>Questions</em></p>
   <div id="srManageContent"></div>
   <div class="brow" style="margin-top:1.2rem">
-    <button class="btn bg" onclick="goPlaner()">← Exam Planner</button>
+    <button class="btn bg" onclick="backToPlan()">← Exam Planner</button>
   </div>
 </div>
 
@@ -1265,10 +1384,58 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 
 <script>
 // ═══════════════════════════════
-// API KEY — wird in localStorage gespeichert
+// API CLIENT — Token + Fetch-Wrapper für Rate Limiting
 // ═══════════════════════════════
-const getApiKey = () => localStorage.getItem('skriptlernen_apikey') || '';
-const saveApiKey = k => localStorage.setItem('skriptlernen_apikey', k.trim());
+const CLIENT_TOKEN = (() => {
+  let t = localStorage.getItem('studyai_client_token');
+  if (!t) {
+    t = 'u_' + Math.random().toString(36).slice(2, 14) + '_' + Date.now().toString(36);
+    localStorage.setItem('studyai_client_token', t);
+  }
+  return t;
+})();
+
+const WORKER_URL = 'learnassistet.leandroprokop.workers.dev';
+
+// Toast für Rate-Limit-Meldungen
+function showRateLimitToast(message) {
+  const existing = document.getElementById('rate-limit-toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.id = 'rate-limit-toast';
+  toast.style.cssText = 'position:fixed;top:20px;right:20px;max-width:360px;background:#C4533A;color:#fff;padding:14px 18px;border-radius:10px;font-family:sans-serif;font-size:14px;box-shadow:0 4px 14px rgba(0,0,0,0.15);z-index:99999;line-height:1.5';
+  toast.innerHTML = '<strong>Limit reached</strong><br>' + message;
+  document.body.appendChild(toast);
+  setTimeout(() => { if (toast.parentNode) toast.remove(); }, 7000);
+}
+
+// Globaler fetch-Wrapper: fügt automatisch Token-Header zu Worker-Calls hinzu
+// und behandelt 429-Rate-Limit-Antworten einheitlich
+const _origFetch = window.fetch;
+window.fetch = async function(url, opts = {}) {
+  if (typeof url === 'string' && url.includes(WORKER_URL)) {
+    opts.headers = Object.assign({}, opts.headers || {}, {
+      'X-Client-Token': CLIENT_TOKEN,
+      'Content-Type': 'application/json',
+    });
+    const res = await _origFetch.call(this, url, opts);
+    if (res.status === 429) {
+      try {
+        const data = await res.clone().json();
+        const msg = data.error || 'You have reached the request limit. Please try again later.';
+        showRateLimitToast(msg);
+        // In Anthropic-kompatibles Error-Format umpacken, damit bestehende
+        // Error-Handler die Message korrekt anzeigen
+        return new Response(
+          JSON.stringify({ error: { message: msg, type: 'rate_limit_error' } }),
+          { status: 429, headers: { 'Content-Type': 'application/json' } }
+        );
+      } catch {}
+    }
+    return res;
+  }
+  return _origFetch.call(this, url, opts);
+};
 
 // ═══════════════════════════════
 // STORAGE
@@ -1279,6 +1446,7 @@ const save = d => localStorage.setItem(SK, JSON.stringify(d));
 const fresh = () => ({ profile: { av: '🦉', sg: '' }, streak: { cur: 0, best: 0, last: null }, sessions: [] });
 
 const DK = 'skriptlernen_draft';
+const PK = 'studyai_savedplan';
 const SKS = 'skriptlernen_scores';
 const loadScores = () => { try { return JSON.parse(localStorage.getItem(SKS)) || {}; } catch { return {}; } };
 const saveScores = s => localStorage.setItem(SKS, JSON.stringify(s));
@@ -1335,6 +1503,78 @@ const saveDraft = () => {
 const loadDraft = () => { try { return JSON.parse(localStorage.getItem(DK)) || null; } catch { return null; } };
 const clearDraft = () => localStorage.removeItem(DK);
 
+function savePlan() {
+  if (!ST._pendingPlan || !ST._pendingPlanMeta) return;
+  try {
+    const textFiles = ST.planFiles
+      .filter(f => f.mode === 'text' && f.text)
+      .map(f => ({ name: f.name, text: f.text, mode: 'text', type: 'text/plain', pages: f.pages || 0 }));
+    localStorage.setItem(PK, JSON.stringify({
+      plan: ST._pendingPlan,
+      meta: ST._pendingPlanMeta,
+      allTopics: ST.allTopics,
+      textFiles,
+      ts: Date.now()
+    }));
+    ['btnSavePlan', 'btnSavePlanBottom'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) { btn.textContent = '✓ Gespeichert'; btn.disabled = true; setTimeout(() => { btn.textContent = '💾 Plan speichern'; btn.disabled = false; }, 2000); }
+    });
+  } catch(e) {}
+}
+const loadSavedPlan = () => { try { return JSON.parse(localStorage.getItem(PK)) || null; } catch { return null; } };
+const clearSavedPlan = () => localStorage.removeItem(PK);
+
+function resumeSavedPlan() {
+  const saved = loadSavedPlan();
+  if (!saved) return;
+  ST.allTopics = saved.allTopics || [];
+  if (saved.textFiles && saved.textFiles.length) ST.planFiles = saved.textFiles;
+  showPrioOverview(saved.plan, saved.meta.name, saved.meta.examStr, saved.meta.days);
+}
+
+function renderSavedPlanCard() {
+  const el = document.getElementById('savedPlanArea');
+  if (!el) return;
+  const saved = loadSavedPlan();
+  if (!saved) {
+    if (ST._deletedPlanBackup) {
+      el.innerHTML = `<div class="saved-plan-undo">
+        Plan gelöscht. <button onclick="undoDeletePlan()" class="saved-plan-undo-btn">Wiederherstellen →</button>
+      </div>`;
+    } else {
+      el.innerHTML = '';
+    }
+    return;
+  }
+  const { name, examStr, days } = saved.meta;
+  const ago = formatAgo(saved.ts);
+  const total = (saved.allTopics || []).length;
+  el.innerHTML = `<div class="draft-card" onclick="resumeSavedPlan()">
+    <div class="draft-ico">📋</div>
+    <div class="draft-info">
+      <div class="draft-badge">Gespeicherter Plan</div>
+      <div class="draft-topic">${esc(name)}</div>
+      <div class="draft-meta">${examStr} · ${days} Tage · ${total} Themen · ${ago}</div>
+    </div>
+    <button class="draft-del" onclick="event.stopPropagation();softDeletePlan()" title="Löschen">✕</button>
+    <div class="draft-arr">→</div>
+  </div>`;
+}
+
+function softDeletePlan() {
+  ST._deletedPlanBackup = loadSavedPlan();
+  clearSavedPlan();
+  renderSavedPlanCard();
+}
+
+function undoDeletePlan() {
+  if (!ST._deletedPlanBackup) return;
+  try { localStorage.setItem(PK, JSON.stringify(ST._deletedPlanBackup)); } catch(e) {}
+  ST._deletedPlanBackup = null;
+  renderSavedPlanCard();
+}
+
 function stripFilesFromMsgs(msgs) {
   return msgs.map((msg, i) => {
     if (i === 0 && Array.isArray(msg.content)) {
@@ -1357,6 +1597,8 @@ const ST = {
   msgs: [],
   // planer — array of {b64, type, name, size}
   planFiles: [],
+  photoQueue: [],
+  photoMerged: false,
   currentPlan: null, allTopics: [],
   testBausteinIdx: -1, testMcCorrect: 0, testMcAnswered: 0, testMcTotal: 0, testIsSubtopic: false,
   testRecallData: [], testExamData: [], testMcData: [],
@@ -1392,9 +1634,7 @@ const FM = {
 // BOOT
 // ═══════════════════════════════
 window.addEventListener('DOMContentLoaded', () => {
-  const d = load();
-  if (d && d.profile && d.profile.sg) { goPlaner(); }
-  else show('scSetup');
+  show('scPlan'); setNav('nPlan'); renderSavedPlanCard();
 });
 
 // ═══════════════════════════════
@@ -1404,28 +1644,25 @@ function show(id) {
   document.querySelectorAll('.sc').forEach(s => s.classList.remove('on'));
   document.getElementById(id).classList.add('on');
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  const fab = document.getElementById('prioFab');
+  if (fab) fab.style.display = id === 'scPrioOverview' ? 'inline-flex' : 'none';
 }
 function setNav(active) {
   document.getElementById('nPlan').classList.toggle('on', active === 'nPlan');
 }
 function goHome() { goPlaner(); }
 function goSession() {
-  const d = load();
-  if (!d || !d.profile.sg) { show('scSetup'); return; }
   resetSession();
   show('scUpload'); setNav('nPlan');
 }
 function goPlaner() {
-  const d = load();
-  if (!d || !d.profile.sg) { show('scSetup'); return; }
   resetPlaner();
   show('scPlan'); setNav('nPlan');
+  renderSavedPlanCard();
 }
 function editSetup() {
   const d = load() || fresh();
   document.getElementById('inSG').value = d.profile.sg || '';
-  document.getElementById('inApiKey').value = '';
-  document.getElementById('inApiKey').placeholder = getApiKey() ? '(saved — leave empty to keep)' : 'sk-ant-...';
   document.querySelectorAll('.avo').forEach(a => a.classList.toggle('on', a.dataset.v === d.profile.av));
   ST.av = d.profile.av || '🦉';
   show('scSetup');
@@ -1442,15 +1679,14 @@ function pickAv(el) {
 function saveSetup() {
   const sg = document.getElementById('inSG').value.trim();
   if (!sg) return showErr('Please enter your field of study.');
-  const key = document.getElementById('inApiKey').value.trim();
-  if (!key && !getApiKey()) return showErr('Please enter your Anthropic API Key.');
   hideErr();
-  if (key) saveApiKey(key);
-  const d = load() || fresh();
+  const raw = load();
+  const d = (raw && raw.profile) ? raw : fresh();
   d.profile.av = ST.av;
   d.profile.sg = sg;
   save(d);
-  goPlaner();
+  const saved = loadSavedPlan();
+  if (saved) { resumeSavedPlan(); } else { goPlaner(); }
 }
 
 // ═══════════════════════════════
@@ -1506,7 +1742,7 @@ function renderHome(d) {
 }
 
 function deleteSession(idx) {
-  const d = load();
+  const d = load() || fresh();
   if (!d || !d.sessions[idx]) return;
   d.sessions.splice(idx, 1);
   save(d);
@@ -1731,9 +1967,8 @@ async function submitSRAnswer() {
   const referenz = q.antwort ? `Idealantwort (Referenz): ${q.antwort}` : `Thema: ${q.thema}`;
   const sys = `You are a learning coach. Evaluate the student's answer. Respond ONLY with JSON: {"bewertung":7,"feedback":"What was good / what is missing","verbesserte_version":"..."} Rating 1–10.`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 600, system: sys, messages: [{ role: 'user', content: `Question: ${q.frage}\n\n${referenz}\n\nStudent answer: ${answer}` }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error'); }
@@ -1981,10 +2216,12 @@ function onDropMulti(e, ctx) {
 }
 
 function onFilesChosen(files, ctx) {
-  const ok = ['application/pdf','image/png','image/jpeg','image/webp'];
-  const MAX = 50 * 1024 * 1024; // 50MB — text extraction removes size bottleneck
+  const okAll  = ['application/pdf','image/png','image/jpeg','image/webp'];
+  const okPlan = ['application/pdf'];
+  const ok = ctx === 'plan' ? okPlan : okAll;
+  const MAX = 50 * 1024 * 1024;
   Array.from(files).forEach(file => {
-    if (!ok.includes(file.type)) { showErr(`${file.name}: Only PDF, PNG, JPG, WEBP.`); return; }
+    if (!ok.includes(file.type)) { showErr(`${file.name}: Only PDF allowed here. Use the photo box below for images.`); return; }
     if (file.size > MAX) { showErr(`${file.name}: Too large — max. 50 MB.`); return; }
     hideErr();
 
@@ -2131,6 +2368,265 @@ function renderFileList(ctx) {
 }
 
 // ═══════════════════════════════
+// PHOTO UPLOAD — compress + merge into planFiles
+// ═══════════════════════════════
+ST.photoQueue = []; // [{name, dataUrl, b64, type}]
+ST.photoMerged = false;
+
+function onDragPhoto(e, on) {
+  e.preventDefault();
+  document.getElementById('dzPhoto').classList.toggle('drag', on);
+}
+
+function onDropPhoto(e) {
+  e.preventDefault();
+  onDragPhoto(e, false);
+  if (e.dataTransfer.files.length) onPhotosChosen(e.dataTransfer.files);
+}
+
+function onPhotosChosen(files) {
+  const ok = ['image/jpeg','image/jpg','image/png','image/webp','image/heic','image/heif'];
+  Array.from(files).forEach(file => {
+    const type = file.type || 'image/jpeg';
+    if (!ok.some(t => type.includes(t.split('/')[1])) && !file.name.match(/\.(jpg|jpeg|png|webp|heic|heif)$/i)) {
+      showErr(`${file.name}: Only image files (JPG, PNG, WEBP).`); return;
+    }
+    if (ST.photoQueue.find(p => p.name === file.name)) return; // skip duplicate
+    compressAndQueuePhoto(file);
+  });
+  document.getElementById('fPhoto').value = '';
+}
+
+function compressAndQueuePhoto(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      // Compress: max 1100px on longest side
+      const MAX = 1100;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else        { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+      const b64 = dataUrl.split(',')[1];
+      ST.photoQueue.push({ name: file.name, dataUrl, b64, type: 'image/jpeg' });
+      // If photos were previously merged, reset merge state
+      if (ST.photoMerged) removeMergedPhoto();
+      renderPhotoUI();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeQueuedPhoto(name) {
+  ST.photoQueue = ST.photoQueue.filter(p => p.name !== name);
+  if (ST.photoMerged) removeMergedPhoto();
+  renderPhotoUI();
+}
+
+function removeMergedPhoto() {
+  // Remove the merged photo entry from planFiles
+  ST.planFiles = ST.planFiles.filter(f => f.name !== '__photos_merged__.pdf');
+  ST.photoMerged = false;
+  renderFileList('plan');
+}
+
+function mergePhotosIntoPlan() {
+  if (!ST.photoQueue.length) return;
+  const btn = document.querySelector('.btn-merge');
+  if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
+
+  // Build a simple PDF using raw PDF syntax — one image per page
+  // We use the canvas approach: draw each image onto a standard A4-ish canvas
+  const PAGE_W = 794, PAGE_H = 1123; // approx A4 at 96dpi
+
+  const promises = ST.photoQueue.map(p => new Promise(res => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      // Fit image into page, preserve aspect ratio
+      let iw = img.width, ih = img.height;
+      const scale = Math.min(PAGE_W / iw, PAGE_H / ih, 1);
+      const dw = Math.round(iw * scale), dh = Math.round(ih * scale);
+      canvas.width = PAGE_W; canvas.height = PAGE_H;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, PAGE_W, PAGE_H);
+      const ox = Math.round((PAGE_W - dw) / 2);
+      const oy = Math.round((PAGE_H - dh) / 2);
+      ctx.drawImage(img, ox, oy, dw, dh);
+      res(canvas.toDataURL('image/jpeg', 0.82).split(',')[1]);
+    };
+    img.src = p.dataUrl;
+  }));
+
+  Promise.all(promises).then(pageB64s => {
+    // Build minimal valid PDF with one JPEG image per page
+    const pdfBytes = buildPhotoPDF(pageB64s, PAGE_W, PAGE_H);
+    const b64pdf = btoa(String.fromCharCode(...pdfBytes));
+
+    // Remove old merged entry if exists
+    ST.planFiles = ST.planFiles.filter(f => f.name !== '__photos_merged__.pdf');
+
+    ST.planFiles.push({
+      name: '__photos_merged__.pdf',
+      size: Math.round(pdfBytes.length / 1024),
+      type: 'application/pdf',
+      processing: false,
+      mode: 'image',
+      text: null,
+      b64: b64pdf,
+      pages: pageB64s.length,
+      isPhotoMerge: true
+    });
+    ST.photoMerged = true;
+    renderFileList('plan');
+    renderPhotoUI();
+  });
+}
+
+function buildPhotoPDF(jpegB64Array, pw, ph) {
+  // Minimal PDF builder — one JPEG image per page
+  const enc = s => s.split('').map(c => c.charCodeAt(0));
+  const str = s => enc(s);
+
+  let body = '';
+  const objOffsets = [];
+  let xrefPos = 0;
+
+  // We'll accumulate PDF as a string then convert to bytes at end
+  const parts = [];
+  const push = s => parts.push(s);
+
+  push('%PDF-1.4\n');
+
+  const numPages = jpegB64Array.length;
+  // Object numbering: 1=catalog, 2=pages, 3..=(page+image pairs, 2 objs each)
+  // page i → obj 3+i*2 (page dict), obj 4+i*2 (image XObject)
+  const catalogObj = 1, pagesObj = 2;
+  const pageObjs = jpegB64Array.map((_, i) => 3 + i * 2);
+  const imgObjs  = jpegB64Array.map((_, i) => 4 + i * 2);
+  const totalObjs = 2 + numPages * 2;
+
+  const offsets = {};
+  const getOffset = () => parts.reduce((a, s) => a + s.length, 0);
+
+  // Catalog
+  offsets[catalogObj] = getOffset();
+  push(`${catalogObj} 0 obj\n<< /Type /Catalog /Pages ${pagesObj} 0 R >>\nendobj\n`);
+
+  // Pages
+  offsets[pagesObj] = getOffset();
+  const kidsRef = pageObjs.map(n => `${n} 0 R`).join(' ');
+  push(`${pagesObj} 0 obj\n<< /Type /Pages /Kids [${kidsRef}] /Count ${numPages} >>\nendobj\n`);
+
+  // Each page + image
+  jpegB64Array.forEach((b64, i) => {
+    const imgBytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    const imgLen = imgBytes.length;
+    const pageObj = pageObjs[i];
+    const imgObj  = imgObjs[i];
+
+    // Content stream: draw image scaled to full page
+    const content = `q ${pw} 0 0 ${ph} 0 0 cm /Im${i} Do Q\n`;
+    const contentLen = content.length;
+
+    // Content stream object (inline before page for simplicity — use a temp obj number)
+    const contentObj = totalObjs + 1 + i;
+    offsets[contentObj] = getOffset();
+    push(`${contentObj} 0 obj\n<< /Length ${contentLen} >>\nstream\n${content}endstream\nendobj\n`);
+
+    // Page object
+    offsets[pageObj] = getOffset();
+    push(`${pageObj} 0 obj\n<< /Type /Page /Parent ${pagesObj} 0 R /MediaBox [0 0 ${pw} ${ph}] /Contents ${contentObj} 0 R /Resources << /XObject << /Im${i} ${imgObj} 0 R >> >> >>\nendobj\n`);
+
+    // Image XObject
+    offsets[imgObj] = getOffset();
+    // We need binary image data — convert b64 to binary string carefully
+    const imgHeader = `${imgObj} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${pw} /Height ${ph} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imgLen} >>\nstream\n`;
+    push(imgHeader);
+    // Mark position for binary insertion
+    parts.push({ binary: imgBytes });
+    push(`\nendstream\nendobj\n`);
+  });
+
+  // xref
+  const xrefOffset = parts.reduce((a, p) => a + (typeof p === 'string' ? p.length : p.binary.length), 0);
+  const allObjs = [catalogObj, pagesObj, ...pageObjs, ...imgObjs, ...Array.from({length: numPages}, (_, i) => totalObjs + 1 + i)];
+  allObjs.sort((a, b) => a - b);
+
+  push(`xref\n0 ${allObjs[allObjs.length - 1] + 1}\n`);
+  push(`0000000000 65535 f \n`);
+  for (let n = 1; n <= allObjs[allObjs.length - 1]; n++) {
+    const off = offsets[n];
+    if (off !== undefined) {
+      push(String(off).padStart(10, '0') + ` 00000 n \n`);
+    } else {
+      push(`0000000000 65535 f \n`);
+    }
+  }
+  push(`trailer\n<< /Size ${allObjs[allObjs.length - 1] + 1} /Root ${catalogObj} 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`);
+
+  // Now assemble into Uint8Array
+  const totalLen = parts.reduce((a, p) => a + (typeof p === 'string' ? p.length : p.binary.length), 0);
+  const out = new Uint8Array(totalLen);
+  let pos = 0;
+  parts.forEach(p => {
+    if (typeof p === 'string') {
+      for (let i = 0; i < p.length; i++) out[pos++] = p.charCodeAt(i) & 0xff;
+    } else {
+      out.set(p.binary, pos);
+      pos += p.binary.length;
+    }
+  });
+  return out;
+}
+
+function renderPhotoUI() {
+  const thumbList = document.getElementById('photoThumbList');
+  const mergeBar  = document.getElementById('photoMergeBar');
+  const countLbl  = document.getElementById('photoCountLbl');
+
+  countLbl.textContent = ST.photoQueue.length > 0 ? `(${ST.photoQueue.length})` : '';
+
+  // Thumbnails
+  thumbList.innerHTML = '';
+  ST.photoQueue.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'photo-thumb';
+    div.innerHTML = `<img src="${p.dataUrl}" alt="${esc(p.name)}"><button class="photo-thumb-del" onclick="removeQueuedPhoto('${esc(p.name)}')" title="Remove">✕</button>`;
+    thumbList.appendChild(div);
+  });
+
+  // Merge bar / done bar
+  if (ST.photoQueue.length === 0) {
+    mergeBar.style.display = 'none';
+    mergeBar.innerHTML = '';
+    document.getElementById('dzPhoto').style.opacity = '1';
+    return;
+  }
+
+  document.getElementById('dzPhoto').style.opacity = '0.6';
+
+  if (ST.photoMerged) {
+    mergeBar.style.display = 'block';
+    mergeBar.innerHTML = `<div class="photo-done-bar"><span class="photo-done-ico">✅</span><div class="photo-done-info">${ST.photoQueue.length} photo${ST.photoQueue.length > 1 ? 's' : ''} added as material</div><button class="photo-done-del" onclick="removeMergedPhoto();renderPhotoUI();" title="Remove">✕</button></div>`;
+  } else {
+    mergeBar.style.display = 'block';
+    mergeBar.innerHTML = `<div class="photo-merge-bar"><div class="photo-merge-info"><strong>${ST.photoQueue.length} photo${ST.photoQueue.length > 1 ? 's' : ''}</strong> ready · will be compressed automatically</div><button class="btn-merge" onclick="mergePhotosIntoPlan()">Add as material →</button></div>`;
+  }
+}
+
+// Reset photo state when plan screen is reset
+const _origResetPlan = typeof resetPlan === 'function' ? resetPlan : null;
+
+// ═══════════════════════════════
 // SESSION FLOW
 // ═══════════════════════════════
 function resetSession() {
@@ -2177,13 +2673,13 @@ function pickFmt(el) {
 // ═══════════════════════════════
 const MPROMPT = {
   erklaere: 'MODE: Explain to Me — Explain clearly with 1-2 concrete everyday analogies.',
-  pruefe:   'MODE: Quiz Me — Ask 3 questions IMMEDIATELY without prior explanation. After each answer: brief feedback + next question.',
+  pruefe:   'MODE: Practice — Progressive difficulty, one question at a time. Start immediately with Q1, no introduction. Q1 = pure recall (define or name something). Q2 = understanding (explain why/how). Q3 = integrative: ask the student to either (a) explain a connection between two concepts from this topic ("How does X relate to Y and what follows from that?") OR (b) reconstruct a process/sequence ("Describe the steps from X to Z and explain why the order matters"). Choose whichever fits the topic better. After each answer: 1 sentence of feedback. If the answer is wrong or incomplete, do NOT move to the next question — instead ask one targeted follow-up drilling into exactly the gap, then proceed. Never show more than one question at a time.',
   struktur: 'MODE: Organize — Clear overview, tables when appropriate.',
   vernetze: 'MODE: Connect — Brief explanation, then 3 explicit connections (🔗 1/2/3).',
   story:    'MODE: Tell Me a Story — Story with concrete characters, then 3 key points.'
 };
 const FPROMPT = {
-  text:      'ALWAYS answer in exactly this structure (no exceptions):\n**Core:** [1 precise sentence — what is the essential point]\n**Explanation:** [3–4 sentences — how and why, with an analogy if helpful]\n**Example:** [1 concrete example from practice or exam]\nAlways mark technical terms with **double asterisks**.',
+  text:      'ALWAYS answer in EXACTLY this structure — one time, never repeat it, never add extra sections:\n**Core:** [1 precise sentence — the single most essential point of the entire topic]\n**Explanation:** [3–4 sentences max — how and why, one analogy if helpful]\n**Example:** [1 concrete example]\nDo NOT create sub-sections, periods, or multiple Core/Explanation/Example blocks. One block total. Always mark technical terms with **double asterisks**.',
   organizer: 'Create a graphic organizer as JSON in a code block with language "organizer". Format:\n```organizer\n{"titel":"Name","typ":"linear","schritte":[{"id":"1","typ":"prozess","label":"Short name","kern":"1 precise sentence","erklaerung":"2 sentences how/why","beispiel":"concrete example","pfeile":[{"zu":"2","label":"leads to"}]}]}\n```\nStep type: prozess | entscheidung | ergebnis\nFlow type: linear | verzweigt | zyklisch\n4–7 steps. kern/erklaerung/beispiel as detailed as in text format. Arrow label=brief description of connection (max 3 words). ALL in English. ONLY JSON code block.',
   mindmap:   'Create a mindmap as JSON in a code block with language "mindmap". Format:\n```mindmap\n{"zentrum":"Main topic","aste":[{"titel":"Branch","knoten":[{"titel":"Concept","kern":"1 sentence","erklaerung":"2 sentences","beispiel":"1 example"}]}],"verbindungen":[{"von":"Concept A","zu":"Concept B","label":"influences"}]}\n```\nRules: 4 branches, 3 nodes each. kern=1 precise sentence. erklaerung=max 2 sentences. beispiel=1 concrete example. EXACTLY 3 connections between concepts from DIFFERENT branches — label=short verb (max 3 words). ALL in English. Output ONLY the JSON code block.'
 };
@@ -2195,14 +2691,43 @@ function setQuellenModus(modus) {
 }
 
 function buildSys() {
-  const d = load();
+  const d = load() || fresh();
+  if (ST.fmt === 'organizer') {
+    return `You are a learning assistant for students. Answer exclusively in English, precisely, without filler words.
+Field of study: ${d.profile.sg}
+Topic: "${ST.topic}"
+Focus: "${ST.focus || 'general'}"
+
+ABSOLUTE FORMAT RULE — overrides everything else:
+Output ONLY the JSON code block. No text before or after it. No explanations, no learning outcomes, no summaries. ONLY the code block.
+${FPROMPT.organizer}
+
+Mode context (influences content depth only, NOT output structure): ${MPROMPT[ST.mode]}`;
+  }
+  if (ST.fmt === 'text' && ST.mode !== 'pruefe') {
+    return `You are a learning assistant for students. Answer exclusively in English, precisely, without filler words.
+Field of study: ${d.profile.sg}
+Topic: "${ST.topic}"
+Focus: "${ST.focus || 'general'}"
+
+ABSOLUTE FORMAT RULE — this overrides everything else:
+Answer in EXACTLY ONE block with this structure, never repeated:
+**Core:** [1 sentence — the single most essential point of the entire topic]
+**Explanation:** [3–4 sentences max — how and why, one analogy if helpful]
+**Example:** [1 concrete example]
+Do NOT split into sub-sections, periods, chapters, or multiple blocks. ONE Core, ONE Explanation, ONE Example. Nothing else.
+
+Mode intent (affects tone/angle only, NOT structure): ${MPROMPT[ST.mode]}
+Always mark technical terms with **double asterisks**.
+Analyze the uploaded material and answer based on actual content.`;
+  }
   return `You are a learning assistant for students. Answer exclusively in English, precisely, without filler words.
 Field of study: ${d.profile.sg}
 Topic: "${ST.topic}"
 Focus: "${ST.focus || 'general'}"
 ${MPROMPT[ST.mode]}
 Format: ${FPROMPT[ST.fmt]}
-Analyze the uploaded material and answer precisely based on the actual content.`;
+Analyze the uploaded material and answer precisely based on actual content.`;
 }
 
 function buildFirstContent() {
@@ -2299,9 +2824,8 @@ async function callAPI() {
   setBusy(true);
   const ty = addTyping();
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: (['mindmap','organizer'].includes(ST.fmt) || ['mindmap','organizer'].includes(ST.bfmt)) ? 8000 : 2000, system: buildSys(), messages: ST.msgs })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
@@ -2450,12 +2974,6 @@ function addAI(text) {
   bub.className = 'bub';
   bub.innerHTML = `${h}${vis}`;
 
-  const speakBtn = document.createElement('button');
-  speakBtn.type = 'button';
-  speakBtn.className = 'speak-btn';
-  speakBtn.textContent = '🔊 Read aloud';
-  speakBtn.addEventListener('click', () => toggleSpeech(speakBtn, text));
-  bub.appendChild(speakBtn);
 
   // Lernen-Button: Text
   const isTextFmt = !ST.fmt || ST.fmt === 'text' || ST.bfmt === 'text';
@@ -2815,9 +3333,8 @@ status is EXACTLY ONE of: richtig | unvollstaendig | falsch
 Analyze each main point of the student. Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 800, system: sys, messages: [{
         role: 'user',
         content: `Original text:\n${originalText}\n\nStudent's reproduction:\n${answer}`
@@ -2875,13 +3392,21 @@ function startLernenFlow(btn, text, bub, h) {
   const begriffe = [];
   const matches = text.matchAll(/\*\*(.+?)\*\*/g);
   for (const m of matches) {
-    const term = m[1].replace(/^(Kern|Erklärung|Beispiel|Zusammenfassung|Hinweis|Core|Explanation|Example|Summary|Note):$/, '').trim();
-    if (term && !begriffe.includes(term)) begriffe.push(term);
+    const term = m[1]
+      .replace(/^(Kern|Erklärung|Beispiel|Zusammenfassung|Hinweis|Core|Explanation|Example|Summary|Note):$/, '')
+      .replace(/^Q\d+[^:]*:\s*/, '')
+      .trim();
+    if (!term) continue;
+    if (begriffe.includes(term)) continue;
+    if (term.length > 45) continue;
+    if (/^Q\d/.test(term)) continue;
+    begriffe.push(term);
   }
   bub._originalContent = bub.innerHTML;
   bub._originalText = text;
   btn.style.display = 'none';
-  if (begriffe.length >= 2) {
+  const isPruefe = ST.mode === 'pruefe' || ST.bMode === 'pruefe';
+  if (!isPruefe && begriffe.length >= 2) {
     startLueckentext(bub, begriffe, h);
   } else {
     startRecallPhase(bub);
@@ -2982,8 +3507,15 @@ function startRecallPhase(bub) {
   const begriffe = [];
   const matches = text.matchAll(/\*\*(.+?)\*\*/g);
   for (const m of matches) {
-    const term = m[1].replace(/^(Kern|Erklärung|Beispiel|Zusammenfassung|Hinweis|Core|Explanation|Example|Summary|Note):$/, '').trim();
-    if (term && !begriffe.includes(term)) begriffe.push(term);
+    const term = m[1]
+      .replace(/^(Kern|Erklärung|Beispiel|Zusammenfassung|Hinweis|Core|Explanation|Example|Summary|Note):$/, '')
+      .replace(/^Q\d+[^:]*:\s*/, '')
+      .trim();
+    if (!term) continue;
+    if (begriffe.includes(term)) continue;
+    if (term.length > 45) continue;
+    if (/^Q\d/.test(term)) continue;
+    begriffe.push(term);
   }
   const recallId = 'lr-' + Date.now();
   const chipsHtml = begriffe.length
@@ -3027,9 +3559,8 @@ Respond ONLY with this JSON:
 In English. Not just repeating — force the student to think deeply.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:200,system:sys,messages:[{
         role:'user',content:`Topic:\n${originalText.slice(0,600)}\n\nRecall feedback:\n${recallFeedback}`
       }]})
@@ -3076,9 +3607,8 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,system:sys,messages:[{
         role:'user',content:`Background:\n${originalText.slice(0,600)}\n\nQuestion:\n${frage}\n\nAnswer:\n${answer}`
       }]})
@@ -3133,9 +3663,8 @@ Respond ONLY with this JSON:
 In English. Close to exam scenarios, realistic.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:200,system:sys,messages:[{
         role:'user',content:`Topic:\n${originalText.slice(0,600)}`
       }]})
@@ -3183,9 +3712,8 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,system:sys,messages:[{
         role:'user',content:`Background:\n${originalText.slice(0,600)}\n\nTask:\n${aufgabe}\n\nStudent's example:\n${answer}`
       }]})
@@ -3206,7 +3734,7 @@ Rating 1–10. In English.`;
         <div class="lernen-fb-text">${esc(json.feedback)}</div>
         <div class="lernen-actions" style="margin-top:.5rem">
           <button class="lernen-submit" style="background:var(--surface);color:var(--accent);border:1.5px solid var(--accent)" onclick="bspNochmal('${bspId}')">Try again →</button>
-          ${recallId ? `<button class="lernen-submit" style="background:var(--pru-tx)" onclick="startTransferfrage('${recallId}')">+ Transferfrage →</button>` : ''}
+          ${recallId ? `<button class="lernen-submit" style="background:var(--pru-tx)" onclick="startTransferQuestion('${recallId}')">+ Transfer Question →</button>` : ''}
         </div>
       </div>`;
     fbEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -3226,12 +3754,12 @@ function bspNochmal(bspId) {
   if (fb) fb.innerHTML = '';
 }
 
-async function startTransferfrage(recallId) {
+async function startTransferQuestion(recallId) {
   const recallDiv = document.getElementById(recallId);
   const bub = recallDiv.closest('.bub');
   const originalText = bub._originalText || '';
 
-  // Transferfrage-Container suchen oder erstellen
+  // Transfer Question-Container suchen oder erstellen
   let tfWrap = bub.querySelector('.tf-wrap');
   if (!tfWrap) {
     tfWrap = document.createElement('div');
@@ -3249,9 +3777,8 @@ Respond ONLY with this JSON:
 In English. The question should be close to exam format.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 300, system: sys, messages: [{
         role: 'user', content: `Topic:\n${originalText.slice(0, 500)}`
       }]})
@@ -3266,11 +3793,11 @@ In English. The question should be close to exam format.`;
     tfCard._tfFrage = frage;
     tfCard._tfOriginal = originalText;
     tfCard.innerHTML = `
-      <div class="tf-lbl">Transferfrage</div>
+      <div class="tf-lbl">Transfer Question</div>
       <div class="tf-frage">${esc(frage)}</div>
       <textarea class="lernen-ta" id="${tfId}-ta" placeholder="Write your answer here..."></textarea>
       <div class="lernen-actions" style="margin-top:.6rem">
-        <button class="lernen-submit" id="${tfId}-btn" onclick="submitTransferfrage('${tfId}')">Evaluate →</button>
+        <button class="lernen-submit" id="${tfId}-btn" onclick="submitTransferQuestion('${tfId}')">Evaluate →</button>
       </div>
       <div id="${tfId}-fb"></div>`;
     tfWrap.innerHTML = '';
@@ -3281,7 +3808,7 @@ In English. The question should be close to exam format.`;
   }
 }
 
-async function submitTransferfrage(tfId) {
+async function submitTransferQuestion(tfId) {
   const ta = document.getElementById(`${tfId}-ta`);
   const answer = ta && ta.value.trim();
   if (!answer) { if (ta) ta.style.borderColor = 'var(--red)'; return; }
@@ -3305,9 +3832,8 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 400, system: sys, messages: [{
         role: 'user',
         content: `Background knowledge:\n${originalText}\n\nTransfer question:\n${frage}\n\nStudent's answer:\n${answer}`
@@ -3317,7 +3843,7 @@ Rating 1–10. In English.`;
     const json = JSON.parse(data.content[0].text.match(/\{[\s\S]*\}/)[0]);
     const score = Math.min(10, Math.max(1, json.bewertung || 5));
     const scoreColor = score >= 7 ? 'var(--accent)' : score >= 5 ? '#E8A020' : 'var(--red)';
-    recordSessionTask('Transferfrage', ST.bausteinFocusTopic || ST.topic || 'Transferfrage', score);
+    recordSessionTask('Transfer Question', ST.bausteinFocusTopic || ST.topic || 'Transfer Question', score);
 
     fbEl.innerHTML = `
       <div class="lernen-fb" style="margin-top:.6rem">
@@ -3328,7 +3854,7 @@ Rating 1–10. In English.`;
         <div class="lernen-fb-text">${esc(json.feedback)}</div>
         <div class="lernen-actions" style="margin-top:.5rem">
           <button class="lernen-submit" style="background:var(--surface);color:var(--accent);border:1.5px solid var(--accent)" onclick="tfNochmal('${tfId}')">Try again →</button>
-          ${recallId ? `<button class="lernen-submit" style="background:var(--surface);color:var(--muted);border:1px solid var(--border)" onclick="startTransferfrage('${recallId}')">Andere Frage →</button>` : ''}
+          ${recallId ? `<button class="lernen-submit" style="background:var(--surface);color:var(--muted);border:1px solid var(--border)" onclick="startTransferQuestion('${recallId}')">Different Question →</button>` : ''}
         </div>
       </div>`;
     fbEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -3369,9 +3895,8 @@ Respond ONLY with this JSON:
 In English. Max 2 sentences.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 300, system: sys, messages: [{
         role: 'user', content: `Topic:\n${originalText.slice(0, 500)}`
       }]})
@@ -3439,9 +3964,8 @@ If no: respond with {"ergebnis":"kontern","konter":"Your sharpened counter-argum
 Reply ONLY with this JSON. In English. Be critical — don't give up too easily.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 400, system: sys, messages: [{
         role: 'user', content: `Topic:\n${originalText}\n\nDebate history:\n${verlauf}`
       }]})
@@ -3489,9 +4013,8 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 500, system: sys, messages: [{
         role: 'user', content: `Topic:\n${originalText.slice(0,400)}\n\nDebate:\n${verlauf}`
       }]})
@@ -3729,9 +4252,8 @@ async function mmVerbViewLoad(mmId, idx) {
 Respond ONLY with this JSON (no text before/after):
 {"erklaerung":"Detailed explanation (3–5 sentences)","kern":"A precise core sentence summarizing the connection"}`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001', max_tokens:500, system:sys, messages:[{
         role:'user', content:`Cross-connection: "${v.von}" ${v.label} "${v.zu}"\n\nExplain this connection in detail.`
       }]})
@@ -3932,9 +4454,8 @@ Respond ONLY with this JSON (no text before/after):
 {"bewertung":7,"feedback":"What was good: ... / What is missing: ...","verbesserte_version":"...","lerntips":["Tip 1","Tip 2"]}
 Rating 1–10. Focus on understanding the causal/logical connection. Everything in English.`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001', max_tokens:700, system:sys, messages:[{
         role:'user', content:`Cross-connection: "${v.von}" ${v.label} "${v.zu}"\n\nStudent's explanation: ${answer}\n\nEvaluate now.`
       }]})
@@ -4258,9 +4779,8 @@ Respond ONLY with this JSON:
 status is EXACTLY ONE of: richtig | unvollstaendig | falsch. Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:800,system:sys,messages:[{role:'user',content:`Reference:\n${referenz}\n\nStudent answer:\n${answer}`}]})
     });
     const data = await res.json();
@@ -4410,9 +4930,8 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:600,system:sys,messages:[{role:'user',content:`Reference:\n${referenz}\n\nStudent answer:\n${answer}`}]})
     });
     const data = await res.json();
@@ -4530,9 +5049,8 @@ Respond ONLY with this JSON:
 Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:600,system:sys,messages:[{role:'user',content:`Reference:\n${ablauf}\n\nStudent answer:\n${answer}`}]})
     });
     const data = await res.json();
@@ -4609,9 +5127,8 @@ Respond ONLY with JSON (no text before/after):
 {"schritte":[{"kern":"new formulation"},{"kern":"new formulation"},...]}
 Exactly ${schritte.length} entries in the same order. In English.`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001', max_tokens:900, system:sys, messages:[{role:'user', content:stepsDesc}]})
     });
     if (!res.ok) return;
@@ -4876,9 +5393,8 @@ Respond ONLY with this JSON:
 status is EXACTLY ONE of: richtig | unvollstaendig | falsch. Rating 1–10. In English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 800, system: sys, messages: [{
         role: 'user', content: `Reference:\n${referenz}\n\nStudent answer:\n${answer}`
       }]})
@@ -5250,6 +5766,15 @@ function resetPlaner() {
   document.getElementById('f2').value = '';
   document.getElementById('daysBadge').style.display = 'none';
   document.getElementById('planOut').innerHTML = '';
+  // Reset photo state
+  ST.photoQueue = [];
+  ST.photoMerged = false;
+  document.getElementById('photoThumbList').innerHTML = '';
+  document.getElementById('photoMergeBar').innerHTML = '';
+  document.getElementById('photoMergeBar').style.display = 'none';
+  document.getElementById('photoCountLbl').textContent = '';
+  document.getElementById('dzPhoto').style.opacity = '1';
+  document.getElementById('fPhoto').value = '';
 }
 
 function updateDays() {
@@ -5292,7 +5817,7 @@ async function buildPlan() {
   out.innerHTML = '<div class="plan-load"><div class="typ"><span></span><span></span><span></span></div>AI analyzing your material...</div>';
   document.getElementById('btnPlan').disabled = true;
 
-  const d = load();
+  const d = load() || fresh();
   const quellenHinweis = ST.quellenModus === 'material'
     ? 'IMPORTANT: Base the study plan EXCLUSIVELY on the uploaded material. No additions from your own knowledge.'
     : 'You may supplement the study plan with your own knowledge — deeper explanations, practical references, and cross-connections are welcome.';
@@ -5304,10 +5829,13 @@ ${hints ? 'Notes: ' + hints : ''}
 ${quellenHinweis}
 
 Analyze the material. Create a study plan as JSON:
-- All topics relevant to the exam
-- Priority: hoch / mittel / niedrig
-- Distributed across the available ${days} days
-- Realistic hour estimates
+- STRICT LIMIT: maximum 10 topics TOTAL across ALL weeks combined. Each topic appears exactly once — never repeat a topic in a different week.
+- Group related content into broad topics. Do not list sub-details as separate topics.
+- Assign priority based ONLY on content importance and exam relevance (NOT based on time available):
+  hoch = core concepts, heavily covered in material, likely exam-relevant
+  mittel = supporting concepts, moderately covered
+  niedrig = peripheral or supplementary topics
+- Distribute the (max 10) topics across weeks, with realistic hour estimates
 
 Respond ONLY with valid JSON in a code block (no text before/after). Use only simple characters in string values — no quotes, no apostrophes, no special characters that could break JSON.
 
@@ -5323,7 +5851,7 @@ Respond ONLY with valid JSON in a code block (no text before/after). Use only si
       "themen": [
         {
           "name": "Topic name",
-          "beschreibung": "What needs to be learned",
+          "beschreibung": "What needs to be learned - no special chars",
           "prioritaet": "hoch",
           "stunden": 2,
           "tags": ["tag1"]
@@ -5348,9 +5876,8 @@ Respond ONLY with valid JSON in a code block (no text before/after). Use only si
   content.push({ type: 'text', text: `Create the study plan for "${name}" in ${days} days.` });
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 6000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
@@ -5360,8 +5887,8 @@ Respond ONLY with valid JSON in a code block (no text before/after). Use only si
     const raw = codeBlock ? codeBlock.trim() : (text.match(/\{[\s\S]*\}/) || [])[0];
     if (!raw) throw new Error('No JSON found in response');
     const json = safeJsonParse(raw);
-    if (!json) throw new Error('Could not parse JSON response');
-    renderPlan(json, name, examStr, days);
+    if (!json) throw new Error('Could not parse study plan JSON');
+    showPrioOverview(json, name, examStr, days);
   } catch (e) {
     out.innerHTML = `<div class="err on">Error: ${e.message}</div>`;
   } finally {
@@ -5418,6 +5945,207 @@ function renderPlan(plan, name, examStr, days) {
 
   document.getElementById('planOut').innerHTML = h;
   document.getElementById('planOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showPrioOverview(plan, name, examStr, days) {
+  ST._pendingPlan = plan;
+  ST._pendingPlanMeta = { name, examStr, days };
+  ST.currentPlan = { name, examStr, days };
+
+  // Populate allTopics so openBaustein(idx) works directly
+  ST.allTopics = [];
+  (plan.wochen || []).forEach(w => (w.themen || []).forEach(t => ST.allTopics.push(t)));
+
+  const groups = { hoch: [], mittel: [], niedrig: [] };
+  ST.allTopics.forEach((t, idx) => {
+    const p = t.prioritaet in groups ? t.prioritaet : 'niedrig';
+    groups[p].push({ t, idx });
+  });
+
+  document.getElementById('prioHead').innerHTML = `
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.4rem">
+      <div>
+        <div class="plan-title">${esc(name)}</div>
+        <div class="plan-meta">${examStr} · ${days} Tage · ~${plan.empfohleneStunden}h · ${plan.gesamtthemen} Themen</div>
+      </div>
+      <button class="btn bg" id="btnSavePlan" onclick="savePlan()" style="font-size:.72rem;padding:.38rem .85rem;white-space:nowrap;flex-shrink:0">💾 Speichern</button>
+    </div>`;
+
+  const COLS = [
+    { key: 'hoch',    label: 'Priorität Hoch',    dot: '#C4533A' },
+    { key: 'mittel',  label: 'Priorität Mittel',   dot: '#C8A020' },
+    { key: 'niedrig', label: 'Priorität Niedrig',  dot: '#4A9A5A' },
+  ];
+
+  ST._prioGroups = groups;
+  ST._prioCols = COLS;
+  ST._prioColCollapsed = { hoch: false, mittel: false, niedrig: false };
+
+  renderPrioGrid();
+
+  show('scPrioOverview');
+  setNav('nPlan');
+}
+
+const PRIO_DOTS = { hoch: '#C4533A', mittel: '#C8A020', niedrig: '#4A9A5A' };
+const PRIO_LABELS = { hoch: 'Hoch', mittel: 'Mittel', niedrig: 'Niedrig' };
+
+function truncW(text, n) {
+  if (!text) return '';
+  const w = text.split(' ');
+  return w.length <= n ? text : w.slice(0, n).join(' ') + '…';
+}
+
+function togglePrioCol(key) {
+  if (!ST._prioColCollapsed) ST._prioColCollapsed = {};
+  ST._prioColCollapsed[key] = !ST._prioColCollapsed[key];
+  renderPrioGrid();
+}
+
+function renderPrioGrid() {
+  const COLS = ST._prioCols || [];
+  const groups = ST._prioGroups || {};
+  const collapsed = ST._prioColCollapsed || {};
+
+  const gridCols = ['hoch','mittel','niedrig'].map(k => collapsed[k] ? 'auto' : '1fr').join(' ');
+  const grid = document.getElementById('prioGrid');
+  grid.style.gridTemplateColumns = gridCols;
+
+  grid.innerHTML = COLS.map(col => {
+    const items = groups[col.key] || [];
+    const isCollapsed = !!collapsed[col.key];
+    const tilesHtml = items.length
+      ? items.map(({ t, idx }) => {
+          const otherPrios = ['hoch','mittel','niedrig'].filter(p => p !== t.prioritaet);
+          return `
+          <div class="prio-tile">
+            <div class="prio-tile-hd"><span class="prio-tile-name">${esc(t.name)}</span></div>
+            <div class="prio-tile-bd">
+              ${t.beschreibung ? `<div class="prio-tile-desc">${esc(truncW(t.beschreibung, 10))}</div>` : ''}
+              <div class="prio-tile-actions">
+                ${otherPrios.map(p => `
+                  <button class="prio-move-btn" onclick="movePrioTopic(${idx},'${p}')">
+                    <span class="prio-dot" style="background:${PRIO_DOTS[p]};width:7px;height:7px"></span>${PRIO_LABELS[p]}
+                  </button>`).join('')}
+                <button class="prio-del-btn" onclick="removePrioTopic(${idx})">× Entfernen</button>
+                <button class="prio-tile-lernen" onclick="openBaustein(${idx})">Lernen →</button>
+              </div>
+            </div>
+          </div>`;
+        }).join('')
+      : `<span class="prio-empty">Keine Themen</span>`;
+    return `
+      <div class="prio-col${isCollapsed ? ' collapsed' : ''}">
+        <div class="prio-col-head" onclick="togglePrioCol('${col.key}')">
+          <span class="prio-dot" style="background:${col.dot}"></span>
+          <span class="prio-col-title">${col.label}</span>
+          <span class="prio-col-count">${items.length}</span>
+          <span class="prio-col-toggle">‹</span>
+        </div>
+        <div class="prio-col-tiles">${tilesHtml}</div>
+      </div>`;
+  }).join('');
+}
+
+function removePrioTopic(idx) {
+  ST.allTopics.splice(idx, 1);
+  rebuildPrioGroups();
+}
+
+function movePrioTopic(idx, newPrio) {
+  ST.allTopics[idx].prioritaet = newPrio;
+  rebuildPrioGroups();
+}
+
+function rebuildPrioGroups() {
+  const groups = { hoch: [], mittel: [], niedrig: [] };
+  ST.allTopics.forEach((t, idx) => {
+    const p = t.prioritaet in groups ? t.prioritaet : 'niedrig';
+    groups[p].push({ t, idx });
+  });
+  ST._prioGroups = groups;
+  renderPrioGrid();
+}
+
+function showFullPlan() {
+  const { name, examStr, days } = ST._pendingPlanMeta;
+  renderPlan(ST._pendingPlan, name, examStr, days);
+  show('scPlan');
+  setNav('nPlan');
+}
+
+function openPrioAdjust() {
+  document.getElementById('prioBackdrop').classList.add('open');
+  document.getElementById('prioSlide').classList.add('open');
+  setTimeout(() => document.getElementById('prioAdjustInput').focus(), 320);
+}
+
+function closePrioAdjust() {
+  document.getElementById('prioBackdrop').classList.remove('open');
+  document.getElementById('prioSlide').classList.remove('open');
+}
+
+async function applyPrioChange() {
+  const hint = document.getElementById('prioAdjustInput').value.trim();
+  if (!hint) { closePrioAdjust(); return; }
+
+  const btn = document.getElementById('btnPrioAdjust');
+  const loadEl = document.getElementById('prioAdjustLoad');
+  btn.disabled = true;
+  loadEl.style.display = 'flex';
+
+  const { name, examStr, days } = ST._pendingPlanMeta;
+  const d = load() || fresh();
+  const quellenHinweis = ST.quellenModus === 'material'
+    ? 'IMPORTANT: Base the study plan EXCLUSIVELY on the uploaded material.'
+    : 'You may supplement the study plan with your own knowledge.';
+
+  const allVisible = ['hoch','mittel','niedrig'].map(k => {
+    const topics = (ST._prioGroups?.[k] || []).map(({t}) => t.name).join(', ');
+    return topics ? `${PRIO_LABELS[k]}: ${topics}` : null;
+  }).filter(Boolean).join(' | ');
+
+  const sys = `You are an academic study planner. Respond exclusively in English, without filler words.
+Field of study: ${d.profile.sg}
+Exam: "${name}" on ${examStr} (in ${days} days)
+${quellenHinweis}
+
+Currently visible topics — ${allVisible}
+
+Here is the full study plan as JSON:
+${JSON.stringify(ST._pendingPlan)}
+
+The user wants the following change: "${hint}"
+If the change refers to "this topic", "the first one", "these topics" etc., interpret it relative to the currently visible topics listed above.
+
+Apply the change and return the updated plan as valid JSON in a code block. Keep the exact same JSON structure. Maintain content-based priority assignment (hoch = core/heavily covered, mittel = supporting, niedrig = peripheral) — do not distribute topics evenly across priorities. Use only simple characters — no quotes, apostrophes, or special characters that could break JSON.
+
+\`\`\`json
+{ ... }
+\`\`\``;
+
+  try {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+      method: 'POST',
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 6000, system: sys, messages: [{ role: 'user', content: `Apply the requested change to the study plan.` }] })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
+    const data = await res.json();
+    const text = data.content.map(b => b.text || '').join('');
+    const codeBlock = (text.match(/```(?:json)?\s*([\s\S]*?)```/) || [])[1];
+    const raw = codeBlock ? codeBlock.trim() : (text.match(/\{[\s\S]*\}/) || [])[0];
+    if (!raw) throw new Error('No JSON in response');
+    const json = safeJsonParse(raw);
+    if (!json) throw new Error('Could not parse updated plan');
+    closePrioAdjust();
+    document.getElementById('prioAdjustInput').value = '';
+    showPrioOverview(json, name, examStr, days);
+  } catch (e) {
+    alert('Fehler beim Anpassen: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    loadEl.style.display = 'none';
+  }
 }
 
 // ═══════════════════════════════
@@ -5548,9 +6276,8 @@ Respond ONLY with JSON:
   content.push({ type: 'text', text: `Create the ${format} test for: "${t.name}" — ${t.beschreibung}` });
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 8000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
@@ -5684,15 +6411,14 @@ async function submitFormatTask(idx) {
   stopTimer(key, 'recall', idx);
 
   const task = ST.formatTestTasks[idx];
-  const d = load();
+  const d = load() || fresh();
   const sys = `You are a strict but fair examiner. Evaluate the answer to a test task.
 Respond ONLY with JSON: {"score":7,"feedback":"brief evaluation","staerken":"what was good","luecken":"what was missing or wrong"}
 score = 0–10 (integer). 10=perfect, 7.5=passed, <5=insufficient. Be demanding.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 600, system: sys, messages: [{
         role: 'user',
         content: `Topic: ${ST.currentTestTopic?.name || ''}\nTask type: ${task.typ}\nTask: ${task.aufgabe}\nModel answer: ${task.idealantwort}\n\nStudent's answer: ${answer}`
@@ -5753,9 +6479,8 @@ async function runFormatTestAuswertung() {
 Respond ONLY with JSON: {"staerken":"2-3 sentences what was good","schwaechen":"2-3 sentences concrete gaps","empfehlung":"1-2 sentences next steps"}`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 500, system: sys, messages: [{
         role: 'user',
         content: `Topic: ${topic}\nFormat: ${format}\nResults:\n${taskSummary}\nTotal score: ${avg.toFixed(1)}/10`
@@ -5805,7 +6530,7 @@ function saveFormatTestScore(avg) {
   const topic = ST.currentTestTopic?.name || '';
   const parent = ST.currentTestParent || '';
   if (!topic) return;
-  const d = load();
+  const d = load() || fresh();
   const key = `${parent}__${topic}`;
   if (!d.sessionScores) d.sessionScores = {};
   const prev = d.sessionScores[key];
@@ -5848,7 +6573,7 @@ function openBausteinTest(idx) {
 }
 
 async function loadTest(t) {
-  const d = load();
+  const d = load() || fresh();
   const sys = `You are an exam coach. Create a structured learning test for the topic "${t.name}".
 Respond ONLY with this JSON (no text before/after):
 {
@@ -5877,9 +6602,8 @@ Rules: 3–4 quickCheck, 2 activeRecall, 1–2 examSimulation, 2 spacedRepetitio
   content.push({ type: 'text', text: `Create the test for: "${t.name}" — ${t.beschreibung}` });
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 6000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
@@ -6189,7 +6913,7 @@ function backFromTest() {
   } else {
     const idx = ST.testBausteinIdx;
     if (idx >= 0 && ST.allTopics[idx]) openBaustein(idx);
-    else { show('scPlan'); setNav('nPlan'); }
+    else { backToPlan(); }
   }
 }
 
@@ -6225,9 +6949,8 @@ Respond ONLY with this JSON (no text before/after):
 Rating 1–10. Fachbegriffe: only terms central to the topic (max 4).`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1200, system: sys, messages: [{
         role: 'user',
         content: `Question: ${question}\n\nModel answer (Reference): ${idealantwort}\n\nStudent's answer: ${answer}\n\nEvaluate now.`
@@ -6333,9 +7056,8 @@ Respond ONLY with this JSON (no text before/after):
 Rating 1–10. Focus on exam logic, argumentation structure, completeness.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1200, system: sys, messages: [{
         role: 'user',
         content: `Exam task: ${question}\n\nModel solution (Reference): ${idealantwort}\n\nStudent's solution: ${answer}\n\nEvaluate now.`
@@ -6469,9 +7191,8 @@ Rules: gesamtnote 1–10. klausurrelevanz is EXACTLY ONE of: hoch | mittel | nie
 Weaknesses sorted by exam relevance (high first). Max 5 weaknesses. All in English, precise.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1200, system: sys, messages: [{ role: 'user', content: `Test results:\n\n${ergebnisse}` }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
@@ -6618,9 +7339,8 @@ Respond ONLY with JSON:
   "erklaerung": "Re-explain the concept from scratch: simple, concrete, with a vivid real-world analogy. 3-5 sentences. Build from intuition to correct understanding."
 }
 In English. Be specific and constructive.`;
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:700, system:sys, messages:[{
         role:'user', content:`Weak point: "${ST.gezieltTitel}"\nDescription: ${ST.gezieltDesc}`
       }]})
@@ -6684,9 +7404,8 @@ async function startGezieltPhase2() {
 No yes/no questions. Each question illuminates a different aspect. Respond ONLY with JSON:
 {"fragen":["Question 1","Question 2","Question 3","Question 4"]}
 In English. Concrete, challenging, in-depth.`;
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:600, system:sys, messages:[{
         role:'user', content:`Weak point: "${ST.gezieltTitel}"\nDescription: ${ST.gezieltDesc}`
       }]})
@@ -6756,9 +7475,8 @@ async function submitGlDrill(idx) {
 Respond ONLY with JSON:
 {"bewertung":7,"gut":"What was correct — 1 sentence","fehlt":"What is missing or imprecise — 1 sentence","verbessert":"A complete model answer in 2-3 sentences","tip":"One concrete learning tip"}
 Rating 1–10. In English. Be specific and constructive.`;
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:500, system:sys, messages:[{
         role:'user', content:`Topic: ${ST.gezieltTitel}\nQuestion: ${ST.glDrillFragen[idx]}\nAnswer: ${answer}`
       }]})
@@ -6849,9 +7567,8 @@ Respond ONLY with JSON:
 }
 In English. Make each step feel like a genuine insight.`;
     }
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:1500, system:sys, messages:[{
         role:'user', content:`Weak concept: "${ST.gezieltTitel}"\nGap description: ${ST.gezieltDesc}`
       }]})
@@ -6940,7 +7657,7 @@ function startSessionAnalysis() {
 }
 
 async function runSessionAnalysis(topic) {
-  const d = load();
+  const d = load() || fresh();
   const sg = d && d.profile && d.profile.sg ? d.profile.sg : 'Studium';
   const tasks = ST.sessionTaskScores || [];
 
@@ -6979,9 +7696,8 @@ Respond ONLY with this JSON:
 gesamtnote: ${gesamtScore !== null ? `Calculated from task average: ${gesamtScore} — adjust slightly if needed` : 'Estimate 1–10'}. klausurrelevanz: hoch | mittel | niedrig. Max 4 weaknesses. All in English.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1000, system: sys, messages: [{ role: 'user', content: `Task results:\n\n${aufgabenText}` }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
@@ -7135,7 +7851,7 @@ function bausteinHeaderHTML(id) {
 }
 
 function openBaustein(idx) {
-  if (!ST.planFiles.length) return showErr('No exam planner material available.');
+  if (!ST.planFiles.length && !ST.allTopics.length) return showErr('No exam planner material available.');
   const t = ST.allTopics[idx];
   if (!t) return;
   ST.bausteinIdx = idx;
@@ -7154,7 +7870,7 @@ function openBaustein(idx) {
 }
 
 async function loadBausteinOverview() {
-  const d = load();
+  const d = load() || fresh();
   const sys = `You are a learning assistant for exam preparation. Analyze the material on the topic "${ST.bausteinTopic}".
 Respond ONLY with this JSON (no text before/after, no Markdown):
 {
@@ -7168,21 +7884,22 @@ Respond ONLY with this JSON (no text before/after, no Markdown):
     "anwenden": ["Calculate X", "Apply Y to an example"]
   },
 }
-Rules: 4–6 summary points, 3–6 subtopics, 3–5 learning goals.
+Rules: exactly 2 summary points, exactly ${ST.bausteinPrio === 'hoch' ? 3 : ST.bausteinPrio === 'mittel' ? 2 : 1} subtopics, max 1 item per learning goal category.
 All in English, precise, exam-relevant.`;
 
   const content = [];
-  ST.planFiles.forEach(pf => {
-    if (pf.mode === 'text') content.push({ type: 'text', text: `--- ${pf.name} ---\n${pf.text}` });
-    else if (pf.type === 'application/pdf') content.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: pf.b64 } });
-    else content.push({ type: 'image', source: { type: 'base64', media_type: pf.type, data: pf.b64 } });
-  });
+  if (ST.planFiles.length) {
+    ST.planFiles.forEach(pf => {
+      if (pf.mode === 'text') content.push({ type: 'text', text: `--- ${pf.name} ---\n${pf.text}` });
+      else if (pf.type === 'application/pdf') content.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: pf.b64 } });
+      else content.push({ type: 'image', source: { type: 'base64', media_type: pf.type, data: pf.b64 } });
+    });
+  }
   content.push({ type: 'text', text: `Create the overview for the learning module: "${ST.bausteinTopic}" — ${ST.bausteinDesc}` });
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1000, system: sys, messages: [{ role: 'user', content }] })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
@@ -7321,6 +8038,17 @@ function pickBMode(el) {
   el.classList.add('on');
   ST.bMode = el.dataset.bm;
   document.getElementById('btnBaustein').disabled = false;
+
+  const isPruefe = ST.bMode === 'pruefe';
+  document.querySelectorAll('.bfc[data-bf="mindmap"], .bfc[data-bf="organizer"]').forEach(btn => {
+    btn.style.opacity = isPruefe ? '.35' : '';
+    btn.style.pointerEvents = isPruefe ? 'none' : '';
+  });
+  if (isPruefe) {
+    document.querySelectorAll('.bfc').forEach(c => c.classList.remove('on'));
+    document.querySelector('.bfc[data-bf="text"]').classList.add('on');
+    ST.bFmt = 'text';
+  }
 }
 
 function pickBFmt(el) {
@@ -7336,9 +8064,13 @@ function backToBausteinOverview() {
 }
 
 function backToPlan() {
-  show('scPlan');
-  setNav('nPlan');
-  setTimeout(() => document.getElementById('planOut').scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+  if (ST._pendingPlan) {
+    show('scPrioOverview');
+    setNav('nPlan');
+  } else {
+    show('scPlan');
+    setNav('nPlan');
+  }
 }
 
 function recordSessionTask(type, name, score) {
@@ -7357,8 +8089,8 @@ function startBaustein() {
   ST.msgs = [];
   ST.sessionTaskScores = [];
 
-  const m = MM[ST.mode];
-  const f = FM[ST.fmt];
+  const m = MM[ST.mode] || MM['erklaere'];
+  const f = FM[ST.fmt] || FM['text'];
   const tag = document.getElementById('chatTag');
   tag.textContent = m.lbl;
   tag.style.cssText = `background:${m.bg};color:${m.tx};border:1px solid ${m.bd}`;
@@ -7487,5 +8219,7 @@ function bumpStreak(d) {
 function showErr(m) { const b = document.getElementById('errBar'); b.textContent = m; b.classList.add('on'); }
 function hideErr() { document.getElementById('errBar').classList.remove('on'); }
 </script>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "433a282998cb47c9873f68ee6c66aed1"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
