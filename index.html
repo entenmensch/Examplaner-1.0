@@ -6263,6 +6263,231 @@ function openSubtopicTest(idx, preselectedFormat) {
   startFormatTest(fmt);
 }
 
+// ─── SEQUENCE TEST (Beta) — parallel path, existing tests untouched ───────────
+// 3 phases: 1) Define terms · 2) Order the sequence · 3) Dependencies (next step)
+function openSeqTestBeta(idx) {
+  if (!ST.planFiles.length) return showErr('No exam planner material available.');
+  const st = ST.subtopics[idx];
+  if (!st) return;
+  ST.testIsSubtopic = true;
+  ST.seqTopic = { name: st.titel, beschreibung: st.beschreibung };
+  ST.seqScores = {};
+  document.getElementById('testHeader').innerHTML = `
+    <span class="bh-prio pm" style="background:var(--erk-bg);color:var(--erk-tx);border:1px solid var(--erk-bd)">Beta</span>
+    <span class="bh-name">${esc(st.titel)}</span>
+    <span class="bh-desc">${esc(st.beschreibung)}</span>`;
+  document.getElementById('testContent').style.display = 'none';
+  document.getElementById('testContent').innerHTML = '';
+  document.getElementById('testScoreArea').style.display = 'none';
+  document.getElementById('testBtns').style.display = 'none';
+  document.getElementById('testLoad').style.display = 'block';
+  show('scTest');
+  setNav('nPlan');
+  loadSeqTest(ST.seqTopic);
+}
+
+async function loadSeqTest(t) {
+  const sys = `You are an exam coach. Identify the central ordered sequence (a process or set of stages that build on each other) for the topic "${t.name}".
+Respond ONLY with this JSON (no text before/after):
+{"thema":"short name of the sequence","schritte":[{"begriff":"name of the step/stage","definition":"1-2 sentence model definition"}]}
+Rules: 4 to 7 steps, listed in the CORRECT logical or chronological order. Each step is a real term/stage from the material. All in English. Use only simple characters (no quotes/apostrophes that could break JSON).`;
+  const content = [];
+  ST.planFiles.forEach(pf => {
+    if (pf.mode === 'text') content.push({ type: 'text', text: `--- ${pf.name} ---\n${pf.text}` });
+    else if (pf.type === 'application/pdf') content.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: pf.b64 } });
+    else content.push({ type: 'image', source: { type: 'base64', media_type: pf.type, data: pf.b64 } });
+  });
+  content.push({ type: 'text', text: `Identify the ordered sequence for: "${t.name}" — ${t.beschreibung}` });
+  try {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+      method: 'POST',
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1500, system: sys, messages: [{ role: 'user', content }] })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
+    const data = await res.json();
+    const text = data.content.map(b => b.text || '').join('');
+    const raw = (text.match(/\{[\s\S]*\}/) || [])[0];
+    if (!raw) throw new Error('No JSON found in response');
+    const json = safeJsonParse(raw);
+    if (!json || !Array.isArray(json.schritte) || !json.schritte.length) throw new Error('Could not parse sequence');
+    ST.seqData = json;
+    renderSeqDefine();
+  } catch (e) {
+    document.getElementById('testLoad').innerHTML = `<div class="err on">Error: ${esc(e.message)}</div>`;
+  }
+}
+
+// Fisher-Yates: returns a shuffled array of indices 0..n-1
+function seqShuffle(n) {
+  const a = Array.from({ length: n }, (_, i) => i);
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+// Color set per score (green / amber / red) for colorful feedback cards
+function seqScoreCols(n) {
+  if (n >= 7) return { ac: 'var(--accent)', tint: 'var(--str-bg)', bd: 'var(--str-bd)' };
+  if (n >= 5) return { ac: 'var(--erk-tx)', tint: 'var(--erk-bg)', bd: 'var(--erk-bd)' };
+  return { ac: 'var(--red)', tint: 'var(--red-s)', bd: 'rgba(196,83,58,.25)' };
+}
+
+// ── PHASE 1: DEFINE (free recall of each term) ──
+function renderSeqDefine() {
+  const data = ST.seqData;
+  const order = seqShuffle(data.schritte.length); // random order so the sequence isn't revealed yet
+  let h = `<div class="test-sec">
+    <div class="test-sec-head"><span class="test-sec-ico">✍️</span><span class="test-sec-title">Phase 1 — Define</span><span class="test-sec-sub">${data.schritte.length} terms</span></div>
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:1rem">Define each term in 1–2 sentences — from memory.</div>`;
+  order.forEach(origIdx => {
+    const s = data.schritte[origIdx];
+    h += `<div class="test-q">
+      <div class="test-q-text">${esc(s.begriff)}</div>
+      <div class="recall-ta-wrap"><textarea id="seq-def-${origIdx}" placeholder="Define ${esc(s.begriff)}..."></textarea></div>
+    </div>`;
+  });
+  h += `<div class="lernen-actions" style="margin-top:.5rem"><button class="lernen-submit" id="seq-def-btn" onclick="submitSeqDefine()">Evaluate →</button></div>
+    <div id="seq-def-fb"></div></div>`;
+  const tc = document.getElementById('testContent');
+  tc.innerHTML = h;
+  document.getElementById('testLoad').style.display = 'none';
+  tc.style.display = 'block';
+}
+
+async function submitSeqDefine() {
+  const data = ST.seqData;
+  const answers = data.schritte.map((s, i) => ({ begriff: s.begriff, modell: s.definition, antwort: (document.getElementById(`seq-def-${i}`)?.value || '').trim() }));
+  if (answers.every(a => !a.antwort)) { const ta = document.getElementById(`seq-def-0`); if (ta) ta.style.borderColor = 'var(--red)'; return; }
+  const btn = document.getElementById('seq-def-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Evaluating...'; }
+  const fb = document.getElementById('seq-def-fb');
+  fb.innerHTML = `<div style="padding:.8rem 0;color:var(--muted);font-size:.8rem">AI evaluating...</div>`;
+  const sys = `You are a learning coach. Evaluate how well the student defined each term, comparing to the model definition. Judge meaning, not exact wording.
+Respond ONLY with JSON: {"bewertungen":[{"begriff":"...","bewertung":7,"feedback":"1 short sentence"}],"gesamt":7} — bewertung and gesamt are 1-10. In English.`;
+  const userMsg = answers.map(a => `Term: ${a.begriff}\nModel: ${a.modell}\nStudent: ${a.antwort || '(no answer)'}`).join('\n\n');
+  try {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+      method: 'POST',
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1200, system: sys, messages: [{ role: 'user', content: userMsg }] })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error'); }
+    const d = await res.json();
+    const json = JSON.parse(d.content.map(b => b.text || '').join('').match(/\{[\s\S]*\}/)[0]);
+    const score = Math.min(10, Math.max(1, json.gesamt || 5));
+    ST.seqScores.define = score;
+    const byTerm = {}; (json.bewertungen || []).forEach(b => byTerm[b.begriff] = b);
+    const sc = seqScoreCols(score);
+    let fbh = `<div class="lernen-fb">
+      <div style="display:flex;align-items:baseline;gap:.5rem;margin-bottom:.2rem">
+        <span style="font-family:var(--serif);font-size:2.1rem;font-weight:600;color:${sc.ac};line-height:1">${score}</span>
+        <span style="font-size:.85rem;color:var(--muted)">/10 overall</span>
+      </div>`;
+    answers.forEach(a => {
+      const b = byTerm[a.begriff] || {};
+      const n = Math.min(10, Math.max(1, b.bewertung || 5));
+      const c = seqScoreCols(n);
+      fbh += `<div style="border:1px solid ${c.bd};border-left:4px solid ${c.ac};border-radius:10px;padding:.8rem .95rem;margin-top:.7rem;background:${c.tint}">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.45rem">
+          <span style="font-family:var(--serif);font-size:1.2rem;font-weight:600;color:${c.ac};line-height:1.2">${esc(a.begriff)}</span>
+          ${b.bewertung != null ? `<span style="flex-shrink:0;font-weight:700;font-size:.8rem;color:#fff;background:${c.ac};padding:.14rem .65rem;border-radius:100px">${b.bewertung}/10</span>` : ''}
+        </div>
+        ${b.feedback ? `<div style="font-size:.85rem;line-height:1.55;color:var(--text);margin-bottom:.55rem">${esc(b.feedback)}</div>` : ''}
+        <div style="font-size:.8rem;line-height:1.55;color:var(--muted);background:var(--surface);border:1px solid ${c.bd};border-radius:8px;padding:.55rem .75rem">
+          <span style="font-size:.55rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${c.ac};display:block;margin-bottom:.25rem">Model definition</span>${esc(a.modell)}
+        </div>
+      </div>`;
+    });
+    fbh += `<div style="margin-top:1rem"><button class="lernen-submit" onclick="renderSeqOrder()">Continue: Order →</button></div></div>`;
+    fb.innerHTML = fbh;
+    if (btn) btn.style.display = 'none';
+  } catch (e) {
+    fb.innerHTML = `<div style="color:var(--red);font-size:.8rem">Error: ${esc(e.message)}</div>`;
+    if (btn) { btn.disabled = false; btn.textContent = 'Evaluate →'; }
+  }
+}
+
+// ── PHASE 2: ORDER the sequence ──
+function renderSeqOrder() {
+  const data = ST.seqData;
+  ST.seqUserOrder = [];
+  const shuf = seqShuffle(data.schritte.length);
+  const h = `<div class="test-sec">
+    <div class="test-sec-head"><span class="test-sec-ico">🔢</span><span class="test-sec-title">Phase 2 — Order the sequence</span></div>
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem">Click the terms in the correct order.</div>
+    <div class="org-reih-sequence" id="seq-slots"></div>
+    <div class="org-reih-pool" id="seq-pool">
+      ${shuf.map(oi => `<button class="org-reih-chip" id="seq-chip-${oi}" onclick="seqPickChip(${oi})">${esc(data.schritte[oi].begriff)}</button>`).join('')}
+    </div>
+    <div class="lernen-actions" style="margin-top:.8rem"><button class="lernen-submit" id="seq-order-btn" onclick="checkSeqOrder()" disabled>Check →</button></div>
+    <div id="seq-order-fb"></div></div>`;
+  const tc = document.getElementById('testContent');
+  tc.innerHTML = h;
+  renderSeqSlots();
+  tc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderSeqSlots() {
+  const data = ST.seqData;
+  let h = '';
+  for (let i = 0; i < data.schritte.length; i++) {
+    const oi = ST.seqUserOrder[i];
+    h += `<div class="org-reih-slot${oi != null ? ' filled' : ''}">
+      <span>${i + 1}</span>
+      <span class="org-reih-slot-label">${oi != null ? esc(data.schritte[oi].begriff) : '—'}</span>
+    </div>`;
+  }
+  document.getElementById('seq-slots').innerHTML = h;
+  const btn = document.getElementById('seq-order-btn');
+  if (btn) btn.disabled = ST.seqUserOrder.length !== data.schritte.length;
+}
+
+function seqPickChip(oi) {
+  if (ST.seqUserOrder.includes(oi)) return;
+  ST.seqUserOrder.push(oi);
+  const chip = document.getElementById(`seq-chip-${oi}`);
+  if (chip) chip.style.display = 'none';
+  renderSeqSlots();
+}
+
+function checkSeqOrder() {
+  const data = ST.seqData;
+  const total = data.schritte.length;
+  let correct = 0;
+  ST.seqUserOrder.forEach((oi, pos) => { if (oi === pos) correct++; });
+  ST.seqScores.order = Math.round(correct / total * 10 * 10) / 10;
+  let h = '';
+  for (let i = 0; i < total; i++) {
+    const oi = ST.seqUserOrder[i];
+    const ok = oi === i;
+    h += `<div class="org-reih-slot filled" style="border-color:${ok ? 'var(--accent)' : 'var(--red)'};background:${ok ? 'var(--str-bg)' : 'var(--red-s)'}">
+      <span>${i + 1}</span>
+      <span class="org-reih-slot-label" style="color:${ok ? 'var(--accent)' : 'var(--red)'}">${esc(data.schritte[oi].begriff)}${ok ? '' : ` → should be: ${esc(data.schritte[i].begriff)}`}</span>
+    </div>`;
+  }
+  document.getElementById('seq-slots').innerHTML = h;
+  const btn = document.getElementById('seq-order-btn'); if (btn) btn.style.display = 'none';
+  const scoreColor = correct >= total * 0.7 ? 'var(--accent)' : correct >= total * 0.5 ? '#E8A020' : 'var(--red)';
+  document.getElementById('seq-order-fb').innerHTML = `<div class="lernen-fb" style="margin-top:.75rem">
+    <div class="lernen-fb-score"><span class="lernen-fb-num" style="color:${scoreColor}">${correct}</span><span class="lernen-fb-max">/ ${total}</span></div>
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem">${correct === total ? 'Perfect order!' : 'Correct order shown above.'}</div>
+    <div><button class="lernen-submit" onclick="finishSeqTest()">Finish ✓</button></div></div>`;
+}
+
+function finishSeqTest() {
+  const sc = ST.seqScores || {};
+  const vals = ['define', 'order'].map(k => sc[k]).filter(v => v != null);
+  const composite = vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length * 10) / 10 : null;
+  const h = `<div class="test-sec">
+    <div class="test-sec-head"><span class="test-sec-ico">🏁</span><span class="test-sec-title">Result (Beta)</span></div>
+    <div class="test-score"><div class="test-score-num">${composite != null ? composite : '—'}</div>
+      <div class="test-score-info"><div class="test-score-lbl">Sequence Test</div>
+      <div class="test-score-msg">Define ${sc.define ?? '—'}/10 · Order ${sc.order ?? '—'}/10</div></div></div>
+    <div style="font-size:.78rem;color:var(--muted);margin:.5rem 0 1rem">Phase 3 (Dependencies) comes in the next step.</div>
+    <div class="brow"><button class="btn bg" onclick="backFromTest()">← Back</button></div></div>`;
+  const tc = document.getElementById('testContent');
+  tc.innerHTML = h;
+  tc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 function startFormatTest(format) {
   ST.formatTestFmt = format;
   ST.formatTestTasks = [];
@@ -8054,6 +8279,7 @@ function renderBausteinOverview(data) {
           ${rvBadge ? `<div class="stcard-rv">${rvBadge}</div>` : ''}
         </div>
         ${hasSession ? `<button class="tile-test-btn" style="flex-shrink:0" onclick="event.stopPropagation();openSubtopicTest(${i})">🧪 Test</button>` : ''}
+        <button class="tile-test-btn" style="flex-shrink:0;margin-left:.3rem;border-color:var(--erk-bd);background:var(--erk-bg);color:var(--erk-tx)" onclick="event.stopPropagation();openSeqTestBeta(${i})">🧪 Beta</button>
       </div>`;
     }).join('');
 
