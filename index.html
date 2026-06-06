@@ -6469,19 +6469,85 @@ function checkSeqOrder() {
   document.getElementById('seq-order-fb').innerHTML = `<div class="lernen-fb" style="margin-top:.75rem">
     <div class="lernen-fb-score"><span class="lernen-fb-num" style="color:${scoreColor}">${correct}</span><span class="lernen-fb-max">/ ${total}</span></div>
     <div style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem">${correct === total ? 'Perfect order!' : 'Correct order shown above.'}</div>
-    <div><button class="lernen-submit" onclick="finishSeqTest()">Finish ✓</button></div></div>`;
+    <div><button class="lernen-submit" onclick="renderSeqDeps()">Continue: Dependencies →</button></div></div>`;
+}
+
+// ── PHASE 3: DEPENDENCIES (one combined question, kept short on purpose) ──
+function renderSeqDeps() {
+  const data = ST.seqData;
+  const steps = data.schritte;
+  let chain = '<div style="display:flex;flex-direction:column;gap:.1rem;margin-bottom:1rem">';
+  steps.forEach((s, i) => {
+    chain += `<div style="background:var(--accent-s);border:1px solid var(--str-bd);border-radius:10px;padding:.6rem .9rem;font-weight:600;font-size:.9rem;color:var(--accent)">${i + 1}. ${esc(s.begriff)}</div>`;
+    if (i < steps.length - 1) {
+      chain += `<div style="display:flex;align-items:center;gap:.55rem;padding:.28rem 0 .28rem .65rem">
+        <span style="color:var(--accent);font-size:1.15rem;font-weight:700;flex-shrink:0">↓</span>
+        <input type="text" id="seq-dep-inp-${i}" placeholder="Why does step ${i + 1} lead to step ${i + 2}?" autocomplete="off" style="flex:1;min-width:0;padding:.5rem .8rem;font-size:.82rem">
+      </div>`;
+    }
+  });
+  chain += '</div>';
+  const h = `<div class="test-sec">
+    <div class="test-sec-head"><span class="test-sec-ico">🔗</span><span class="test-sec-title">Phase 3 — Dependencies</span></div>
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.9rem">For each arrow, explain in one line why one step leads to / enables the next.</div>
+    ${chain}
+    <div class="lernen-actions"><button class="lernen-submit" id="seq-deps-btn" onclick="submitSeqDeps()">Evaluate →</button></div>
+    <div id="seq-deps-fb"></div></div>`;
+  const tc = document.getElementById('testContent');
+  tc.innerHTML = h;
+  tc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function submitSeqDeps() {
+  const data = ST.seqData;
+  const steps = data.schritte;
+  const links = [];
+  for (let i = 0; i < steps.length - 1; i++) {
+    const val = (document.getElementById(`seq-dep-inp-${i}`)?.value || '').trim();
+    links.push({ from: steps[i].begriff, to: steps[i + 1].begriff, why: val });
+  }
+  if (links.every(l => !l.why)) { const first = document.getElementById('seq-dep-inp-0'); if (first) first.style.borderColor = 'var(--red)'; return; }
+  const btn = document.getElementById('seq-deps-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Evaluating...'; }
+  const fb = document.getElementById('seq-deps-fb');
+  fb.innerHTML = `<div style="padding:.8rem 0;color:var(--muted);font-size:.8rem">AI evaluating...</div>`;
+  const seqRef = steps.map((s, i) => `${i + 1}. ${s.begriff}: ${s.definition}`).join('\n');
+  const linkText = links.map(l => `${l.from} -> ${l.to}: ${l.why || '(no answer)'}`).join('\n');
+  const sys = `You are a learning coach. For a sequence, the student explained why each step leads to or enables the next — one short reasoning per arrow. Evaluate whether they captured the key causal links, by meaning not wording.
+Respond ONLY with JSON: {"bewertung":7,"feedback":"What they captured and what is missing - 2-3 sentences","musterkette":"the ideal chain in brief: X enables Y because..., Y leads to Z because..."} - bewertung is 1-10. In English.`;
+  const userMsg = `Sequence:\n${seqRef}\n\nStudent's reasoning per arrow:\n${linkText}`;
+  try {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+      method: 'POST',
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 800, system: sys, messages: [{ role: 'user', content: userMsg }] })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error'); }
+    const d = await res.json();
+    const json = JSON.parse(d.content.map(b => b.text || '').join('').match(/\{[\s\S]*\}/)[0]);
+    const score = Math.min(10, Math.max(1, json.bewertung || 5));
+    ST.seqScores.deps = score;
+    const c = seqScoreCols(score);
+    fb.innerHTML = `<div class="lernen-fb">
+      <div style="margin-bottom:.5rem"><span style="font-weight:700;font-size:.85rem;color:#fff;background:${c.ac};padding:.16rem .7rem;border-radius:100px">${score}/10</span></div>
+      <div style="font-size:.85rem;line-height:1.55;color:var(--text);margin-bottom:.6rem">${esc(json.feedback || '')}</div>
+      ${json.musterkette ? `<div style="font-size:.8rem;line-height:1.6;color:var(--muted);background:${c.tint};border:1px solid ${c.bd};border-left:4px solid ${c.ac};border-radius:8px;padding:.6rem .8rem"><span style="font-size:.55rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${c.ac};display:block;margin-bottom:.25rem">Ideal chain</span>${esc(json.musterkette)}</div>` : ''}
+      <div style="margin-top:1rem"><button class="lernen-submit" onclick="finishSeqTest()">Finish ✓</button></div></div>`;
+    if (btn) btn.style.display = 'none';
+  } catch (e) {
+    fb.innerHTML = `<div style="color:var(--red);font-size:.8rem">Error: ${esc(e.message)}</div>`;
+    if (btn) { btn.disabled = false; btn.textContent = 'Evaluate →'; }
+  }
 }
 
 function finishSeqTest() {
   const sc = ST.seqScores || {};
-  const vals = ['define', 'order'].map(k => sc[k]).filter(v => v != null);
+  const vals = ['define', 'order', 'deps'].map(k => sc[k]).filter(v => v != null);
   const composite = vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length * 10) / 10 : null;
   const h = `<div class="test-sec">
     <div class="test-sec-head"><span class="test-sec-ico">🏁</span><span class="test-sec-title">Result (Beta)</span></div>
     <div class="test-score"><div class="test-score-num">${composite != null ? composite : '—'}</div>
       <div class="test-score-info"><div class="test-score-lbl">Sequence Test</div>
-      <div class="test-score-msg">Define ${sc.define ?? '—'}/10 · Order ${sc.order ?? '—'}/10</div></div></div>
-    <div style="font-size:.78rem;color:var(--muted);margin:.5rem 0 1rem">Phase 3 (Dependencies) comes in the next step.</div>
+      <div class="test-score-msg">Define ${sc.define ?? '—'}/10 · Order ${sc.order ?? '—'}/10 · Dependencies ${sc.deps ?? '—'}/10</div></div></div>
     <div class="brow"><button class="btn bg" onclick="backFromTest()">← Back</button></div></div>`;
   const tc = document.getElementById('testContent');
   tc.innerHTML = h;
