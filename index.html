@@ -6289,13 +6289,15 @@ function openSeqTestBeta(idx) {
 async function loadSeqTest(t) {
   const sys = `You are an exam coach. First decide the SHAPE of the topic "${t.name}":
 - COMPARE: the topic is fundamentally a contrast of TWO specific things (X vs Y).
-- SEQUENCE: a process or chronology whose elements follow ONE fixed order.
+- CAUSEWEB: SEVERAL independent factors/causes that converge on ONE outcome or event.
+- SEQUENCE: a single process or chronology whose elements follow ONE fixed order.
 - STRUCTURE: categories, parts or types that coexist WITHOUT a fixed order.
 Respond ONLY with JSON (no text before/after), in ONE of these shapes:
 COMPARE  -> {"form":"compare","thema":"short name","a":"first thing","b":"second thing","a_def":"1-2 sentence definition of A","b_def":"1-2 sentence definition of B","aspekte":[{"aspekt":"dimension","a_wert":"A's value","b_wert":"B's value"}]}  with 3 to 5 aspects.
+CAUSEWEB -> {"form":"causeweb","thema":"short name","ergebnis":"the single outcome/event","ursachen":[{"begriff":"cause name","definition":"1-2 sentence definition","wirkung":"how this cause contributes to the outcome"}]}  with 3 to 5 causes.
 SEQUENCE -> {"form":"sequence","thema":"short name","schritte":[{"begriff":"step name","definition":"1-2 sentence definition"}]}  with 4 to 7 steps in the correct order.
 STRUCTURE-> {"form":"structure","thema":"short name","kategorien":[{"name":"category name","elemente":[{"begriff":"element name","definition":"1-2 sentence definition"}]}]}  with 2 to 4 categories, each holding 2 to 3 elements.
-HOW TO CHOOSE: If the topic is essentially "X versus Y" (two things being contrasted) -> COMPARE. Else, if the material contains ANY genuine ordered process, chronology, or stages that build on each other -> SEQUENCE (use the ordered elements as steps; ignore extra unordered categories). Else, if it is a pure classification with no order (e.g. social estates, cell types) -> STRUCTURE. Never force an order onto a structural topic. Each item is a real term from the material. All in English. Use only simple characters (no quotes/apostrophes that could break JSON).`;
+HOW TO CHOOSE: If the topic is essentially "X versus Y" -> COMPARE. Else, if SEVERAL parallel/independent factors converge on ONE outcome (not a single chain) -> CAUSEWEB. Else, if there is a single ordered process/chronology/stages -> SEQUENCE. Else, a pure classification with no order (e.g. social estates, cell types) -> STRUCTURE. Never force an order onto a structural topic. Each item is a real term from the material. All in English. Use only simple characters (no quotes/apostrophes that could break JSON).`;
   const content = [];
   ST.planFiles.forEach(pf => {
     if (pf.mode === 'text') content.push({ type: 'text', text: `--- ${pf.name} ---\n${pf.text}` });
@@ -6317,8 +6319,9 @@ HOW TO CHOOSE: If the topic is essentially "X versus Y" (two things being contra
     const okSeq = json && Array.isArray(json.schritte) && json.schritte.length;
     const okStruct = json && Array.isArray(json.kategorien) && json.kategorien.length;
     const okCompare = json && json.a && json.b && Array.isArray(json.aspekte) && json.aspekte.length;
-    if (!okSeq && !okStruct && !okCompare) throw new Error('Could not parse test data');
-    if (!json.form) json.form = okCompare ? 'compare' : okStruct ? 'structure' : 'sequence';
+    const okCause = json && json.ergebnis && Array.isArray(json.ursachen) && json.ursachen.length;
+    if (!okSeq && !okStruct && !okCompare && !okCause) throw new Error('Could not parse test data');
+    if (!json.form) json.form = okCompare ? 'compare' : okCause ? 'causeweb' : okStruct ? 'structure' : 'sequence';
     ST.seqData = json;
     renderSeqDefine();
   } catch (e) {
@@ -6345,6 +6348,9 @@ function seqAllTerms() {
   const data = ST.seqData || {};
   if (data.form === 'compare') {
     return [{ begriff: data.a, definition: data.a_def }, { begriff: data.b, definition: data.b_def }];
+  }
+  if (data.form === 'causeweb') {
+    return (data.ursachen || []).map(c => ({ begriff: c.begriff, definition: c.definition }));
   }
   if (data.form === 'structure') {
     const out = [];
@@ -6419,8 +6425,8 @@ Respond ONLY with JSON: {"bewertungen":[{"begriff":"...","bewertung":7,"feedback
       </div>`;
     });
     const form = (ST.seqData || {}).form;
-    const nextFn = form === 'structure' ? 'renderSeqCategorize' : form === 'compare' ? 'renderSeqCompare' : 'renderSeqOrder';
-    const nextLbl = form === 'structure' ? 'Categorize' : form === 'compare' ? 'Compare' : 'Order';
+    const nextFn = form === 'structure' ? 'renderSeqCategorize' : form === 'compare' ? 'renderSeqCompare' : form === 'causeweb' ? 'renderSeqCauses' : 'renderSeqOrder';
+    const nextLbl = form === 'structure' ? 'Categorize' : form === 'compare' ? 'Compare' : form === 'causeweb' ? 'Causes' : 'Order';
     fbh += `<div style="margin-top:1rem"><button class="lernen-submit" onclick="${nextFn}()">Continue: ${nextLbl} →</button></div></div>`;
     fb.innerHTML = fbh;
     if (btn) btn.style.display = 'none';
@@ -6654,6 +6660,107 @@ Respond ONLY with JSON: {"bewertung":7,"feedback":"2-3 sentences","muster":"the 
       <div style="margin-bottom:.5rem"><span style="font-weight:700;font-size:.85rem;color:#fff;background:${c.ac};padding:.16rem .7rem;border-radius:100px">${score}/10</span></div>
       <div style="font-size:.85rem;line-height:1.55;color:var(--text);margin-bottom:.6rem">${esc(json.feedback || '')}</div>
       ${json.muster ? `<div style="font-size:.8rem;line-height:1.6;color:var(--muted);background:${c.tint};border:1px solid ${c.bd};border-left:4px solid ${c.ac};border-radius:8px;padding:.6rem .8rem"><span style="font-size:.55rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${c.ac};display:block;margin-bottom:.25rem">Key difference</span>${esc(json.muster)}</div>` : ''}
+      <div style="margin-top:1rem"><button class="lernen-submit" onclick="renderSeqApply()">Continue: Apply →</button></div></div>`;
+    if (btn) btn.style.display = 'none';
+  } catch (e) {
+    fb.innerHTML = `<div style="color:var(--red);font-size:.8rem">Error: ${esc(e.message)}</div>`;
+    if (btn) { btn.disabled = false; btn.textContent = 'Evaluate →'; }
+  }
+}
+
+// ── PHASE 2 + 3 (causeweb form): explain each cause, then the decisive one ──
+function renderSeqCauses() {
+  const data = ST.seqData;
+  const causes = data.ursachen || [];
+  let rows = '';
+  causes.forEach((c, i) => {
+    rows += `<div style="display:flex;align-items:center;gap:.5rem;padding:.28rem 0;flex-wrap:wrap">
+      <div style="background:var(--accent-s);border:1px solid var(--str-bd);border-radius:10px;padding:.5rem .8rem;font-weight:600;font-size:.84rem;color:var(--accent)">${esc(c.begriff)}</div>
+      <span style="color:var(--accent);font-weight:700;flex-shrink:0">→</span>
+      <input type="text" id="seq-cause-inp-${i}" placeholder="How does it contribute to the outcome?" autocomplete="off" style="flex:1;min-width:140px;padding:.5rem .8rem;font-size:.82rem">
+    </div>`;
+  });
+  const h = `<div class="test-sec">
+    <div class="test-sec-head"><span class="test-sec-ico">🕸️</span><span class="test-sec-title">Phase 2 — Causes</span></div>
+    <div style="text-align:center;font-weight:700;font-size:.92rem;color:#fff;background:var(--accent);border-radius:10px;padding:.6rem 1rem;margin-bottom:.5rem">🎯 ${esc(data.ergebnis)}</div>
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.7rem">For each cause, explain in one line how it leads to the outcome above.</div>
+    ${rows}
+    <div class="lernen-actions" style="margin-top:.8rem"><button class="lernen-submit" id="seq-cause-btn" onclick="submitSeqCauses()">Evaluate →</button></div>
+    <div id="seq-cause-fb"></div></div>`;
+  const tc = document.getElementById('testContent');
+  tc.innerHTML = h;
+  tc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function submitSeqCauses() {
+  const data = ST.seqData;
+  const causes = data.ursachen || [];
+  const ans = causes.map((c, i) => ({ begriff: c.begriff, why: (document.getElementById(`seq-cause-inp-${i}`)?.value || '').trim() }));
+  if (ans.every(a => !a.why)) { const f = document.getElementById('seq-cause-inp-0'); if (f) f.style.borderColor = 'var(--red)'; return; }
+  const btn = document.getElementById('seq-cause-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Evaluating...'; }
+  const fb = document.getElementById('seq-cause-fb');
+  fb.innerHTML = `<div style="padding:.8rem 0;color:var(--muted);font-size:.8rem">AI evaluating...</div>`;
+  const sys = `You are a learning coach. For a multi-cause topic, the student explained how each cause contributes to the outcome "${data.ergebnis}". Judge whether they captured the real causal contributions, by meaning not wording.
+Respond ONLY with JSON: {"bewertung":7,"feedback":"2-3 sentences"} - bewertung is 1-10. In English.`;
+  const userMsg = `Outcome: ${data.ergebnis}\n\nCauses and the student's reasoning:\n${ans.map(a => `${a.begriff}: ${a.why || '(no answer)'}`).join('\n')}`;
+  try {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', { method: 'POST', body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 700, system: sys, messages: [{ role: 'user', content: userMsg }] }) });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error'); }
+    const d = await res.json();
+    const json = JSON.parse(d.content.map(b => b.text || '').join('').match(/\{[\s\S]*\}/)[0]);
+    const score = Math.min(10, Math.max(1, json.bewertung || 5));
+    ST.seqScores.order = score;
+    const c = seqScoreCols(score);
+    fb.innerHTML = `<div class="lernen-fb">
+      <div style="margin-bottom:.5rem"><span style="font-weight:700;font-size:.85rem;color:#fff;background:${c.ac};padding:.16rem .7rem;border-radius:100px">${score}/10</span></div>
+      <div style="font-size:.85rem;line-height:1.55;color:var(--text);margin-bottom:.6rem">${esc(json.feedback || '')}</div>
+      <div style="margin-top:.4rem"><button class="lernen-submit" onclick="renderSeqDecisive()">Continue: Decisive cause →</button></div></div>`;
+    if (btn) btn.style.display = 'none';
+  } catch (e) {
+    fb.innerHTML = `<div style="color:var(--red);font-size:.8rem">Error: ${esc(e.message)}</div>`;
+    if (btn) { btn.disabled = false; btn.textContent = 'Evaluate →'; }
+  }
+}
+
+function renderSeqDecisive() {
+  const data = ST.seqData;
+  const h = `<div class="test-sec">
+    <div class="test-sec-head"><span class="test-sec-ico">🎯</span><span class="test-sec-title">Phase 3 — Decisive cause</span></div>
+    <div style="font-size:.9rem;font-weight:600;color:var(--text);line-height:1.55;margin-bottom:.7rem;padding-left:.7rem;border-left:3px solid var(--accent)">Which cause was the most decisive for ${esc(data.ergebnis)} — and why?</div>
+    <div class="recall-ta-wrap"><textarea id="seq-dec-ta" placeholder="The most decisive cause and why..."></textarea></div>
+    <div class="lernen-actions" style="margin-top:.6rem"><button class="lernen-submit" id="seq-dec-btn" onclick="submitSeqDecisive()">Evaluate →</button></div>
+    <div id="seq-dec-fb"></div></div>`;
+  const tc = document.getElementById('testContent');
+  tc.innerHTML = h;
+  tc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function submitSeqDecisive() {
+  const ta = document.getElementById('seq-dec-ta');
+  const answer = ((ta && ta.value) || '').trim();
+  if (!answer) { if (ta) ta.style.borderColor = 'var(--red)'; return; }
+  const btn = document.getElementById('seq-dec-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Evaluating...'; }
+  const fb = document.getElementById('seq-dec-fb');
+  fb.innerHTML = `<div style="padding:.8rem 0;color:var(--muted);font-size:.8rem">AI evaluating...</div>`;
+  const data = ST.seqData;
+  const ref = (data.ursachen || []).map(c => `${c.begriff}: ${c.wirkung}`).join('\n');
+  const sys = `You are a learning coach. The student names the most decisive cause for an outcome and justifies it. Judge whether the choice is defensible and well-argued (more than one answer can be defensible).
+Respond ONLY with JSON: {"bewertung":7,"feedback":"2-3 sentences","muster":"a defensible most-decisive cause, briefly"} - bewertung is 1-10. In English.`;
+  const userMsg = `Outcome: ${data.ergebnis}\n\nCauses:\n${ref}\n\nStudent's decisive cause:\n${answer}`;
+  try {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', { method: 'POST', body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 700, system: sys, messages: [{ role: 'user', content: userMsg }] }) });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error'); }
+    const d = await res.json();
+    const json = JSON.parse(d.content.map(b => b.text || '').join('').match(/\{[\s\S]*\}/)[0]);
+    const score = Math.min(10, Math.max(1, json.bewertung || 5));
+    ST.seqScores.deps = score;
+    const c = seqScoreCols(score);
+    fb.innerHTML = `<div class="lernen-fb">
+      <div style="margin-bottom:.5rem"><span style="font-weight:700;font-size:.85rem;color:#fff;background:${c.ac};padding:.16rem .7rem;border-radius:100px">${score}/10</span></div>
+      <div style="font-size:.85rem;line-height:1.55;color:var(--text);margin-bottom:.6rem">${esc(json.feedback || '')}</div>
+      ${json.muster ? `<div style="font-size:.8rem;line-height:1.6;color:var(--muted);background:${c.tint};border:1px solid ${c.bd};border-left:4px solid ${c.ac};border-radius:8px;padding:.6rem .8rem"><span style="font-size:.55rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${c.ac};display:block;margin-bottom:.25rem">One defensible answer</span>${esc(json.muster)}</div>` : ''}
       <div style="margin-top:1rem"><button class="lernen-submit" onclick="renderSeqApply()">Continue: Apply →</button></div></div>`;
     if (btn) btn.style.display = 'none';
   } catch (e) {
