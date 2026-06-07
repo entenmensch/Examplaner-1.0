@@ -6301,14 +6301,14 @@ Respond ONLY with this JSON (no text before/after): ${seqFormSchema(knownForm)}.
 Each item is a real term from the material. All in English. Use only simple characters (no quotes/apostrophes that could break JSON).` : `You are an exam coach. First decide the SHAPE of the topic "${t.name}":
 - COMPARE: the topic is fundamentally a contrast of TWO specific things (X vs Y).
 - CAUSEWEB: SEVERAL independent factors/causes that converge on ONE outcome or event.
-- SEQUENCE: a single process or chronology whose elements follow ONE fixed order.
-- STRUCTURE: categories, parts or types that coexist WITHOUT a fixed order.
+- SEQUENCE: a process/chronology where shuffling the elements would make the knowledge WRONG (one fixed order).
+- STRUCTURE: categories/parts/types where shuffling the elements is fine (no fixed order, only the grouping matters).
 Respond ONLY with JSON (no text before/after), in ONE of these shapes:
 COMPARE  -> {"form":"compare","thema":"short name","a":"first thing","b":"second thing","a_def":"1-2 sentence definition of A","b_def":"1-2 sentence definition of B","aspekte":[{"aspekt":"dimension","a_wert":"A's value","b_wert":"B's value"}]}  with 3 to 5 aspects.
 CAUSEWEB -> {"form":"causeweb","thema":"short name","ergebnis":"the single outcome/event","kategorien":["3 to 4 typological category names like political/economic/military/ideological"],"ursachen":[{"begriff":"cause name","kategorie":"exactly one of the categories above","wirkung":"how this cause contributes to the outcome"}]}  with 4 to 6 causes spread across the categories.
 SEQUENCE -> {"form":"sequence","thema":"short name","schritte":[{"begriff":"step name","definition":"1-2 sentence definition"}]}  with 4 to 7 steps in the correct order.
 STRUCTURE-> {"form":"structure","thema":"short name","kategorien":[{"name":"category name","elemente":[{"begriff":"element name","definition":"1-2 sentence definition"}]}]}  with 2 to 4 categories, each holding 2 to 3 elements.
-HOW TO CHOOSE: If the topic is essentially "X versus Y" -> COMPARE. Else, if SEVERAL parallel/independent factors converge on ONE outcome (not a single chain) -> CAUSEWEB. Else, if there is a single ordered process/chronology/stages -> SEQUENCE. Else, a pure classification with no order (e.g. social estates, cell types) -> STRUCTURE. Never force an order onto a structural topic. Each item is a real term from the material. All in English. Use only simple characters (no quotes/apostrophes that could break JSON).`;
+HOW TO CHOOSE: If the topic is essentially "X versus Y" -> COMPARE. Else, if SEVERAL parallel/independent factors converge on ONE outcome (not a single chain) -> CAUSEWEB. Else, apply the SHUFFLE TEST to decide SEQUENCE vs STRUCTURE: would shuffling the elements make the knowledge WRONG? YES (a canonical chronological/causal/procedural order, e.g. mitosis phases, a causal chain) -> SEQUENCE. NO (elements just belong to groups, any order is fine, e.g. cell organelles, social estates, market entry modes) -> STRUCTURE. If a topic mixes an ordered process with extra groups, prefer SEQUENCE. Never force an order onto a structural topic. Each item is a real term from the material. All in English. Use only simple characters (no quotes/apostrophes that could break JSON).`;
   const content = [];
   ST.planFiles.forEach(pf => {
     if (pf.mode === 'text') content.push({ type: 'text', text: `--- ${pf.name} ---\n${pf.text}` });
@@ -8761,7 +8761,7 @@ Respond ONLY with this JSON (no text before/after, no Markdown):
   },
 }
 Rules: exactly 2 summary points, exactly ${ST.bausteinPrio === 'hoch' ? 3 : ST.bausteinPrio === 'mittel' ? 2 : 1} subtopics, max 1 item per learning goal category.
-For each subtopic set "form" to the best-fitting test shape: "compare" (contrasts TWO specific things X vs Y), "causeweb" (several factors converge on ONE outcome), "sequence" (a single ordered process/chronology/stages), or "structure" (categories/parts/types with no fixed order).
+For each subtopic set "form" to the best-fitting test shape: "compare" (contrasts TWO specific things X vs Y), "causeweb" (several factors converge on ONE outcome). To choose between "sequence" and "structure" use the SHUFFLE TEST: would shuffling the elements make the knowledge WRONG? YES (a fixed chronological/causal/procedural order, e.g. mitosis phases, a causal chain) -> "sequence". NO (elements just belong to groups, any order is fine, e.g. organelles, cell types, social estates) -> "structure". If a topic mixes an order with extra groups, prefer "sequence".
 All in English, precise, exam-relevant.`;
 
   const content = [];
