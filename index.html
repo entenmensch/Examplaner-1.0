@@ -6289,7 +6289,7 @@ function openSeqTestBeta(idx, forceForm) {
 // JSON schema string for a known form (used when the subtopic already carries its form)
 function seqFormSchema(form) {
   if (form === 'compare') return `{"form":"compare","thema":"short name","a":"first thing","b":"second thing","a_def":"1-2 sentence definition of A","b_def":"1-2 sentence definition of B","aspekte":[{"aspekt":"dimension","a_wert":"A's value","b_wert":"B's value"}]}  with 3 to 5 aspects`;
-  if (form === 'causeweb') return `{"form":"causeweb","thema":"short name","ergebnis":"the single outcome/event","ursachen":[{"begriff":"cause name","definition":"1-2 sentence definition","wirkung":"how this cause contributes to the outcome"}]}  with 3 to 5 causes`;
+  if (form === 'causeweb') return `{"form":"causeweb","thema":"short name","ergebnis":"the single outcome/event","kategorien":["3 to 4 typological category names, e.g. political, economic, military, ideological"],"ursachen":[{"begriff":"cause name","kategorie":"exactly one of the categories above","wirkung":"how this cause contributes to the outcome"}]}  with 4 to 6 causes spread across the categories`;
   if (form === 'structure') return `{"form":"structure","thema":"short name","kategorien":[{"name":"category name","elemente":[{"begriff":"element name","definition":"1-2 sentence definition"}]}]}  with 2 to 4 categories, each holding 2 to 3 elements`;
   return `{"form":"sequence","thema":"short name","schritte":[{"begriff":"step name","definition":"1-2 sentence definition"}]}  with 4 to 7 steps in the correct order`;
 }
@@ -6305,7 +6305,7 @@ Each item is a real term from the material. All in English. Use only simple char
 - STRUCTURE: categories, parts or types that coexist WITHOUT a fixed order.
 Respond ONLY with JSON (no text before/after), in ONE of these shapes:
 COMPARE  -> {"form":"compare","thema":"short name","a":"first thing","b":"second thing","a_def":"1-2 sentence definition of A","b_def":"1-2 sentence definition of B","aspekte":[{"aspekt":"dimension","a_wert":"A's value","b_wert":"B's value"}]}  with 3 to 5 aspects.
-CAUSEWEB -> {"form":"causeweb","thema":"short name","ergebnis":"the single outcome/event","ursachen":[{"begriff":"cause name","definition":"1-2 sentence definition","wirkung":"how this cause contributes to the outcome"}]}  with 3 to 5 causes.
+CAUSEWEB -> {"form":"causeweb","thema":"short name","ergebnis":"the single outcome/event","kategorien":["3 to 4 typological category names like political/economic/military/ideological"],"ursachen":[{"begriff":"cause name","kategorie":"exactly one of the categories above","wirkung":"how this cause contributes to the outcome"}]}  with 4 to 6 causes spread across the categories.
 SEQUENCE -> {"form":"sequence","thema":"short name","schritte":[{"begriff":"step name","definition":"1-2 sentence definition"}]}  with 4 to 7 steps in the correct order.
 STRUCTURE-> {"form":"structure","thema":"short name","kategorien":[{"name":"category name","elemente":[{"begriff":"element name","definition":"1-2 sentence definition"}]}]}  with 2 to 4 categories, each holding 2 to 3 elements.
 HOW TO CHOOSE: If the topic is essentially "X versus Y" -> COMPARE. Else, if SEVERAL parallel/independent factors converge on ONE outcome (not a single chain) -> CAUSEWEB. Else, if there is a single ordered process/chronology/stages -> SEQUENCE. Else, a pure classification with no order (e.g. social estates, cell types) -> STRUCTURE. Never force an order onto a structural topic. Each item is a real term from the material. All in English. Use only simple characters (no quotes/apostrophes that could break JSON).`;
@@ -6334,7 +6334,7 @@ HOW TO CHOOSE: If the topic is essentially "X versus Y" -> COMPARE. Else, if SEV
     if (!okSeq && !okStruct && !okCompare && !okCause) throw new Error('Could not parse test data');
     if (!json.form) json.form = okCompare ? 'compare' : okCause ? 'causeweb' : okStruct ? 'structure' : 'sequence';
     ST.seqData = json;
-    if (json.form === 'compare') renderSeqCompareKey(); else renderSeqDefine();
+    if (json.form === 'compare') renderSeqCompareKey(); else if (json.form === 'causeweb') renderSeqCauses(); else renderSeqDefine();
   } catch (e) {
     document.getElementById('testLoad').innerHTML = `<div class="err on">Error: ${esc(e.message)}</div>`;
   }
@@ -6721,66 +6721,112 @@ Respond ONLY with JSON: {"bewertung":7,"feedback":"2-3 sentences","muster":"the 
   }
 }
 
-// ── PHASE 2 + 3 (causeweb form): explain each cause, then the decisive one ──
+// ── PHASE 1 (causeweb): sort each cause into a category AND explain its contribution ──
 function renderSeqCauses() {
   const data = ST.seqData;
-  const causes = data.ursachen || [];
-  let rows = '';
-  causes.forEach((c, i) => {
-    rows += `<div style="display:flex;align-items:center;gap:.5rem;padding:.28rem 0;flex-wrap:wrap">
-      <div style="background:var(--accent-s);border:1px solid var(--str-bd);border-radius:10px;padding:.5rem .8rem;font-weight:600;font-size:.84rem;color:var(--accent)">${esc(c.begriff)}</div>
-      <span style="color:var(--accent);font-weight:700;flex-shrink:0">→</span>
-      <input type="text" id="seq-cause-inp-${i}" placeholder="How does it contribute to the outcome?" autocomplete="off" style="flex:1;min-width:140px;padding:.5rem .8rem;font-size:.82rem">
-    </div>`;
-  });
+  const cats = (data.kategorien && data.kategorien.length) ? data.kategorien : [...new Set((data.ursachen || []).map(u => u.kategorie).filter(Boolean))];
+  const items = (data.ursachen || []).map(u => ({ begriff: u.begriff, cat: cats.indexOf(u.kategorie) }));
+  ST.seqCause = { items, cats, placed: {}, sel: null, pool: seqShuffle(items.length) };
   const h = `<div class="test-sec">
-    <div class="test-sec-head"><span class="test-sec-ico">🕸️</span><span class="test-sec-title">Phase 2 — Causes</span></div>
+    <div class="test-sec-head"><span class="test-sec-ico">🕸️</span><span class="test-sec-title">Phase 1 — Sort & Explain</span></div>
     <div style="text-align:center;font-weight:700;font-size:.92rem;color:#fff;background:var(--accent);border-radius:10px;padding:.6rem 1rem;margin-bottom:.5rem">🎯 ${esc(data.ergebnis)}</div>
-    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.7rem">For each cause, explain in one line how it leads to the outcome above.</div>
-    ${rows}
-    <div class="lernen-actions" style="margin-top:.8rem"><button class="lernen-submit" id="seq-cause-btn" onclick="submitSeqCauses()">Evaluate →</button></div>
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.7rem">For each cause: explain how it contributes, then tap its category.</div>
+    <div class="mm-zuord-cols" id="seq-cause-cols" style="grid-template-columns:repeat(${cats.length}, 1fr);margin-bottom:.7rem"></div>
+    <div id="seq-cause-justify"></div>
+    <div class="mm-zuord-pool" id="seq-cause-pool"></div>
+    <div class="lernen-actions" style="margin-top:.8rem"><button class="lernen-submit" id="seq-cause-btn" onclick="checkSeqCauses()" disabled>Check →</button></div>
     <div id="seq-cause-fb"></div></div>`;
   const tc = document.getElementById('testContent');
   tc.innerHTML = h;
+  seqCauseRender();
+  document.getElementById('testLoad').style.display = 'none';
+  tc.style.display = 'block';
   tc.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-async function submitSeqCauses() {
-  const data = ST.seqData;
-  const causes = data.ursachen || [];
-  const ans = causes.map((c, i) => ({ begriff: c.begriff, why: (document.getElementById(`seq-cause-inp-${i}`)?.value || '').trim() }));
-  if (ans.every(a => !a.why)) { const f = document.getElementById('seq-cause-inp-0'); if (f) f.style.borderColor = 'var(--red)'; return; }
+function seqCauseRender() {
+  const S = ST.seqCause;
+  document.getElementById('seq-cause-cols').innerHTML = S.cats.map((name, ci) => {
+    const chips = Object.keys(S.placed).filter(k => S.placed[k].col === ci)
+      .map(k => `<span class="mm-zuord-placed">${esc(S.items[k].begriff)}</span>`).join('');
+    return `<div class="mm-zuord-col${S.sel != null ? ' clickable' : ''}" onclick="seqCausePlace(${ci})"><div class="mm-zuord-col-title">${esc(name)}</div>${chips}</div>`;
+  }).join('');
+  document.getElementById('seq-cause-justify').innerHTML = S.sel != null ? `<div style="background:var(--accent-s);border:1px solid var(--str-bd);border-radius:10px;padding:.7rem .85rem;margin-bottom:.7rem">
+      <div style="font-size:.82rem;font-weight:600;color:var(--accent);margin-bottom:.4rem">Selected: ${esc(S.items[S.sel].begriff)}</div>
+      <input type="text" id="seq-cause-why" placeholder="How does it contribute to the outcome?" autocomplete="off" style="width:100%;padding:.5rem .8rem;font-size:.82rem;margin-bottom:.35rem">
+      <div style="font-size:.72rem;color:var(--muted)">Then tap its category ↑</div>
+    </div>` : '';
+  document.getElementById('seq-cause-pool').innerHTML =
+    S.pool.filter(i => S.placed[i] == null).map(i =>
+      `<span class="mm-zuord-chip${S.sel === i ? ' selected' : ''}" onclick="seqCauseSelect(${i})">${esc(S.items[i].begriff)}</span>`
+    ).join('') || '<span style="font-size:.75rem;color:var(--muted2)">All placed.</span>';
   const btn = document.getElementById('seq-cause-btn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Evaluating...'; }
+  if (btn) btn.disabled = Object.keys(S.placed).length !== S.items.length;
+}
+
+function seqCauseSelect(i) {
+  const S = ST.seqCause;
+  S.sel = S.sel === i ? null : i;
+  seqCauseRender();
+  if (S.sel != null) { const w = document.getElementById('seq-cause-why'); if (w) w.focus(); }
+}
+
+function seqCausePlace(ci) {
+  const S = ST.seqCause;
+  if (S.sel == null) return;
+  const why = (document.getElementById('seq-cause-why')?.value || '').trim();
+  S.placed[S.sel] = { col: ci, why };
+  S.sel = null;
+  seqCauseRender();
+}
+
+async function checkSeqCauses() {
+  const data = ST.seqData, S = ST.seqCause;
+  let correct = 0;
+  S.items.forEach((it, i) => { if (S.placed[i] && S.placed[i].col === it.cat) correct++; });
+  const total = S.items.length;
+  const btn = document.getElementById('seq-cause-btn'); if (btn) { btn.disabled = true; btn.textContent = 'Evaluating...'; }
   const fb = document.getElementById('seq-cause-fb');
   fb.innerHTML = `<div style="padding:.8rem 0;color:var(--muted);font-size:.8rem">AI evaluating...</div>`;
-  const sys = `You are a learning coach. For a multi-cause topic, the student explained how each cause contributes to the outcome "${data.ergebnis}". Judge whether they captured the real causal contributions, by meaning not wording.
-Respond ONLY with JSON: {"bewertung":7,"feedback":"2-3 sentences"} - bewertung is 1-10. In English.`;
-  const userMsg = `Outcome: ${data.ergebnis}\n\nCauses and the student's reasoning:\n${ans.map(a => `${a.begriff}: ${a.why || '(no answer)'}`).join('\n')}`;
+  const lines = S.items.map((it, i) => {
+    const p = S.placed[i] || {};
+    return `Cause "${it.begriff}" -> category "${S.cats[p.col] ?? '(none)'}" (correct: "${S.cats[it.cat]}"). Contribution: ${p.why || '(none)'}`;
+  }).join('\n');
+  const sys = `You are a learning coach grading a cause analysis for the outcome "${data.ergebnis}". The student sorted each cause into a typological category and explained its contribution. Give ONE overall score 1-10 reflecting BOTH correct categorisation AND the quality of the contribution explanations.
+Respond ONLY with JSON: {"bewertung":7,"feedback":"2-3 sentences on categorisation and reasoning"} - bewertung is 1-10. In English.`;
+  let score = Math.round(correct / total * 10 * 10) / 10, feedback = '';
   try {
-    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', { method: 'POST', body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 700, system: sys, messages: [{ role: 'user', content: userMsg }] }) });
-    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error'); }
-    const d = await res.json();
-    const json = JSON.parse(d.content.map(b => b.text || '').join('').match(/\{[\s\S]*\}/)[0]);
-    const score = Math.min(10, Math.max(1, json.bewertung || 5));
-    ST.seqScores.order = score;
-    const c = seqScoreCols(score);
-    fb.innerHTML = `<div class="lernen-fb">
-      <div style="margin-bottom:.5rem"><span style="font-weight:700;font-size:.85rem;color:#fff;background:${c.ac};padding:.16rem .7rem;border-radius:100px">${score}/10</span></div>
-      <div style="font-size:.85rem;line-height:1.55;color:var(--text);margin-bottom:.6rem">${esc(json.feedback || '')}</div>
-      <div style="margin-top:.4rem"><button class="lernen-submit" onclick="renderSeqDecisive()">Continue: Decisive cause →</button></div></div>`;
-    if (btn) btn.style.display = 'none';
-  } catch (e) {
-    fb.innerHTML = `<div style="color:var(--red);font-size:.8rem">Error: ${esc(e.message)}</div>`;
-    if (btn) { btn.disabled = false; btn.textContent = 'Evaluate →'; }
-  }
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', { method: 'POST', body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 600, system: sys, messages: [{ role: 'user', content: lines }] }) });
+    if (res.ok) {
+      const d = await res.json();
+      const json = JSON.parse(d.content.map(b => b.text || '').join('').match(/\{[\s\S]*\}/)[0]);
+      score = Math.min(10, Math.max(1, json.bewertung || 5));
+      feedback = json.feedback || '';
+    }
+  } catch (e) { /* fall back to placement-only score */ }
+  ST.seqScores.order = score;
+  document.getElementById('seq-cause-justify').innerHTML = '';
+  document.getElementById('seq-cause-pool').innerHTML = '';
+  document.getElementById('seq-cause-cols').innerHTML = S.cats.map((name, ci) => {
+    const chips = S.items.map((it, i) => ({ it, i })).filter(x => x.it.cat === ci).map(x => {
+      const ok = S.placed[x.i] && S.placed[x.i].col === ci;
+      return `<span class="mm-zuord-placed" style="background:${ok ? 'var(--accent)' : 'var(--red)'}">${ok ? '✓' : '✗'} ${esc(x.it.begriff)}</span>`;
+    }).join('');
+    return `<div class="mm-zuord-col" style="border-style:solid;border-color:var(--border)"><div class="mm-zuord-col-title">${esc(name)}</div>${chips}</div>`;
+  }).join('');
+  if (btn) btn.style.display = 'none';
+  const c = seqScoreCols(score);
+  fb.innerHTML = `<div class="lernen-fb" style="margin-top:.5rem">
+    <div style="margin-bottom:.45rem"><span style="font-weight:700;font-size:.85rem;color:#fff;background:${c.ac};padding:.16rem .7rem;border-radius:100px">${score}/10</span> <span style="font-size:.72rem;color:var(--muted)">(${correct}/${total} correctly categorised)</span></div>
+    ${feedback ? `<div style="font-size:.84rem;line-height:1.55;color:var(--text);margin-bottom:.5rem">${esc(feedback)}</div>` : ''}
+    <div style="margin-top:.4rem"><button class="lernen-submit" onclick="renderSeqDecisive()">Continue: Decisive cause →</button></div></div>`;
 }
 
 function renderSeqDecisive() {
   const data = ST.seqData;
   const h = `<div class="test-sec">
-    <div class="test-sec-head"><span class="test-sec-ico">🎯</span><span class="test-sec-title">Phase 3 — Decisive cause</span></div>
-    <div style="font-size:.9rem;font-weight:600;color:var(--text);line-height:1.55;margin-bottom:.7rem;padding-left:.7rem;border-left:3px solid var(--accent)">Which cause was the most decisive for ${esc(data.ergebnis)} — and why?</div>
+    <div class="test-sec-head"><span class="test-sec-ico">🎯</span><span class="test-sec-title">Phase 2 — Decisive cause</span></div>
+    <div style="font-size:.9rem;font-weight:600;color:var(--text);line-height:1.55;margin-bottom:.7rem;padding-left:.7rem;border-left:3px solid var(--accent)">Which cause was the most decisive for ${esc(data.ergebnis)} — and how did the categories work together?</div>
     <div class="recall-ta-wrap"><textarea id="seq-dec-ta" placeholder="The most decisive cause and why..."></textarea></div>
     <div class="lernen-actions" style="margin-top:.6rem"><button class="lernen-submit" id="seq-dec-btn" onclick="submitSeqDecisive()">Evaluate →</button></div>
     <div id="seq-dec-fb"></div></div>`;
