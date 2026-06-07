@@ -1458,6 +1458,33 @@ function saveTopicScore(name, score, parent = null) {
   saveScores(s);
 }
 function getTopicScore(name) { return (loadScores()[name] || null); }
+
+// ── Persisted subtopic overviews: stable per topic, each subtopic gets a stable id ──
+const BOV_KEY = 'las_bov_v1';
+function loadBovStore() { try { return JSON.parse(localStorage.getItem(BOV_KEY)) || {}; } catch { return {}; } }
+function saveBovStore(s) { try { localStorage.setItem(BOV_KEY, JSON.stringify(s)); } catch (e) {} }
+function getBov(topic) { return loadBovStore()[topic] || null; }
+function saveBov(topic, data) { const s = loadBovStore(); s[topic] = data; saveBovStore(s); }
+function newSubtopicId() { return 'st_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+// ── Mastery store (dashboard): keyed by stable subtopic id, attempts keep ts + per-phase scores ──
+const MASTERY_KEY = 'las_mastery_v1';
+function loadMastery() { try { return JSON.parse(localStorage.getItem(MASTERY_KEY)) || {}; } catch { return {}; } }
+function saveMastery(m) { try { localStorage.setItem(MASTERY_KEY, JSON.stringify(m)); } catch (e) {} }
+function getMastery(id) { return loadMastery()[id] || null; }
+function recordMastery(id, meta) {
+  if (!id) return;
+  const m = loadMastery();
+  const e = m[id] || { attempts: [] };
+  e.parent = meta.parent; e.titel = meta.titel; e.form = meta.form;
+  e.attempts.push({ ts: Date.now(), score: meta.score, phases: meta.phases || {} });
+  e.bestScore = Math.max(e.bestScore || 0, meta.score || 0);
+  // interim mastery = average of last 2 attempts (honest; full history kept for decay/stability later)
+  const last2 = e.attempts.slice(-2).map(a => a.score).filter(v => v != null);
+  e.mastery = last2.length ? Math.round(last2.reduce((a, b) => a + b, 0) / last2.length * 10) / 10 : null;
+  m[id] = e;
+  saveMastery(m);
+}
 function getReviewInterval(score) {
   if (score >= 9) return 14;
   if (score >= 7) return 7;
@@ -6271,6 +6298,8 @@ function openSeqTestBeta(idx, forceForm) {
   if (!st) return;
   ST.testIsSubtopic = true;
   ST.seqTopic = { name: st.titel, beschreibung: st.beschreibung };
+  ST.seqSubtopicId = st.id || null;
+  ST.seqSubtopicMeta = { parent: ST.bausteinTopic || null, titel: st.titel };
   ST.seqScores = {};
   document.getElementById('testHeader').innerHTML = `
     <span class="bh-prio pm" style="background:var(--erk-bg);color:var(--erk-tx);border:1px solid var(--erk-bd)">Beta</span>
@@ -7161,6 +7190,15 @@ function finishSeqTest() {
   const sc = ST.seqScores || {};
   const vals = ['define', 'order', 'deps', 'apply'].map(k => sc[k]).filter(v => v != null);
   const composite = vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length * 10) / 10 : null;
+  if (composite != null && ST.seqSubtopicId) {
+    recordMastery(ST.seqSubtopicId, {
+      parent: (ST.seqSubtopicMeta || {}).parent,
+      titel: (ST.seqSubtopicMeta || {}).titel,
+      form: (ST.seqData || {}).form,
+      score: composite,
+      phases: { ...sc }
+    });
+  }
   const h = `<div class="test-sec">
     <div class="test-sec-head"><span class="test-sec-ico">🏁</span><span class="test-sec-title">Result (Beta)</span></div>
     <div class="test-score"><div class="test-score-num">${composite != null ? composite : '—'}</div>
@@ -8852,7 +8890,15 @@ function openBaustein(idx) {
   document.getElementById('bovContent').style.display = 'none';
   show('scBausteinOverview');
   setNav('nPlan');
-  loadBausteinOverview();
+  const cached = getBov(t.name);
+  if (cached && Array.isArray(cached.unterthemen) && cached.unterthemen.length) {
+    ST.subtopics = cached.unterthemen;
+    ST.bausteinLernziele = cached.lernziele || {};
+    ST.bovData = cached;
+    renderBausteinOverview(cached);
+  } else {
+    loadBausteinOverview();
+  }
 }
 
 async function loadBausteinOverview() {
@@ -8896,9 +8942,11 @@ All in English, precise, exam-relevant.`;
     if (!raw) throw new Error('No JSON found in response');
     const json = safeJsonParse(raw);
     if (!json) throw new Error('Could not parse JSON response');
-    ST.subtopics = json.unterthemen || [];
+    ST.subtopics = (json.unterthemen || []).map(u => ({ ...u, id: u.id || newSubtopicId() }));
+    json.unterthemen = ST.subtopics;
     ST.bausteinLernziele = json.lernziele || {};
     ST.bovData = json;
+    saveBov(ST.bausteinTopic, json);
     renderBausteinOverview(json);
   } catch (e) {
     document.getElementById('bovLoad').innerHTML = `<div class="err on">Error: ${esc(e.message)}</div>`;
