@@ -6288,12 +6288,14 @@ function openSeqTestBeta(idx) {
 
 async function loadSeqTest(t) {
   const sys = `You are an exam coach. First decide the SHAPE of the topic "${t.name}":
-- SEQUENCE: a process or chronology whose elements follow ONE fixed order (a process, a timeline, stages that build on each other).
-- STRUCTURE: categories, parts or types that coexist WITHOUT a fixed order (classifications, components, groups).
-Respond ONLY with JSON (no text before/after), in ONE of these two shapes:
+- COMPARE: the topic is fundamentally a contrast of TWO specific things (X vs Y).
+- SEQUENCE: a process or chronology whose elements follow ONE fixed order.
+- STRUCTURE: categories, parts or types that coexist WITHOUT a fixed order.
+Respond ONLY with JSON (no text before/after), in ONE of these shapes:
+COMPARE  -> {"form":"compare","thema":"short name","a":"first thing","b":"second thing","a_def":"1-2 sentence definition of A","b_def":"1-2 sentence definition of B","aspekte":[{"aspekt":"dimension","a_wert":"A's value","b_wert":"B's value"}]}  with 3 to 5 aspects.
 SEQUENCE -> {"form":"sequence","thema":"short name","schritte":[{"begriff":"step name","definition":"1-2 sentence definition"}]}  with 4 to 7 steps in the correct order.
-STRUCTURE -> {"form":"structure","thema":"short name","kategorien":[{"name":"category name","elemente":[{"begriff":"element name","definition":"1-2 sentence definition"}]}]}  with 2 to 4 categories, each holding 2 to 3 elements.
-PREFER SEQUENCE: if the material contains ANY genuine ordered process, chronology, or stages that build on each other, choose SEQUENCE and order those elements. If a topic mixes an ordered process with some unordered categories, still choose SEQUENCE and use the ordered elements as the steps (the extra categories can be ignored here). Choose STRUCTURE ONLY when the topic has NO meaningful order at all (pure classification, parts, or types — e.g. social estates, cell types). Never force an order onto a truly structural topic. Each item is a real term from the material. All in English. Use only simple characters (no quotes/apostrophes that could break JSON).`;
+STRUCTURE-> {"form":"structure","thema":"short name","kategorien":[{"name":"category name","elemente":[{"begriff":"element name","definition":"1-2 sentence definition"}]}]}  with 2 to 4 categories, each holding 2 to 3 elements.
+HOW TO CHOOSE: If the topic is essentially "X versus Y" (two things being contrasted) -> COMPARE. Else, if the material contains ANY genuine ordered process, chronology, or stages that build on each other -> SEQUENCE (use the ordered elements as steps; ignore extra unordered categories). Else, if it is a pure classification with no order (e.g. social estates, cell types) -> STRUCTURE. Never force an order onto a structural topic. Each item is a real term from the material. All in English. Use only simple characters (no quotes/apostrophes that could break JSON).`;
   const content = [];
   ST.planFiles.forEach(pf => {
     if (pf.mode === 'text') content.push({ type: 'text', text: `--- ${pf.name} ---\n${pf.text}` });
@@ -6314,8 +6316,9 @@ PREFER SEQUENCE: if the material contains ANY genuine ordered process, chronolog
     const json = safeJsonParse(raw);
     const okSeq = json && Array.isArray(json.schritte) && json.schritte.length;
     const okStruct = json && Array.isArray(json.kategorien) && json.kategorien.length;
-    if (!okSeq && !okStruct) throw new Error('Could not parse test data');
-    if (!json.form) json.form = okStruct ? 'structure' : 'sequence';
+    const okCompare = json && json.a && json.b && Array.isArray(json.aspekte) && json.aspekte.length;
+    if (!okSeq && !okStruct && !okCompare) throw new Error('Could not parse test data');
+    if (!json.form) json.form = okCompare ? 'compare' : okStruct ? 'structure' : 'sequence';
     ST.seqData = json;
     renderSeqDefine();
   } catch (e) {
@@ -6340,6 +6343,9 @@ function seqScoreCols(n) {
 // All terms to define — flat list for both forms (sequence steps / structure elements)
 function seqAllTerms() {
   const data = ST.seqData || {};
+  if (data.form === 'compare') {
+    return [{ begriff: data.a, definition: data.a_def }, { begriff: data.b, definition: data.b_def }];
+  }
   if (data.form === 'structure') {
     const out = [];
     (data.kategorien || []).forEach(c => (c.elemente || []).forEach(e => out.push({ begriff: e.begriff, definition: e.definition })));
@@ -6412,8 +6418,10 @@ Respond ONLY with JSON: {"bewertungen":[{"begriff":"...","bewertung":7,"feedback
         </div>
       </div>`;
     });
-    const isStruct = (ST.seqData || {}).form === 'structure';
-    fbh += `<div style="margin-top:1rem"><button class="lernen-submit" onclick="${isStruct ? 'renderSeqCategorize' : 'renderSeqOrder'}()">Continue: ${isStruct ? 'Categorize' : 'Order'} →</button></div></div>`;
+    const form = (ST.seqData || {}).form;
+    const nextFn = form === 'structure' ? 'renderSeqCategorize' : form === 'compare' ? 'renderSeqCompare' : 'renderSeqOrder';
+    const nextLbl = form === 'structure' ? 'Categorize' : form === 'compare' ? 'Compare' : 'Order';
+    fbh += `<div style="margin-top:1rem"><button class="lernen-submit" onclick="${nextFn}()">Continue: ${nextLbl} →</button></div></div>`;
     fb.innerHTML = fbh;
     if (btn) btn.style.display = 'none';
   } catch (e) {
@@ -6546,6 +6554,112 @@ function checkSeqCategorize() {
     <div class="lernen-fb-score"><span class="lernen-fb-num" style="color:${scoreColor}">${correct}</span><span class="lernen-fb-max">/ ${total}</span></div>
     <div style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem">${correct === total ? 'All correct!' : 'Correct grouping shown above.'}</div>
     <div><button class="lernen-submit" onclick="renderSeqApply()">Continue: Apply →</button></div></div>`;
+}
+
+// ── PHASE 2 (compare form): sort each trait to side A or B ──
+function renderSeqCompare() {
+  const data = ST.seqData;
+  const items = [];
+  (data.aspekte || []).forEach(asp => { items.push({ begriff: asp.a_wert, side: 0 }); items.push({ begriff: asp.b_wert, side: 1 }); });
+  ST.seqCmp = { items, placed: {}, sel: null, pool: seqShuffle(items.length) };
+  const h = `<div class="test-sec">
+    <div class="test-sec-head"><span class="test-sec-ico">⚖️</span><span class="test-sec-title">Phase 2 — Compare</span></div>
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem">Tap each trait, then tap the side it belongs to.</div>
+    <div class="mm-zuord-pool" id="seq-cmp-pool"></div>
+    <div class="mm-zuord-cols" id="seq-cmp-cols" style="grid-template-columns:1fr 1fr"></div>
+    <div class="lernen-actions" style="margin-top:.8rem"><button class="lernen-submit" id="seq-cmp-btn" onclick="checkSeqCompare()" disabled>Check →</button></div>
+    <div id="seq-cmp-fb"></div></div>`;
+  const tc = document.getElementById('testContent');
+  tc.innerHTML = h;
+  seqCmpRender();
+  tc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function seqCmpRender() {
+  const data = ST.seqData, S = ST.seqCmp, sides = [data.a, data.b];
+  document.getElementById('seq-cmp-pool').innerHTML =
+    S.pool.filter(i => S.placed[i] == null).map(i =>
+      `<span class="mm-zuord-chip${S.sel === i ? ' selected' : ''}" onclick="seqCmpSelect(${i})">${esc(S.items[i].begriff)}</span>`
+    ).join('') || '<span style="font-size:.75rem;color:var(--muted2)">All placed.</span>';
+  document.getElementById('seq-cmp-cols').innerHTML = sides.map((name, ci) => {
+    const chips = Object.keys(S.placed).filter(k => S.placed[k] === ci)
+      .map(k => `<span class="mm-zuord-placed">${esc(S.items[k].begriff)}</span>`).join('');
+    return `<div class="mm-zuord-col${S.sel != null ? ' clickable' : ''}" onclick="seqCmpPlace(${ci})"><div class="mm-zuord-col-title">${esc(name)}</div>${chips}</div>`;
+  }).join('');
+  const btn = document.getElementById('seq-cmp-btn');
+  if (btn) btn.disabled = Object.keys(S.placed).length !== S.items.length;
+}
+
+function seqCmpSelect(i) { ST.seqCmp.sel = ST.seqCmp.sel === i ? null : i; seqCmpRender(); }
+function seqCmpPlace(ci) { const S = ST.seqCmp; if (S.sel == null) return; S.placed[S.sel] = ci; S.sel = null; seqCmpRender(); }
+
+function checkSeqCompare() {
+  const data = ST.seqData, S = ST.seqCmp;
+  let correct = 0;
+  S.items.forEach((it, i) => { if (S.placed[i] === it.side) correct++; });
+  const total = S.items.length;
+  ST.seqScores.order = Math.round(correct / total * 10 * 10) / 10;
+  const rows = (data.aspekte || []).map(asp =>
+    `<tr><td style="padding:.4rem .6rem;font-weight:600;font-size:.76rem;color:var(--muted);border-top:1px solid var(--border)">${esc(asp.aspekt)}</td>
+      <td style="padding:.4rem .6rem;font-size:.8rem;border-top:1px solid var(--border)">${esc(asp.a_wert)}</td>
+      <td style="padding:.4rem .6rem;font-size:.8rem;border-top:1px solid var(--border)">${esc(asp.b_wert)}</td></tr>`).join('');
+  const table = `<table style="width:100%;border-collapse:collapse;margin-top:.55rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden">
+    <tr><td style="padding:.4rem .6rem"></td><td style="padding:.4rem .6rem;font-weight:700;font-size:.8rem;color:var(--accent)">${esc(data.a)}</td><td style="padding:.4rem .6rem;font-weight:700;font-size:.8rem;color:var(--accent)">${esc(data.b)}</td></tr>${rows}</table>`;
+  document.getElementById('seq-cmp-pool').innerHTML = '';
+  document.getElementById('seq-cmp-cols').innerHTML = '';
+  const btn = document.getElementById('seq-cmp-btn'); if (btn) btn.style.display = 'none';
+  const scoreColor = correct >= total * 0.7 ? 'var(--accent)' : correct >= total * 0.5 ? '#E8A020' : 'var(--red)';
+  document.getElementById('seq-cmp-fb').innerHTML = `<div class="lernen-fb" style="margin-top:.5rem">
+    <div class="lernen-fb-score"><span class="lernen-fb-num" style="color:${scoreColor}">${correct}</span><span class="lernen-fb-max">/ ${total}</span></div>
+    ${table}
+    <div style="margin-top:.85rem"><button class="lernen-submit" onclick="renderSeqCompareKey()">Continue: Key difference →</button></div></div>`;
+}
+
+// ── PHASE 3 (compare form): the single most important difference ──
+function renderSeqCompareKey() {
+  const data = ST.seqData;
+  const h = `<div class="test-sec">
+    <div class="test-sec-head"><span class="test-sec-ico">🎯</span><span class="test-sec-title">Phase 3 — Key difference</span></div>
+    <div style="font-size:.9rem;font-weight:600;color:var(--text);line-height:1.55;margin-bottom:.7rem;padding-left:.7rem;border-left:3px solid var(--accent)">What is the single most important difference between ${esc(data.a)} and ${esc(data.b)} — and why does it matter?</div>
+    <div class="recall-ta-wrap"><textarea id="seq-cmpkey-ta" placeholder="The key difference and why it matters..."></textarea></div>
+    <div class="lernen-actions" style="margin-top:.6rem"><button class="lernen-submit" id="seq-cmpkey-btn" onclick="submitSeqCompareKey()">Evaluate →</button></div>
+    <div id="seq-cmpkey-fb"></div></div>`;
+  const tc = document.getElementById('testContent');
+  tc.innerHTML = h;
+  tc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function submitSeqCompareKey() {
+  const ta = document.getElementById('seq-cmpkey-ta');
+  const answer = ((ta && ta.value) || '').trim();
+  if (!answer) { if (ta) ta.style.borderColor = 'var(--red)'; return; }
+  const btn = document.getElementById('seq-cmpkey-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Evaluating...'; }
+  const fb = document.getElementById('seq-cmpkey-fb');
+  fb.innerHTML = `<div style="padding:.8rem 0;color:var(--muted);font-size:.8rem">AI evaluating...</div>`;
+  const data = ST.seqData;
+  const ref = (data.aspekte || []).map(a => `${a.aspekt}: ${data.a} = ${a.a_wert} | ${data.b} = ${a.b_wert}`).join('\n');
+  const sys = `You are a learning coach. The student names the single most important difference between two things and why it matters. Judge whether they identified a genuinely central difference and explained its significance.
+Respond ONLY with JSON: {"bewertung":7,"feedback":"2-3 sentences","muster":"the key difference, briefly"} - bewertung is 1-10. In English.`;
+  const userMsg = `Comparison of ${data.a} vs ${data.b}:\n${ref}\n\nStudent's key difference:\n${answer}`;
+  try {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', { method: 'POST', body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 700, system: sys, messages: [{ role: 'user', content: userMsg }] }) });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error'); }
+    const d = await res.json();
+    const json = JSON.parse(d.content.map(b => b.text || '').join('').match(/\{[\s\S]*\}/)[0]);
+    const score = Math.min(10, Math.max(1, json.bewertung || 5));
+    ST.seqScores.deps = score;
+    const c = seqScoreCols(score);
+    fb.innerHTML = `<div class="lernen-fb">
+      <div style="margin-bottom:.5rem"><span style="font-weight:700;font-size:.85rem;color:#fff;background:${c.ac};padding:.16rem .7rem;border-radius:100px">${score}/10</span></div>
+      <div style="font-size:.85rem;line-height:1.55;color:var(--text);margin-bottom:.6rem">${esc(json.feedback || '')}</div>
+      ${json.muster ? `<div style="font-size:.8rem;line-height:1.6;color:var(--muted);background:${c.tint};border:1px solid ${c.bd};border-left:4px solid ${c.ac};border-radius:8px;padding:.6rem .8rem"><span style="font-size:.55rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${c.ac};display:block;margin-bottom:.25rem">Key difference</span>${esc(json.muster)}</div>` : ''}
+      <div style="margin-top:1rem"><button class="lernen-submit" onclick="renderSeqApply()">Continue: Apply →</button></div></div>`;
+    if (btn) btn.style.display = 'none';
+  } catch (e) {
+    fb.innerHTML = `<div style="color:var(--red);font-size:.8rem">Error: ${esc(e.message)}</div>`;
+    if (btn) { btn.disabled = false; btn.textContent = 'Evaluate →'; }
+  }
 }
 
 // ── PHASE 3: DEPENDENCIES (one combined question, kept short on purpose) ──
