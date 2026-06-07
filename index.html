@@ -6287,17 +6287,20 @@ function openSeqTestBeta(idx) {
 }
 
 async function loadSeqTest(t) {
-  const sys = `You are an exam coach. Identify the central ordered sequence (a process or set of stages that build on each other) for the topic "${t.name}".
-Respond ONLY with this JSON (no text before/after):
-{"thema":"short name of the sequence","schritte":[{"begriff":"name of the step/stage","definition":"1-2 sentence model definition"}]}
-Rules: 4 to 7 steps, listed in the CORRECT logical or chronological order. Each step is a real term/stage from the material. All in English. Use only simple characters (no quotes/apostrophes that could break JSON).`;
+  const sys = `You are an exam coach. First decide the SHAPE of the topic "${t.name}":
+- SEQUENCE: a process or chronology whose elements follow ONE fixed order (a process, a timeline, stages that build on each other).
+- STRUCTURE: categories, parts or types that coexist WITHOUT a fixed order (classifications, components, groups).
+Respond ONLY with JSON (no text before/after), in ONE of these two shapes:
+SEQUENCE -> {"form":"sequence","thema":"short name","schritte":[{"begriff":"step name","definition":"1-2 sentence definition"}]}  with 4 to 7 steps in the correct order.
+STRUCTURE -> {"form":"structure","thema":"short name","kategorien":[{"name":"category name","elemente":[{"begriff":"element name","definition":"1-2 sentence definition"}]}]}  with 2 to 4 categories, each holding 2 to 3 elements.
+PREFER SEQUENCE: if the material contains ANY genuine ordered process, chronology, or stages that build on each other, choose SEQUENCE and order those elements. If a topic mixes an ordered process with some unordered categories, still choose SEQUENCE and use the ordered elements as the steps (the extra categories can be ignored here). Choose STRUCTURE ONLY when the topic has NO meaningful order at all (pure classification, parts, or types — e.g. social estates, cell types). Never force an order onto a truly structural topic. Each item is a real term from the material. All in English. Use only simple characters (no quotes/apostrophes that could break JSON).`;
   const content = [];
   ST.planFiles.forEach(pf => {
     if (pf.mode === 'text') content.push({ type: 'text', text: `--- ${pf.name} ---\n${pf.text}` });
     else if (pf.type === 'application/pdf') content.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: pf.b64 } });
     else content.push({ type: 'image', source: { type: 'base64', media_type: pf.type, data: pf.b64 } });
   });
-  content.push({ type: 'text', text: `Identify the ordered sequence for: "${t.name}" — ${t.beschreibung}` });
+  content.push({ type: 'text', text: `Classify the shape and build the test for: "${t.name}" — ${t.beschreibung}` });
   try {
     const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
       method: 'POST',
@@ -6309,7 +6312,10 @@ Rules: 4 to 7 steps, listed in the CORRECT logical or chronological order. Each 
     const raw = (text.match(/\{[\s\S]*\}/) || [])[0];
     if (!raw) throw new Error('No JSON found in response');
     const json = safeJsonParse(raw);
-    if (!json || !Array.isArray(json.schritte) || !json.schritte.length) throw new Error('Could not parse sequence');
+    const okSeq = json && Array.isArray(json.schritte) && json.schritte.length;
+    const okStruct = json && Array.isArray(json.kategorien) && json.kategorien.length;
+    if (!okSeq && !okStruct) throw new Error('Could not parse test data');
+    if (!json.form) json.form = okStruct ? 'structure' : 'sequence';
     ST.seqData = json;
     renderSeqDefine();
   } catch (e) {
@@ -6331,15 +6337,26 @@ function seqScoreCols(n) {
   return { ac: 'var(--red)', tint: 'var(--red-s)', bd: 'rgba(196,83,58,.25)' };
 }
 
+// All terms to define — flat list for both forms (sequence steps / structure elements)
+function seqAllTerms() {
+  const data = ST.seqData || {};
+  if (data.form === 'structure') {
+    const out = [];
+    (data.kategorien || []).forEach(c => (c.elemente || []).forEach(e => out.push({ begriff: e.begriff, definition: e.definition })));
+    return out;
+  }
+  return (data.schritte || []).map(s => ({ begriff: s.begriff, definition: s.definition }));
+}
+
 // ── PHASE 1: DEFINE (free recall of each term) ──
 function renderSeqDefine() {
-  const data = ST.seqData;
-  const order = seqShuffle(data.schritte.length); // random order so the sequence isn't revealed yet
+  const terms = seqAllTerms();
+  const order = seqShuffle(terms.length); // random order so the sequence isn't revealed yet
   let h = `<div class="test-sec">
-    <div class="test-sec-head"><span class="test-sec-ico">✍️</span><span class="test-sec-title">Phase 1 — Define</span><span class="test-sec-sub">${data.schritte.length} terms</span></div>
+    <div class="test-sec-head"><span class="test-sec-ico">✍️</span><span class="test-sec-title">Phase 1 — Define</span><span class="test-sec-sub">${terms.length} terms</span></div>
     <div style="font-size:.8rem;color:var(--muted);margin-bottom:1rem">Define each term in 1–2 sentences — from memory.</div>`;
   order.forEach(origIdx => {
-    const s = data.schritte[origIdx];
+    const s = terms[origIdx];
     h += `<div class="test-q">
       <div class="test-q-text">${esc(s.begriff)}</div>
       <div class="recall-ta-wrap"><textarea id="seq-def-${origIdx}" placeholder="Define ${esc(s.begriff)}..."></textarea></div>
@@ -6354,8 +6371,7 @@ function renderSeqDefine() {
 }
 
 async function submitSeqDefine() {
-  const data = ST.seqData;
-  const answers = data.schritte.map((s, i) => ({ begriff: s.begriff, modell: s.definition, antwort: (document.getElementById(`seq-def-${i}`)?.value || '').trim() }));
+  const answers = seqAllTerms().map((s, i) => ({ begriff: s.begriff, modell: s.definition, antwort: (document.getElementById(`seq-def-${i}`)?.value || '').trim() }));
   if (answers.every(a => !a.antwort)) { const ta = document.getElementById(`seq-def-0`); if (ta) ta.style.borderColor = 'var(--red)'; return; }
   const btn = document.getElementById('seq-def-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Evaluating...'; }
@@ -6396,7 +6412,8 @@ Respond ONLY with JSON: {"bewertungen":[{"begriff":"...","bewertung":7,"feedback
         </div>
       </div>`;
     });
-    fbh += `<div style="margin-top:1rem"><button class="lernen-submit" onclick="renderSeqOrder()">Continue: Order →</button></div></div>`;
+    const isStruct = (ST.seqData || {}).form === 'structure';
+    fbh += `<div style="margin-top:1rem"><button class="lernen-submit" onclick="${isStruct ? 'renderSeqCategorize' : 'renderSeqOrder'}()">Continue: ${isStruct ? 'Categorize' : 'Order'} →</button></div></div>`;
     fb.innerHTML = fbh;
     if (btn) btn.style.display = 'none';
   } catch (e) {
@@ -6472,6 +6489,65 @@ function checkSeqOrder() {
     <div><button class="lernen-submit" onclick="renderSeqDeps()">Continue: Dependencies →</button></div></div>`;
 }
 
+// ── PHASE 2 (structure form): CATEGORIZE — assign elements to their group ──
+function renderSeqCategorize() {
+  const data = ST.seqData;
+  const items = [];
+  (data.kategorien || []).forEach((cat, ci) => (cat.elemente || []).forEach(el => items.push({ begriff: el.begriff, cat: ci })));
+  ST.seqCat = { items, placed: {}, sel: null, pool: seqShuffle(items.length) };
+  const h = `<div class="test-sec">
+    <div class="test-sec-head"><span class="test-sec-ico">🗂️</span><span class="test-sec-title">Phase 2 — Categorize</span></div>
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem">Tap a term, then tap the category it belongs to.</div>
+    <div class="mm-zuord-pool" id="seq-cat-pool"></div>
+    <div class="mm-zuord-cols" id="seq-cat-cols" style="grid-template-columns:repeat(${(data.kategorien || []).length}, 1fr)"></div>
+    <div class="lernen-actions" style="margin-top:.8rem"><button class="lernen-submit" id="seq-cat-btn" onclick="checkSeqCategorize()" disabled>Check →</button></div>
+    <div id="seq-cat-fb"></div></div>`;
+  const tc = document.getElementById('testContent');
+  tc.innerHTML = h;
+  seqCatRender();
+  tc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function seqCatRender() {
+  const data = ST.seqData, S = ST.seqCat;
+  document.getElementById('seq-cat-pool').innerHTML =
+    S.pool.filter(i => S.placed[i] == null).map(i =>
+      `<span class="mm-zuord-chip${S.sel === i ? ' selected' : ''}" onclick="seqCatSelect(${i})">${esc(S.items[i].begriff)}</span>`
+    ).join('') || '<span style="font-size:.75rem;color:var(--muted2)">All placed.</span>';
+  document.getElementById('seq-cat-cols').innerHTML = (data.kategorien || []).map((cat, ci) => {
+    const chips = Object.keys(S.placed).filter(k => S.placed[k] === ci)
+      .map(k => `<span class="mm-zuord-placed">${esc(S.items[k].begriff)}</span>`).join('');
+    return `<div class="mm-zuord-col${S.sel != null ? ' clickable' : ''}" onclick="seqCatPlace(${ci})"><div class="mm-zuord-col-title">${esc(cat.name)}</div>${chips}</div>`;
+  }).join('');
+  const btn = document.getElementById('seq-cat-btn');
+  if (btn) btn.disabled = Object.keys(S.placed).length !== S.items.length;
+}
+
+function seqCatSelect(i) { ST.seqCat.sel = ST.seqCat.sel === i ? null : i; seqCatRender(); }
+function seqCatPlace(ci) { const S = ST.seqCat; if (S.sel == null) return; S.placed[S.sel] = ci; S.sel = null; seqCatRender(); }
+
+function checkSeqCategorize() {
+  const data = ST.seqData, S = ST.seqCat;
+  let correct = 0;
+  S.items.forEach((it, i) => { if (S.placed[i] === it.cat) correct++; });
+  const total = S.items.length;
+  ST.seqScores.order = Math.round(correct / total * 10 * 10) / 10;
+  document.getElementById('seq-cat-pool').innerHTML = '';
+  document.getElementById('seq-cat-cols').innerHTML = (data.kategorien || []).map((cat, ci) => {
+    const chips = S.items.map((it, i) => ({ it, i })).filter(x => x.it.cat === ci).map(x => {
+      const ok = S.placed[x.i] === ci;
+      return `<span class="mm-zuord-placed" style="background:${ok ? 'var(--accent)' : 'var(--red)'}">${ok ? '✓' : '✗'} ${esc(x.it.begriff)}</span>`;
+    }).join('');
+    return `<div class="mm-zuord-col" style="border-style:solid;border-color:var(--border)"><div class="mm-zuord-col-title">${esc(cat.name)}</div>${chips}</div>`;
+  }).join('');
+  const btn = document.getElementById('seq-cat-btn'); if (btn) btn.style.display = 'none';
+  const scoreColor = correct >= total * 0.7 ? 'var(--accent)' : correct >= total * 0.5 ? '#E8A020' : 'var(--red)';
+  document.getElementById('seq-cat-fb').innerHTML = `<div class="lernen-fb" style="margin-top:.75rem">
+    <div class="lernen-fb-score"><span class="lernen-fb-num" style="color:${scoreColor}">${correct}</span><span class="lernen-fb-max">/ ${total}</span></div>
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem">${correct === total ? 'All correct!' : 'Correct grouping shown above.'}</div>
+    <div><button class="lernen-submit" onclick="renderSeqApply()">Continue: Apply →</button></div></div>`;
+}
+
 // ── PHASE 3: DEPENDENCIES (one combined question, kept short on purpose) ──
 function renderSeqDeps() {
   const data = ST.seqData;
@@ -6531,6 +6607,118 @@ Respond ONLY with JSON: {"bewertung":7,"feedback":"What they captured and what i
       <div style="margin-bottom:.5rem"><span style="font-weight:700;font-size:.85rem;color:#fff;background:${c.ac};padding:.16rem .7rem;border-radius:100px">${score}/10</span></div>
       <div style="font-size:.85rem;line-height:1.55;color:var(--text);margin-bottom:.6rem">${esc(json.feedback || '')}</div>
       ${json.musterkette ? `<div style="font-size:.8rem;line-height:1.6;color:var(--muted);background:${c.tint};border:1px solid ${c.bd};border-left:4px solid ${c.ac};border-radius:8px;padding:.6rem .8rem"><span style="font-size:.55rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${c.ac};display:block;margin-bottom:.25rem">Ideal chain</span>${esc(json.musterkette)}</div>` : ''}
+      <div style="margin-top:1rem"><button class="lernen-submit" onclick="renderSeqApply()">Continue: Apply →</button></div></div>`;
+    if (btn) btn.style.display = 'none';
+  } catch (e) {
+    fb.innerHTML = `<div style="color:var(--red);font-size:.8rem">Error: ${esc(e.message)}</div>`;
+    if (btn) { btn.disabled = false; btn.textContent = 'Evaluate →'; }
+  }
+}
+
+// ── PHASE 4: APPLY (fresh scenario, use the concepts in a real context) ──
+function seqApplyMatched(term, txt) {
+  const words = term.toLowerCase().split(/\s+/).filter(w => w.length >= 4);
+  if (!words.length) return txt.includes(term.toLowerCase());
+  return words.every(w => txt.includes(w.slice(0, Math.min(w.length, 5))));
+}
+
+async function renderSeqApply() {
+  const tc = document.getElementById('testContent');
+  tc.innerHTML = `<div class="bov-load"><div class="typ"><span></span><span></span><span></span></div>AI is creating a scenario...</div>`;
+  tc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const t = ST.seqTopic || {};
+  const terms = seqAllTerms().map(s => s.begriff).join(', ');
+  const sys = `You are an exam coach. Create a FRESH, realistic but SMALL application scenario for the topic "${t.name}" — a short fictional company in ONE concrete situation (2-3 sentences). The student applies the concepts to a SINGLE focused decision.
+Respond ONLY with this JSON (no text before/after): {"szenario":"2-3 sentence concrete scenario with a named company, ONE market / ONE decision (not multiple markets at once)","aufgabe":"ONE clear, focused question answerable in a few sentences (use max 2 short numbered sub-questions only if truly needed: 1. ... \\n 2. ...)","begriffe":["term1","term2","term3"]}
+Rules: EXACTLY 3 to 4 key terms that genuinely apply — no more. Keep the scope tight: do NOT compare several markets, products, or frameworks at once. The scenario and task must be specific and concrete. All in English. Use only simple characters (no quotes/apostrophes that could break JSON).`;
+  const content = [];
+  ST.planFiles.forEach(pf => {
+    if (pf.mode === 'text') content.push({ type: 'text', text: `--- ${pf.name} ---\n${pf.text}` });
+    else if (pf.type === 'application/pdf') content.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: pf.b64 } });
+    else content.push({ type: 'image', source: { type: 'base64', media_type: pf.type, data: pf.b64 } });
+  });
+  content.push({ type: 'text', text: `Create the application scenario for: "${t.name}" — ${t.beschreibung}. Available concepts: ${terms}` });
+  try {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+      method: 'POST',
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1200, system: sys, messages: [{ role: 'user', content }] })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error ' + res.status); }
+    const data = await res.json();
+    const raw = (data.content.map(b => b.text || '').join('').match(/\{[\s\S]*\}/) || [])[0];
+    const json = raw ? safeJsonParse(raw) : null;
+    if (!json || !json.szenario) throw new Error('Could not parse scenario');
+    ST.seqScenario = json.szenario;
+    ST.seqApplyTask = json.aufgabe || '';
+    ST.seqApplyTerms = (json.begriffe || []).slice(0, 4);
+    renderSeqApplyUI();
+  } catch (e) {
+    tc.innerHTML = `<div class="err on">Error: ${esc(e.message)}</div><div class="brow" style="margin-top:1rem"><button class="lernen-submit" onclick="finishSeqTest()">Finish ✓</button></div>`;
+  }
+}
+
+function renderSeqApplyUI() {
+  const terms = ST.seqApplyTerms || [];
+  const chips = terms.map((term, i) => `<span id="seq-aterm-${i}" style="padding:.32rem .8rem;border-radius:100px;border:1px solid var(--border2);background:var(--surface);font-size:.78rem;font-weight:500;color:var(--muted);transition:all .2s">${esc(term)}</span>`).join('');
+  const h = `<div class="test-sec">
+    <div class="test-sec-head"><span class="test-sec-ico">🌍</span><span class="test-sec-title">Phase 4 — Apply</span></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;font-size:.88rem;line-height:1.6;margin-bottom:.8rem">${esc(ST.seqScenario || '')}</div>
+    <div style="font-size:.92rem;font-weight:600;color:var(--text);line-height:1.55;margin-bottom:.7rem;padding-left:.7rem;border-left:3px solid var(--accent)">${esc(ST.seqApplyTask || 'Analyze the situation using the concepts below.').replace(/\n/g, '<br>')}</div>
+    <div style="font-size:.78rem;color:var(--muted);margin-bottom:.45rem">Correctly use these concepts — they light up as you use them:</div>
+    <div style="display:flex;flex-wrap:wrap;gap:.42rem;margin-bottom:.7rem">${chips}</div>
+    <div class="recall-ta-wrap"><textarea id="seq-apply-ta" oninput="seqApplyLiveCheck()" placeholder="Apply the concepts to this scenario..."></textarea></div>
+    <div class="lernen-actions" style="margin-top:.6rem"><button class="lernen-submit" id="seq-apply-btn" onclick="submitSeqApply()">Evaluate →</button></div>
+    <div id="seq-apply-fb"></div></div>`;
+  const tc = document.getElementById('testContent');
+  tc.innerHTML = h;
+  tc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function seqApplyLiveCheck() {
+  const txt = (document.getElementById('seq-apply-ta')?.value || '').toLowerCase();
+  (ST.seqApplyTerms || []).forEach((term, i) => {
+    const chip = document.getElementById(`seq-aterm-${i}`);
+    if (!chip) return;
+    if (seqApplyMatched(term, txt)) { chip.style.background = 'var(--accent)'; chip.style.color = '#fff'; chip.style.borderColor = 'var(--accent)'; }
+    else { chip.style.background = 'var(--surface)'; chip.style.color = 'var(--muted)'; chip.style.borderColor = 'var(--border2)'; }
+  });
+}
+
+async function submitSeqApply() {
+  const ta = document.getElementById('seq-apply-ta');
+  const answer = ((ta && ta.value) || '').trim();
+  if (!answer) { if (ta) ta.style.borderColor = 'var(--red)'; return; }
+  const btn = document.getElementById('seq-apply-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Evaluating...'; }
+  const fb = document.getElementById('seq-apply-fb');
+  fb.innerHTML = `<div style="padding:.8rem 0;color:var(--muted);font-size:.8rem">AI evaluating...</div>`;
+  const terms = ST.seqApplyTerms || [];
+  const sys = `You are a learning coach. The student applied learned concepts to a scenario. Judge how well they applied the concepts (correctness and depth), and for EACH required term say whether it was applied well, only mentioned, or missing/misused.
+Respond ONLY with JSON: {"bewertung":7,"feedback":"2-3 sentences","begriffe":[{"begriff":"...","status":"gut|erwaehnt|fehlt"}]} - bewertung is 1-10. In English.`;
+  const userMsg = `Scenario:\n${ST.seqScenario}\n\nTask: ${ST.seqApplyTask || ''}\n\nRequired terms: ${terms.join(', ')}\n\nStudent's analysis:\n${answer}`;
+  try {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', {
+      method: 'POST',
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 900, system: sys, messages: [{ role: 'user', content: userMsg }] })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Error'); }
+    const d = await res.json();
+    const json = JSON.parse(d.content.map(b => b.text || '').join('').match(/\{[\s\S]*\}/)[0]);
+    const score = Math.min(10, Math.max(1, json.bewertung || 5));
+    ST.seqScores.apply = score;
+    const byT = {}; (json.begriffe || []).forEach(b => byT[(b.begriff || '').toLowerCase()] = b.status);
+    const chipHtml = terms.map(term => {
+      const st = byT[term.toLowerCase()] || 'fehlt';
+      const cfg = st === 'gut' ? { ic: '✓', c: 'var(--accent)', bg: 'var(--str-bg)', bd: 'var(--str-bd)' }
+        : st === 'erwaehnt' ? { ic: '~', c: 'var(--erk-tx)', bg: 'var(--erk-bg)', bd: 'var(--erk-bd)' }
+        : { ic: '✗', c: 'var(--red)', bg: 'var(--red-s)', bd: 'rgba(196,83,58,.25)' };
+      return `<span style="padding:.32rem .8rem;border-radius:100px;border:1px solid ${cfg.bd};background:${cfg.bg};color:${cfg.c};font-size:.78rem;font-weight:600">${cfg.ic} ${esc(term)}</span>`;
+    }).join('');
+    const c = seqScoreCols(score);
+    fb.innerHTML = `<div class="lernen-fb">
+      <div style="margin-bottom:.5rem"><span style="font-weight:700;font-size:.85rem;color:#fff;background:${c.ac};padding:.16rem .7rem;border-radius:100px">${score}/10</span></div>
+      <div style="font-size:.85rem;line-height:1.55;color:var(--text);margin-bottom:.6rem">${esc(json.feedback || '')}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.42rem">${chipHtml}</div>
       <div style="margin-top:1rem"><button class="lernen-submit" onclick="finishSeqTest()">Finish ✓</button></div></div>`;
     if (btn) btn.style.display = 'none';
   } catch (e) {
@@ -6541,13 +6729,13 @@ Respond ONLY with JSON: {"bewertung":7,"feedback":"What they captured and what i
 
 function finishSeqTest() {
   const sc = ST.seqScores || {};
-  const vals = ['define', 'order', 'deps'].map(k => sc[k]).filter(v => v != null);
+  const vals = ['define', 'order', 'deps', 'apply'].map(k => sc[k]).filter(v => v != null);
   const composite = vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length * 10) / 10 : null;
   const h = `<div class="test-sec">
     <div class="test-sec-head"><span class="test-sec-ico">🏁</span><span class="test-sec-title">Result (Beta)</span></div>
     <div class="test-score"><div class="test-score-num">${composite != null ? composite : '—'}</div>
       <div class="test-score-info"><div class="test-score-lbl">Sequence Test</div>
-      <div class="test-score-msg">Define ${sc.define ?? '—'}/10 · Order ${sc.order ?? '—'}/10 · Dependencies ${sc.deps ?? '—'}/10</div></div></div>
+      <div class="test-score-msg">Define ${sc.define ?? '—'} · Order ${sc.order ?? '—'} · Deps ${sc.deps ?? '—'} · Apply ${sc.apply ?? '—'} (/10)</div></div></div>
     <div class="brow"><button class="btn bg" onclick="backFromTest()">← Back</button></div></div>`;
   const tc = document.getElementById('testContent');
   tc.innerHTML = h;
