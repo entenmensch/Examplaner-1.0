@@ -6290,7 +6290,7 @@ function openSeqTestBeta(idx, forceForm) {
 function seqFormSchema(form) {
   if (form === 'compare') return `{"form":"compare","thema":"short name","a":"first thing","b":"second thing","a_def":"1-2 sentence definition of A","b_def":"1-2 sentence definition of B","aspekte":[{"aspekt":"dimension","a_wert":"A's value","b_wert":"B's value"}]}  with 3 to 5 aspects`;
   if (form === 'causeweb') return `{"form":"causeweb","thema":"short name","ergebnis":"the single outcome/event","kategorien":["3 to 4 typological category names, e.g. political, economic, military, ideological"],"ursachen":[{"begriff":"cause name","kategorie":"exactly one of the categories above","wirkung":"how this cause contributes to the outcome"}]}  with 4 to 6 causes spread across the categories`;
-  if (form === 'structure') return `{"form":"structure","thema":"short name","kategorien":[{"name":"category name","elemente":[{"begriff":"element name","definition":"1-2 sentence definition"}]}]}  with 2 to 4 categories, each holding 2 to 3 elements`;
+  if (form === 'structure') return `{"form":"structure","thema":"short name","kategorien":[{"name":"category name","elemente":[{"begriff":"element name"}]}],"grenzfall":{"element":"a real element students often MISCLASSIFY between two of the categories","kategorie":"its correct category name (must exactly match one category)","kriterium":"the deciding criterion that places it there"}}  with 2 to 4 categories, each holding 2 to 3 elements`;
   return `{"form":"sequence","thema":"short name","schritte":[{"begriff":"step name","definition":"1-2 sentence definition"}]}  with 4 to 7 steps in the correct order`;
 }
 
@@ -6307,7 +6307,7 @@ Respond ONLY with JSON (no text before/after), in ONE of these shapes:
 COMPARE  -> {"form":"compare","thema":"short name","a":"first thing","b":"second thing","a_def":"1-2 sentence definition of A","b_def":"1-2 sentence definition of B","aspekte":[{"aspekt":"dimension","a_wert":"A's value","b_wert":"B's value"}]}  with 3 to 5 aspects.
 CAUSEWEB -> {"form":"causeweb","thema":"short name","ergebnis":"the single outcome/event","kategorien":["3 to 4 typological category names like political/economic/military/ideological"],"ursachen":[{"begriff":"cause name","kategorie":"exactly one of the categories above","wirkung":"how this cause contributes to the outcome"}]}  with 4 to 6 causes spread across the categories.
 SEQUENCE -> {"form":"sequence","thema":"short name","schritte":[{"begriff":"step name","definition":"1-2 sentence definition"}]}  with 4 to 7 steps in the correct order.
-STRUCTURE-> {"form":"structure","thema":"short name","kategorien":[{"name":"category name","elemente":[{"begriff":"element name","definition":"1-2 sentence definition"}]}]}  with 2 to 4 categories, each holding 2 to 3 elements.
+STRUCTURE-> {"form":"structure","thema":"short name","kategorien":[{"name":"category name","elemente":[{"begriff":"element name"}]}],"grenzfall":{"element":"a real element students often misclassify between two of the categories","kategorie":"its correct category name","kriterium":"the deciding criterion"}}  with 2 to 4 categories, each holding 2 to 3 elements.
 HOW TO CHOOSE: If the topic is essentially "X versus Y" -> COMPARE. Else, if SEVERAL parallel/independent factors converge on ONE outcome (not a single chain) -> CAUSEWEB. Else, apply the SHUFFLE TEST to decide SEQUENCE vs STRUCTURE: would shuffling the elements make the knowledge WRONG? YES (a canonical chronological/causal/procedural order, e.g. mitosis phases, a causal chain) -> SEQUENCE. NO (elements just belong to groups, any order is fine, e.g. cell organelles, social estates, market entry modes) -> STRUCTURE. If a topic mixes an ordered process with extra groups, prefer SEQUENCE. Never force an order onto a structural topic. Each item is a real term from the material. All in English. Use only simple characters (no quotes/apostrophes that could break JSON).`;
   const content = [];
   ST.planFiles.forEach(pf => {
@@ -6334,7 +6334,7 @@ HOW TO CHOOSE: If the topic is essentially "X versus Y" -> COMPARE. Else, if SEV
     if (!okSeq && !okStruct && !okCompare && !okCause) throw new Error('Could not parse test data');
     if (!json.form) json.form = okCompare ? 'compare' : okCause ? 'causeweb' : okStruct ? 'structure' : 'sequence';
     ST.seqData = json;
-    if (json.form === 'compare') renderSeqCompareKey(); else if (json.form === 'causeweb') renderSeqCauses(); else renderSeqDefine();
+    if (json.form === 'compare') renderSeqCompareKey(); else if (json.form === 'causeweb') renderSeqCauses(); else if (json.form === 'structure') renderSeqCategorize(); else renderSeqDefine();
   } catch (e) {
     document.getElementById('testLoad').innerHTML = `<div class="err on">Error: ${esc(e.message)}</div>`;
   }
@@ -6514,63 +6514,171 @@ function checkSeqOrder() {
     <div><button class="lernen-submit" onclick="renderSeqDeps()">Continue: Dependencies →</button></div></div>`;
 }
 
-// ── PHASE 2 (structure form): CATEGORIZE — assign elements to their group ──
+// ── PHASE 1 (structure): sort each element into a category AND explain its role ──
 function renderSeqCategorize() {
   const data = ST.seqData;
+  const cats = (data.kategorien || []).map(c => c.name);
   const items = [];
   (data.kategorien || []).forEach((cat, ci) => (cat.elemente || []).forEach(el => items.push({ begriff: el.begriff, cat: ci })));
-  ST.seqCat = { items, placed: {}, sel: null, pool: seqShuffle(items.length) };
+  ST.seqCat = { items, cats, placed: {}, sel: null, pool: seqShuffle(items.length) };
   const h = `<div class="test-sec">
-    <div class="test-sec-head"><span class="test-sec-ico">🗂️</span><span class="test-sec-title">Phase 2 — Categorize</span></div>
-    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem">Tap a term, then tap the category it belongs to.</div>
+    <div class="test-sec-head"><span class="test-sec-ico">🗂️</span><span class="test-sec-title">Phase 1 — Sort & Explain</span></div>
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem">For each term: explain its role, then tap the category it belongs to.</div>
+    <div class="mm-zuord-cols" id="seq-cat-cols" style="grid-template-columns:repeat(${cats.length}, 1fr);margin-bottom:.7rem"></div>
+    <div id="seq-cat-justify"></div>
     <div class="mm-zuord-pool" id="seq-cat-pool"></div>
-    <div class="mm-zuord-cols" id="seq-cat-cols" style="grid-template-columns:repeat(${(data.kategorien || []).length}, 1fr)"></div>
     <div class="lernen-actions" style="margin-top:.8rem"><button class="lernen-submit" id="seq-cat-btn" onclick="checkSeqCategorize()" disabled>Check →</button></div>
     <div id="seq-cat-fb"></div></div>`;
   const tc = document.getElementById('testContent');
   tc.innerHTML = h;
   seqCatRender();
+  document.getElementById('testLoad').style.display = 'none';
+  tc.style.display = 'block';
   tc.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function seqCatRender() {
-  const data = ST.seqData, S = ST.seqCat;
+  const S = ST.seqCat;
+  document.getElementById('seq-cat-cols').innerHTML = S.cats.map((name, ci) => {
+    const chips = Object.keys(S.placed).filter(k => S.placed[k].col === ci)
+      .map(k => `<span class="mm-zuord-placed">${esc(S.items[k].begriff)}</span>`).join('');
+    return `<div class="mm-zuord-col${S.sel != null ? ' clickable' : ''}" onclick="seqCatPlace(${ci})"><div class="mm-zuord-col-title">${esc(name)}</div>${chips}</div>`;
+  }).join('');
+  document.getElementById('seq-cat-justify').innerHTML = S.sel != null ? `<div style="background:var(--accent-s);border:1px solid var(--str-bd);border-radius:10px;padding:.7rem .85rem;margin-bottom:.7rem">
+      <div style="font-size:.82rem;font-weight:600;color:var(--accent);margin-bottom:.4rem">Selected: ${esc(S.items[S.sel].begriff)}</div>
+      <input type="text" id="seq-cat-why" placeholder="What is it / what is its role?" autocomplete="off" style="width:100%;padding:.5rem .8rem;font-size:.82rem;margin-bottom:.35rem">
+      <div style="font-size:.72rem;color:var(--muted)">Then tap its category ↑</div>
+    </div>` : '';
   document.getElementById('seq-cat-pool').innerHTML =
     S.pool.filter(i => S.placed[i] == null).map(i =>
       `<span class="mm-zuord-chip${S.sel === i ? ' selected' : ''}" onclick="seqCatSelect(${i})">${esc(S.items[i].begriff)}</span>`
     ).join('') || '<span style="font-size:.75rem;color:var(--muted2)">All placed.</span>';
-  document.getElementById('seq-cat-cols').innerHTML = (data.kategorien || []).map((cat, ci) => {
-    const chips = Object.keys(S.placed).filter(k => S.placed[k] === ci)
-      .map(k => `<span class="mm-zuord-placed">${esc(S.items[k].begriff)}</span>`).join('');
-    return `<div class="mm-zuord-col${S.sel != null ? ' clickable' : ''}" onclick="seqCatPlace(${ci})"><div class="mm-zuord-col-title">${esc(cat.name)}</div>${chips}</div>`;
-  }).join('');
   const btn = document.getElementById('seq-cat-btn');
   if (btn) btn.disabled = Object.keys(S.placed).length !== S.items.length;
 }
 
-function seqCatSelect(i) { ST.seqCat.sel = ST.seqCat.sel === i ? null : i; seqCatRender(); }
-function seqCatPlace(ci) { const S = ST.seqCat; if (S.sel == null) return; S.placed[S.sel] = ci; S.sel = null; seqCatRender(); }
+function seqCatSelect(i) {
+  const S = ST.seqCat;
+  S.sel = S.sel === i ? null : i;
+  seqCatRender();
+  if (S.sel != null) { const w = document.getElementById('seq-cat-why'); if (w) w.focus(); }
+}
 
-function checkSeqCategorize() {
+function seqCatPlace(ci) {
+  const S = ST.seqCat;
+  if (S.sel == null) return;
+  const why = (document.getElementById('seq-cat-why')?.value || '').trim();
+  S.placed[S.sel] = { col: ci, why };
+  S.sel = null;
+  seqCatRender();
+}
+
+async function checkSeqCategorize() {
   const data = ST.seqData, S = ST.seqCat;
   let correct = 0;
-  S.items.forEach((it, i) => { if (S.placed[i] === it.cat) correct++; });
+  S.items.forEach((it, i) => { if (S.placed[i] && S.placed[i].col === it.cat) correct++; });
   const total = S.items.length;
-  ST.seqScores.order = Math.round(correct / total * 10 * 10) / 10;
+  const btn = document.getElementById('seq-cat-btn'); if (btn) { btn.disabled = true; btn.textContent = 'Evaluating...'; }
+  const fb = document.getElementById('seq-cat-fb');
+  fb.innerHTML = `<div style="padding:.8rem 0;color:var(--muted);font-size:.8rem">AI evaluating...</div>`;
+  const lines = S.items.map((it, i) => {
+    const p = S.placed[i] || {};
+    return `Term "${it.begriff}" -> category "${S.cats[p.col] ?? '(none)'}" (correct: "${S.cats[it.cat]}"). Student explanation: ${p.why || '(none)'}`;
+  }).join('\n');
+  const sys = `You are a learning coach grading a classification task for "${data.thema || ''}". The student sorted each term into a category and explained its role. Give ONE overall score 1-10 reflecting BOTH correct categorisation AND the quality of the explanations.
+Respond ONLY with JSON: {"bewertung":7,"feedback":"2-3 sentences"} - bewertung is 1-10. In English.`;
+  let score = Math.round(correct / total * 10 * 10) / 10, feedback = '';
+  try {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', { method: 'POST', body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 600, system: sys, messages: [{ role: 'user', content: lines }] }) });
+    if (res.ok) {
+      const d = await res.json();
+      const json = JSON.parse(d.content.map(b => b.text || '').join('').match(/\{[\s\S]*\}/)[0]);
+      score = Math.min(10, Math.max(1, json.bewertung || 5));
+      feedback = json.feedback || '';
+    }
+  } catch (e) { /* fall back to placement-only score */ }
+  ST.seqScores.order = score;
+  document.getElementById('seq-cat-justify').innerHTML = '';
   document.getElementById('seq-cat-pool').innerHTML = '';
-  document.getElementById('seq-cat-cols').innerHTML = (data.kategorien || []).map((cat, ci) => {
+  document.getElementById('seq-cat-cols').innerHTML = S.cats.map((name, ci) => {
     const chips = S.items.map((it, i) => ({ it, i })).filter(x => x.it.cat === ci).map(x => {
-      const ok = S.placed[x.i] === ci;
+      const ok = S.placed[x.i] && S.placed[x.i].col === ci;
       return `<span class="mm-zuord-placed" style="background:${ok ? 'var(--accent)' : 'var(--red)'}">${ok ? '✓' : '✗'} ${esc(x.it.begriff)}</span>`;
     }).join('');
-    return `<div class="mm-zuord-col" style="border-style:solid;border-color:var(--border)"><div class="mm-zuord-col-title">${esc(cat.name)}</div>${chips}</div>`;
+    return `<div class="mm-zuord-col" style="border-style:solid;border-color:var(--border)"><div class="mm-zuord-col-title">${esc(name)}</div>${chips}</div>`;
   }).join('');
-  const btn = document.getElementById('seq-cat-btn'); if (btn) btn.style.display = 'none';
-  const scoreColor = correct >= total * 0.7 ? 'var(--accent)' : correct >= total * 0.5 ? '#E8A020' : 'var(--red)';
-  document.getElementById('seq-cat-fb').innerHTML = `<div class="lernen-fb" style="margin-top:.75rem">
-    <div class="lernen-fb-score"><span class="lernen-fb-num" style="color:${scoreColor}">${correct}</span><span class="lernen-fb-max">/ ${total}</span></div>
-    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem">${correct === total ? 'All correct!' : 'Correct grouping shown above.'}</div>
-    <div><button class="lernen-submit" onclick="renderSeqApply()">Continue: Apply →</button></div></div>`;
+  if (btn) btn.style.display = 'none';
+  const c = seqScoreCols(score);
+  const hasGrenz = data.grenzfall && data.grenzfall.element;
+  const nextBtn = hasGrenz
+    ? `<button class="lernen-submit" onclick="renderSeqAbgrenzung()">Continue: Boundaries →</button>`
+    : `<button class="lernen-submit" onclick="renderSeqApply()">Continue: Apply →</button>`;
+  document.getElementById('seq-cat-fb').innerHTML = `<div class="lernen-fb" style="margin-top:.5rem">
+    <div style="margin-bottom:.45rem"><span style="font-weight:700;font-size:.85rem;color:#fff;background:${c.ac};padding:.16rem .7rem;border-radius:100px">${score}/10</span> <span style="font-size:.72rem;color:var(--muted)">(${correct}/${total} correctly categorised)</span></div>
+    ${feedback ? `<div style="font-size:.84rem;line-height:1.55;color:var(--text);margin-bottom:.5rem">${esc(feedback)}</div>` : ''}
+    <div style="margin-top:.4rem">${nextBtn}</div></div>`;
+}
+
+// ── PHASE 2 (structure): boundaries — a borderline case + the deciding criterion ──
+function renderSeqAbgrenzung() {
+  const data = ST.seqData, g = data.grenzfall || {};
+  const cats = (data.kategorien || []).map(c => c.name);
+  ST.seqAbg = { sel: null };
+  const catBtns = cats.map((name, ci) => `<button class="org-reih-chip" id="seq-abg-cat-${ci}" onclick="seqAbgSelect(${ci})">${esc(name)}</button>`).join('');
+  const h = `<div class="test-sec">
+    <div class="test-sec-head"><span class="test-sec-ico">🔍</span><span class="test-sec-title">Phase 2 — Boundaries</span></div>
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.6rem">A borderline case — decide where it belongs and which criterion decides.</div>
+    <div style="font-size:.98rem;font-weight:600;color:var(--accent);background:var(--accent-s);border:1px solid var(--str-bd);border-radius:10px;padding:.75rem .9rem;margin-bottom:.8rem">${esc(g.element || '')}</div>
+    <div style="font-size:.78rem;color:var(--muted);margin-bottom:.35rem">Which category does it belong to?</div>
+    <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.8rem">${catBtns}</div>
+    <div style="font-size:.78rem;color:var(--muted);margin-bottom:.35rem">Which criterion decides — and why is it the right one?</div>
+    <div class="recall-ta-wrap"><textarea id="seq-abg-ta" placeholder="The deciding criterion — and why it applies here..."></textarea></div>
+    <div class="lernen-actions" style="margin-top:.6rem"><button class="lernen-submit" id="seq-abg-btn" onclick="submitSeqAbgrenzung()">Evaluate →</button></div>
+    <div id="seq-abg-fb"></div></div>`;
+  const tc = document.getElementById('testContent');
+  tc.innerHTML = h;
+  tc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function seqAbgSelect(ci) {
+  ST.seqAbg.sel = ci;
+  (ST.seqData.kategorien || []).forEach((_, i) => {
+    const b = document.getElementById(`seq-abg-cat-${i}`);
+    if (b) { b.style.background = i === ci ? 'var(--accent)' : 'var(--surface)'; b.style.color = i === ci ? '#fff' : 'var(--text)'; b.style.borderColor = i === ci ? 'var(--accent)' : 'var(--border2)'; }
+  });
+}
+
+async function submitSeqAbgrenzung() {
+  const data = ST.seqData, g = data.grenzfall || {};
+  const ta = document.getElementById('seq-abg-ta');
+  const crit = ((ta && ta.value) || '').trim();
+  if (ST.seqAbg.sel == null || !crit) { if (ta && !crit) ta.style.borderColor = 'var(--red)'; return; }
+  const cats = (data.kategorien || []).map(c => c.name);
+  const chosen = cats[ST.seqAbg.sel];
+  const btn = document.getElementById('seq-abg-btn'); if (btn) { btn.disabled = true; btn.textContent = 'Evaluating...'; }
+  const fb = document.getElementById('seq-abg-fb');
+  fb.innerHTML = `<div style="padding:.8rem 0;color:var(--muted);font-size:.8rem">AI evaluating...</div>`;
+  const sys = `You are a learning coach. A borderline element must be classified. Judge whether the student (1) chose the right category, (2) named the deciding criterion, and (3) EXPLAINED why that criterion makes it belong there. Reward the reasoning, not just naming the criterion. Correct category: "${g.kategorie}". Deciding criterion: "${g.kriterium}".
+Respond ONLY with JSON: {"bewertung":7,"feedback":"2-3 sentences"} - bewertung is 1-10. In English.`;
+  const userMsg = `Borderline element: ${g.element}\nStudent's category: ${chosen}\nStudent's criterion: ${crit}`;
+  let score = 5, feedback = '';
+  try {
+    const res = await fetch('https://learnassistet.leandroprokop.workers.dev', { method: 'POST', body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 600, system: sys, messages: [{ role: 'user', content: userMsg }] }) });
+    if (res.ok) {
+      const d = await res.json();
+      const json = JSON.parse(d.content.map(b => b.text || '').join('').match(/\{[\s\S]*\}/)[0]);
+      score = Math.min(10, Math.max(1, json.bewertung || 5));
+      feedback = json.feedback || '';
+    }
+  } catch (e) { /* keep default */ }
+  ST.seqScores.deps = score;
+  const c = seqScoreCols(score);
+  if (btn) btn.style.display = 'none';
+  fb.innerHTML = `<div class="lernen-fb">
+    <div style="margin-bottom:.45rem"><span style="font-weight:700;font-size:.85rem;color:#fff;background:${c.ac};padding:.16rem .7rem;border-radius:100px">${score}/10</span></div>
+    ${feedback ? `<div style="font-size:.84rem;line-height:1.55;color:var(--text);margin-bottom:.55rem">${esc(feedback)}</div>` : ''}
+    <div style="font-size:.8rem;line-height:1.6;color:var(--muted);background:${c.tint};border:1px solid ${c.bd};border-left:4px solid ${c.ac};border-radius:8px;padding:.6rem .8rem"><span style="font-size:.55rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${c.ac};display:block;margin-bottom:.25rem">Correct</span>${esc(g.kategorie || '')} — ${esc(g.kriterium || '')}</div>
+    <div style="margin-top:1rem"><button class="lernen-submit" onclick="renderSeqApply()">Continue: Apply →</button></div></div>`;
 }
 
 // ── PHASE 2 (compare form): sort each trait to A/B AND justify each placement ──
