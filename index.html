@@ -6334,7 +6334,7 @@ HOW TO CHOOSE: If the topic is essentially "X versus Y" -> COMPARE. Else, if SEV
     if (!okSeq && !okStruct && !okCompare && !okCause) throw new Error('Could not parse test data');
     if (!json.form) json.form = okCompare ? 'compare' : okCause ? 'causeweb' : okStruct ? 'structure' : 'sequence';
     ST.seqData = json;
-    if (json.form === 'compare') renderSeqCompareKey(); else if (json.form === 'causeweb') renderSeqCauses(); else if (json.form === 'structure') renderSeqCategorize(); else renderSeqDefine();
+    if (json.form === 'compare') renderSeqCompareKey(); else if (json.form === 'causeweb') renderSeqCauses(); else if (json.form === 'structure') renderSeqCategorize(); else renderSeqOrder();
   } catch (e) {
     document.getElementById('testLoad').innerHTML = `<div class="err on">Error: ${esc(e.message)}</div>`;
   }
@@ -6453,7 +6453,7 @@ function renderSeqOrder() {
   ST.seqUserOrder = [];
   const shuf = seqShuffle(data.schritte.length);
   const h = `<div class="test-sec">
-    <div class="test-sec-head"><span class="test-sec-ico">🔢</span><span class="test-sec-title">Phase 2 — Order the sequence</span></div>
+    <div class="test-sec-head"><span class="test-sec-ico">🔢</span><span class="test-sec-title">Phase 1 — Order the sequence</span></div>
     <div style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem">Click the terms in the correct order.</div>
     <div class="org-reih-sequence" id="seq-slots"></div>
     <div class="org-reih-pool" id="seq-pool">
@@ -6464,6 +6464,8 @@ function renderSeqOrder() {
   const tc = document.getElementById('testContent');
   tc.innerHTML = h;
   renderSeqSlots();
+  document.getElementById('testLoad').style.display = 'none';
+  tc.style.display = 'block';
   tc.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -6992,7 +6994,7 @@ function renderSeqDeps() {
   });
   chain += '</div>';
   const h = `<div class="test-sec">
-    <div class="test-sec-head"><span class="test-sec-ico">🔗</span><span class="test-sec-title">Phase 3 — Dependencies</span></div>
+    <div class="test-sec-head"><span class="test-sec-ico">🔗</span><span class="test-sec-title">Phase 2 — Dependencies</span></div>
     <div style="font-size:.8rem;color:var(--muted);margin-bottom:.9rem">For each arrow, explain in one line why one step leads to / enables the next.</div>
     ${chain}
     <div class="lernen-actions"><button class="lernen-submit" id="seq-deps-btn" onclick="submitSeqDeps()">Evaluate →</button></div>
