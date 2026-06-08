@@ -941,10 +941,13 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .dash-ready-num{font-family:var(--serif);font-size:2.7rem;font-weight:600;line-height:1}
 .dash-ready-lbl{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.2rem}
 .dash-dist{display:flex;flex-direction:column;gap:.42rem}
-.dash-dist-item{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text)}
+.dash-dist-item{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text);cursor:pointer;transition:opacity .14s}
+.dash-dist-item:hover{opacity:.6}
 .dash-hero-right{flex:1;min-width:200px;display:flex;flex-direction:column;gap:.7rem}
 .dash-bar{display:flex;height:8px;border-radius:100px;overflow:hidden;background:var(--border)}
 .dash-bar-seg{height:100%}
+.dash-flash{animation:dashFlash 1.4s ease}
+@keyframes dashFlash{0%,100%{box-shadow:0 0 0 0 transparent}30%,65%{box-shadow:0 0 0 3px var(--accent)}}
 .dash-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem}
 @media(max-width:520px){.dash-grid{grid-template-columns:1fr}}
 .dash-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.95rem 1.1rem;cursor:pointer;transition:all .15s}
@@ -1325,12 +1328,6 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
         <div class="bmc-body">
           <div class="bmc-title">I know it, but don't fully understand it</div>
           <div class="bmc-sub">AI helps truly understand the topic — structure and connections</div>
-        </div>
-      </div>
-      <div class="bmc" data-bm="pruefe" onclick="pickBMode(this)">
-        <div class="bmc-body">
-          <div class="bmc-title">I understand it — I want to practice</div>
-          <div class="bmc-sub">AI quizzes you with questions and gives direct feedback</div>
         </div>
       </div>
     </div>
@@ -1786,6 +1783,21 @@ function dashReadiness() {
   return { pct: den ? Math.round(num / den * 100) : 0, mastered, started, untouched };
 }
 
+// Topic status matching the hero distribution (mastered / started / untouched)
+function dashTopicStatus(r) {
+  if (!r.explored || r.tested === 0) return 'untouched';
+  if (r.tested >= r.total && (r.mastery || 0) >= 8) return 'mastered';
+  return 'started';
+}
+
+// Click a distribution item -> scroll to + briefly highlight matching cards (no filtering)
+function dashHighlight(status) {
+  const cards = document.querySelectorAll('.dash-card[data-status="' + status + '"]');
+  if (!cards.length) return;
+  cards[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  cards.forEach(c => { c.classList.remove('dash-flash'); void c.offsetWidth; c.classList.add('dash-flash'); setTimeout(() => c.classList.remove('dash-flash'), 1500); });
+}
+
 // Next step = the topic that would raise readiness most (weight × (1 - contrib)).
 // "Almost ready" is checked first via readiness, which already counts untested negatively.
 function dashNextStep() {
@@ -1822,9 +1834,9 @@ function renderDashboard() {
       <div class="dash-ready"><div class="dash-ready-num" style="color:${readyCol}">${r.pct}%</div><div class="dash-ready-lbl">Exam-ready</div></div>
       <div class="dash-hero-right">
         <div class="dash-dist">
-          <div class="dash-dist-item"><span class="prio-dot" style="background:var(--accent)"></span><strong>${r.mastered}</strong>&nbsp;mastered</div>
-          <div class="dash-dist-item"><span class="prio-dot" style="background:#C8860B"></span><strong>${r.started}</strong>&nbsp;started</div>
-          <div class="dash-dist-item"><span class="prio-dot" style="background:var(--muted2)"></span><strong>${r.untouched}</strong>&nbsp;untouched</div>
+          <div class="dash-dist-item" onclick="dashHighlight('mastered')"><span class="prio-dot" style="background:var(--accent)"></span><strong>${r.mastered}</strong>&nbsp;mastered</div>
+          <div class="dash-dist-item" onclick="dashHighlight('started')"><span class="prio-dot" style="background:#C8860B"></span><strong>${r.started}</strong>&nbsp;started</div>
+          <div class="dash-dist-item" onclick="dashHighlight('untouched')"><span class="prio-dot" style="background:var(--muted2)"></span><strong>${r.untouched}</strong>&nbsp;untouched</div>
         </div>
         <div class="dash-bar">
           ${r.mastered ? `<div class="dash-bar-seg" style="width:${r.mastered / dashTotal * 100}%;background:var(--accent)"></div>` : ''}
@@ -1862,7 +1874,7 @@ function renderDashboard() {
           weakHtml = `<div class="dash-weak" style="color:${wc}">⚠ Weakest: ${esc(r2.weakest)}</div>`;
         }
       }
-      h += `<div class="dash-card ${cls}" onclick="openBaustein(${idx})">
+      h += `<div class="dash-card ${cls}" data-status="${dashTopicStatus(r2)}" onclick="openBaustein(${idx})">
         <div class="dash-card-name">${esc(t.name)}</div>
         <div class="dash-card-foot">${footHtml}</div>
         ${weakHtml}
