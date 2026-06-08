@@ -957,6 +957,20 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .dash-card.ds-low .dash-mastery{color:var(--red)}
 .dash-cov{font-size:.72rem;color:var(--muted)}
 .dash-weak{font-size:.72rem;font-weight:500;margin-top:.4rem}
+.dash-next{display:flex;align-items:center;gap:.7rem;background:var(--accent-s);border:1px solid var(--str-bd);border-radius:12px;padding:.85rem 1.1rem;margin-bottom:1.8rem;cursor:pointer;transition:all .15s}
+.dash-next:hover{background:var(--accent);border-color:var(--accent)}
+.dash-next:hover .dash-next-text,.dash-next:hover .dash-next-text strong,.dash-next:hover .dash-next-arr,.dash-next:hover .dash-next-icon{color:#fff}
+.dash-next-icon{font-size:1rem;flex-shrink:0}
+.dash-next-text{flex:1;font-size:.9rem;color:var(--text);line-height:1.4}
+.dash-next-text strong{color:var(--accent);font-weight:700}
+.dash-next-arr{font-size:1.1rem;color:var(--accent);font-weight:700;flex-shrink:0}
+.dash-next.warn{background:var(--red-s);border-color:rgba(196,83,58,.28)}
+.dash-next.warn .dash-next-text strong,.dash-next.warn .dash-next-arr,.dash-next.warn .dash-next-icon{color:var(--red)}
+.dash-next.warn:hover{background:var(--red);border-color:var(--red)}
+.dash-next.warn:hover .dash-next-text,.dash-next.warn:hover .dash-next-text strong,.dash-next.warn:hover .dash-next-arr,.dash-next.warn:hover .dash-next-icon{color:#fff}
+.dash-next-static{cursor:default;background:var(--surface);border-color:var(--border)}
+.dash-next-static:hover{background:var(--surface);border-color:var(--border)}
+.dash-next-static:hover .dash-next-text{color:var(--text)}
 </style>
 <!-- PDF.js für Text-Extraktion -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -1769,6 +1783,31 @@ function dashReadiness() {
   return { pct: den ? Math.round(num / den * 100) : 0, mastered, started, untouched };
 }
 
+// Next step = the topic that would raise readiness most (weight × (1 - contrib)).
+// "Almost ready" is checked first via readiness, which already counts untested negatively.
+function dashNextStep() {
+  const W = { hoch: 3, mittel: 2, niedrig: 1 };
+  const ready = dashReadiness();
+  if (ready.pct >= 95) return { icon: '🎉', text: "You're exam-ready" };
+  if (ready.pct >= 90) return { icon: '🎉', text: 'Almost exam-ready' };
+  let best = null, bestGain = -1;
+  (ST.allTopics || []).forEach((t, idx) => {
+    const w = W[t.prioritaet] || 1;
+    const r = dashTopicRollup(t.name);
+    let contrib = 0;
+    if (r.explored && r.tested > 0) contrib = (r.tested / r.total) * ((r.mastery || 0) / 10);
+    const gain = w * (1 - contrib);
+    if (gain > bestGain) { bestGain = gain; best = { t, idx, r }; }
+  });
+  if (!best) return { icon: '✓', text: 'On track' };
+  const { t, idx, r } = best;
+  let label, warn = false;
+  if (!r.explored || r.tested === 0) { label = 'Start here'; }
+  else if (r.tested < r.total) { label = 'Continue'; }
+  else { label = 'Strengthen'; warn = true; }
+  return { icon: warn ? '⚠' : label === 'Continue' ? '•' : '▶', label, topic: t.name, idx, warn };
+}
+
 function renderDashboard() {
   const plan = ST.currentPlan || {};
   const r = dashReadiness();
@@ -1783,6 +1822,12 @@ function renderDashboard() {
         <div class="dash-dist-item"><span class="prio-dot" style="background:var(--muted2)"></span><strong>${r.untouched}</strong>&nbsp;untouched</div>
       </div>
     </div>`;
+  const ns = dashNextStep();
+  if (ns.idx != null) {
+    h += `<div class="dash-next ${ns.warn ? 'warn' : ''}" onclick="openBaustein(${ns.idx})"><span class="dash-next-icon">${ns.icon}</span><span class="dash-next-text"><strong>${ns.label}:</strong> ${esc(ns.topic)}</span><span class="dash-next-arr">→</span></div>`;
+  } else {
+    h += `<div class="dash-next dash-next-static"><span class="dash-next-icon">${ns.icon}</span><span class="dash-next-text">${esc(ns.text)}</span></div>`;
+  }
   const PRIO = [
     { key: 'hoch', lbl: 'High Priority', dot: '#C4533A' },
     { key: 'mittel', lbl: 'Medium Priority', dot: '#C8A020' },
