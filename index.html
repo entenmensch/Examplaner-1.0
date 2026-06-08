@@ -975,6 +975,19 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .dash-next.warn:hover{background:var(--red);border-color:var(--red)}
 .dash-next.warn:hover .dash-next-text,.dash-next.warn:hover .dash-next-text strong,.dash-next.warn:hover .dash-next-arr,.dash-next.warn:hover .dash-next-icon{color:#fff}
 .dash-next-static{cursor:default;background:var(--surface);border-color:var(--border)}
+.dash-review{display:flex;align-items:center;gap:.7rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.85rem 1.1rem;margin-top:-.9rem;margin-bottom:1.8rem}
+.dash-review-ico{font-size:1.05rem;flex-shrink:0;opacity:.55}
+.dash-review-text{flex:1;display:flex;flex-direction:column;line-height:1.3}
+.dash-review-text strong{font-size:.9rem;color:var(--muted);font-weight:700}
+.dash-review-sub{font-size:.75rem;color:var(--muted2)}
+.dash-review-arr{font-size:1.1rem;font-weight:700;flex-shrink:0}
+.dash-review.due{background:#fff8e8;border-color:#e8a020;cursor:pointer;transition:all .15s}
+.dash-review.due .dash-review-ico{opacity:1}
+.dash-review.due .dash-review-text strong{color:#7a4800}
+.dash-review.due .dash-review-sub{color:#a06a20}
+.dash-review.due .dash-review-arr{color:#a05000}
+.dash-review.due:hover{background:#e8a020;border-color:#e8a020}
+.dash-review.due:hover .dash-review-text strong,.dash-review.due:hover .dash-review-sub,.dash-review.due:hover .dash-review-arr{color:#fff}
 .dash-next-static:hover{background:var(--surface);border-color:var(--border)}
 .dash-next-static:hover .dash-next-text{color:var(--text)}
 </style>
@@ -1832,6 +1845,50 @@ function dashNextStep() {
   return { icon: warn ? '⚠' : label === 'Continue' ? '•' : '▶', label, topic: t.name, idx, warn };
 }
 
+// Subtopics due for spaced-repetition review = tested (has attempts) AND dueAt <= today.
+// Iterates only the current plan's topics/bov, so orphaned/stale mastery entries are ignored.
+function getDueSubtopics() {
+  const today = localDay(new Date());
+  const m = loadMastery();
+  const out = [];
+  (ST.allTopics || []).forEach((t, topicIdx) => {
+    const bov = getBov(t.name);
+    if (!bov || !Array.isArray(bov.unterthemen)) return;
+    bov.unterthemen.forEach((s, subIdx) => {
+      const e = m[s.id];
+      if (e && e.attempts && e.attempts.length && e.dueAt && e.dueAt <= today) {
+        out.push({ id: s.id, titel: s.titel, parent: t.name, topicIdx, subIdx, mastery: e.mastery, dueAt: e.dueAt });
+      }
+    });
+  });
+  return out;
+}
+
+// Open a due subtopic's test directly (sets the same ST context openBaustein would).
+function openReviewSubtopic(topicIdx, subIdx) {
+  const t = ST.allTopics[topicIdx];
+  if (!t) return;
+  const bov = getBov(t.name);
+  if (!bov || !Array.isArray(bov.unterthemen)) return;
+  ST.bausteinIdx = topicIdx;
+  ST.bausteinTopic = t.name;
+  ST.bausteinDesc = t.beschreibung;
+  ST.bausteinTags = t.tags || [];
+  ST.bausteinPrio = t.prioritaet || 'niedrig';
+  ST.subtopics = bov.unterthemen;
+  ST.bausteinLernziele = bov.lernziele || {};
+  ST.bovData = bov;
+  openSeqTestBeta(subIdx);
+}
+
+// Review session (MVP): open the first due subtopic. Finishing reschedules it,
+// back on the dashboard the tile shows the remaining due count.
+function startReview() {
+  const due = getDueSubtopics();
+  if (!due.length) return;
+  openReviewSubtopic(due[0].topicIdx, due[0].subIdx);
+}
+
 function renderDashboard() {
   const plan = ST.currentPlan || {};
   const r = dashReadiness();
@@ -1859,6 +1916,17 @@ function renderDashboard() {
     h += `<div class="dash-next ${ns.warn ? 'warn' : ''}" onclick="openBaustein(${ns.idx})"><span class="dash-next-icon">${ns.icon}</span><span class="dash-next-text"><strong>${ns.label}:</strong> ${esc(ns.topic)}</span><span class="dash-next-arr">→</span></div>`;
   } else {
     h += `<div class="dash-next dash-next-static"><span class="dash-next-icon">${ns.icon}</span><span class="dash-next-text">${esc(ns.text)}</span></div>`;
+  }
+  const due = getDueSubtopics();
+  if (due.length) {
+    h += `<div class="dash-review due" onclick="startReview()">
+      <span class="dash-review-ico">🔁</span>
+      <span class="dash-review-text"><strong>${due.length} ${due.length === 1 ? 'topic' : 'topics'} due for review</strong><span class="dash-review-sub">Spaced repetition · a fresh test each time</span></span>
+      <span class="dash-review-arr">→</span></div>`;
+  } else {
+    h += `<div class="dash-review">
+      <span class="dash-review-ico">🔁</span>
+      <span class="dash-review-text"><strong>Review</strong><span class="dash-review-sub">Nothing due — all caught up ✓</span></span></div>`;
   }
   const PRIO = [
     { key: 'hoch', lbl: 'High Priority', dot: '#C4533A' },
@@ -2101,6 +2169,10 @@ function updateSRFrage(id, note) {
 
 function renderReviewSection() {
   const reviewArea = document.getElementById('reviewArea');
+  // Old question-based SR is hidden: the dashboard's subtopic-review tile is now the single
+  // "N due" surface (two competing badges would be confusing). Engine/code kept for later reuse.
+  if (reviewArea) reviewArea.innerHTML = '';
+  return;
   const allItems = loadSRFragen();
   const dueFragen = getDueSRFragen();
   if (!allItems.length) { reviewArea.innerHTML = ''; return; }
