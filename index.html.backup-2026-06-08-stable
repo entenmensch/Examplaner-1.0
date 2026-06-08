@@ -6498,7 +6498,7 @@ function openSeqTestBeta(idx, forceForm) {
   ST.seqSubtopicMeta = { parent: ST.bausteinTopic || null, titel: st.titel };
   ST.seqScores = {};
   document.getElementById('testHeader').innerHTML = `
-    <span class="bh-prio pm" style="background:var(--erk-bg);color:var(--erk-tx);border:1px solid var(--erk-bd)">Test</span>
+    <span class="bh-prio pm" style="background:var(--erk-bg);color:var(--erk-tx);border:1px solid var(--erk-bd)">Beta</span>
     <span class="bh-name">${esc(st.titel)}</span>
     <button class="endbtn" onclick="goDashboard()" style="flex-shrink:0">✕ Exit</button>
     <span class="bh-desc">${esc(st.beschreibung)}</span>`;
@@ -9222,7 +9222,7 @@ function renderBausteinOverview(data) {
           ${rvBadge ? `<div class="stcard-rv">${rvBadge}</div>` : ''}
         </div>
         ${hasSession ? `<button class="tile-test-btn" style="flex-shrink:0" onclick="event.stopPropagation();openSubtopicTest(${i})">🧪 Test</button>` : ''}
-        <button class="tile-test-btn" style="flex-shrink:0;margin-left:.3rem;border-color:var(--erk-bd);background:var(--erk-bg);color:var(--erk-tx)" onclick="event.stopPropagation();openSeqTestBeta(${i})">🧪 Test</button>
+        <button class="tile-test-btn" style="flex-shrink:0;margin-left:.3rem;border-color:var(--erk-bd);background:var(--erk-bg);color:var(--erk-tx)" onclick="event.stopPropagation();openSeqTestBeta(${i})">🧪 Beta</button>
       </div>`;
     }).join('');
 
