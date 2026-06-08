@@ -942,6 +942,9 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .dash-ready-lbl{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.2rem}
 .dash-dist{display:flex;flex-direction:column;gap:.42rem}
 .dash-dist-item{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text)}
+.dash-hero-right{flex:1;min-width:200px;display:flex;flex-direction:column;gap:.7rem}
+.dash-bar{display:flex;height:8px;border-radius:100px;overflow:hidden;background:var(--border)}
+.dash-bar-seg{height:100%}
 .dash-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem}
 @media(max-width:520px){.dash-grid{grid-template-columns:1fr}}
 .dash-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.95rem 1.1rem;cursor:pointer;transition:all .15s}
@@ -1811,15 +1814,23 @@ function dashNextStep() {
 function renderDashboard() {
   const plan = ST.currentPlan || {};
   const r = dashReadiness();
+  const dashTotal = (r.mastered + r.started + r.untouched) || 1;
   const readyCol = r.pct >= 70 ? 'var(--accent)' : r.pct >= 40 ? '#C8860B' : 'var(--red)';
   let h = `<p class="h1">Your <em>dashboard</em></p>
     <p class="sub">${esc(plan.name || 'Your plan')}${plan.days != null ? ` · ${plan.days} days left` : ''} · <a onclick="resumeSavedPlan()" style="color:var(--accent);cursor:pointer;font-weight:500">✏️ Adjust plan</a></p>
     <div class="dash-hero">
       <div class="dash-ready"><div class="dash-ready-num" style="color:${readyCol}">${r.pct}%</div><div class="dash-ready-lbl">Exam-ready</div></div>
-      <div class="dash-dist">
-        <div class="dash-dist-item"><span class="prio-dot" style="background:var(--accent)"></span><strong>${r.mastered}</strong>&nbsp;mastered</div>
-        <div class="dash-dist-item"><span class="prio-dot" style="background:#C8860B"></span><strong>${r.started}</strong>&nbsp;started</div>
-        <div class="dash-dist-item"><span class="prio-dot" style="background:var(--muted2)"></span><strong>${r.untouched}</strong>&nbsp;untouched</div>
+      <div class="dash-hero-right">
+        <div class="dash-dist">
+          <div class="dash-dist-item"><span class="prio-dot" style="background:var(--accent)"></span><strong>${r.mastered}</strong>&nbsp;mastered</div>
+          <div class="dash-dist-item"><span class="prio-dot" style="background:#C8860B"></span><strong>${r.started}</strong>&nbsp;started</div>
+          <div class="dash-dist-item"><span class="prio-dot" style="background:var(--muted2)"></span><strong>${r.untouched}</strong>&nbsp;untouched</div>
+        </div>
+        <div class="dash-bar">
+          ${r.mastered ? `<div class="dash-bar-seg" style="width:${r.mastered / dashTotal * 100}%;background:var(--accent)"></div>` : ''}
+          ${r.started ? `<div class="dash-bar-seg" style="width:${r.started / dashTotal * 100}%;background:#C8860B"></div>` : ''}
+          ${r.untouched ? `<div class="dash-bar-seg" style="width:${r.untouched / dashTotal * 100}%;background:var(--muted2)"></div>` : ''}
+        </div>
       </div>
     </div>`;
   const ns = dashNextStep();
