@@ -6509,21 +6509,34 @@ function openSeqTestBeta(idx, forceForm) {
   document.getElementById('testLoad').style.display = 'block';
   show('scTest');
   setNav('nPlan');
-  loadSeqTest(ST.seqTopic, forceForm || st.form);
+  loadSeqTest(ST.seqTopic, forceForm || st.form, ST.bausteinPrio);
+}
+
+// Element count scaled by the topic's priority (high = longer test, low = shorter). Formats stay identical.
+function seqCount(form, prio) {
+  const P = prio === 'hoch' ? 'h' : prio === 'mittel' ? 'm' : 'l';
+  const map = {
+    sequence:  { h: '6 to 7 steps', m: '5 steps', l: '4 steps' },
+    structure: { h: '3 to 4 categories, each holding 2 to 3 elements', m: '2 to 3 categories, each holding 2 to 3 elements', l: '2 categories, each holding 2 to 3 elements' },
+    compare:   { h: '5 to 6 aspects', m: '4 aspects', l: '3 aspects' },
+    causeweb:  { h: '5 to 6 causes spread across the categories', m: '4 causes spread across the categories', l: '3 causes spread across the categories' },
+  };
+  return (map[form] || map.sequence)[P];
 }
 
 // JSON schema string for a known form (used when the subtopic already carries its form)
-function seqFormSchema(form) {
-  if (form === 'compare') return `{"form":"compare","thema":"short name","a":"first thing","b":"second thing","a_def":"1-2 sentence definition of A","b_def":"1-2 sentence definition of B","aspekte":[{"aspekt":"dimension","a_wert":"A's value","b_wert":"B's value"}]}  with 3 to 5 aspects`;
-  if (form === 'causeweb') return `{"form":"causeweb","thema":"short name","ergebnis":"the single outcome/event","kategorien":["3 to 4 typological category names, e.g. political, economic, military, ideological"],"ursachen":[{"begriff":"cause name","kategorie":"exactly one of the categories above","wirkung":"how this cause contributes to the outcome"}]}  with 4 to 6 causes spread across the categories`;
-  if (form === 'structure') return `{"form":"structure","thema":"short name","kategorien":[{"name":"category name","elemente":[{"begriff":"element name"}]}],"grenzfall":{"element":"a real element students often MISCLASSIFY between two of the categories","kategorie":"its correct category name (must exactly match one category)","kriterium":"the deciding criterion that places it there"}}  with 2 to 4 categories, each holding 2 to 3 elements`;
-  return `{"form":"sequence","thema":"short name","schritte":[{"begriff":"step name","definition":"1-2 sentence definition"}]}  with 4 to 7 steps in the correct order`;
+function seqFormSchema(form, prio) {
+  const n = seqCount(form, prio);
+  if (form === 'compare') return `{"form":"compare","thema":"short name","a":"first thing","b":"second thing","a_def":"1-2 sentence definition of A","b_def":"1-2 sentence definition of B","aspekte":[{"aspekt":"dimension","a_wert":"A's value","b_wert":"B's value"}]}  with ${n}`;
+  if (form === 'causeweb') return `{"form":"causeweb","thema":"short name","ergebnis":"the single outcome/event","kategorien":["3 to 4 typological category names, e.g. political, economic, military, ideological"],"ursachen":[{"begriff":"cause name","kategorie":"exactly one of the categories above","wirkung":"how this cause contributes to the outcome"}]}  with ${n}`;
+  if (form === 'structure') return `{"form":"structure","thema":"short name","kategorien":[{"name":"category name","elemente":[{"begriff":"element name"}]}],"grenzfall":{"element":"a real element students often MISCLASSIFY between two of the categories","kategorie":"its correct category name (must exactly match one category)","kriterium":"the deciding criterion that places it there"}}  with ${n}`;
+  return `{"form":"sequence","thema":"short name","schritte":[{"begriff":"step name","definition":"1-2 sentence definition"}]}  with ${n} in the correct order`;
 }
 
-async function loadSeqTest(t, knownForm) {
+async function loadSeqTest(t, knownForm, prio) {
   const useKnown = ['sequence', 'structure', 'compare', 'causeweb'].includes(knownForm);
   const sys = useKnown ? `You are an exam coach. Build a test for the topic "${t.name}". The required shape is ${knownForm}.
-Respond ONLY with this JSON (no text before/after): ${seqFormSchema(knownForm)}.
+Respond ONLY with this JSON (no text before/after): ${seqFormSchema(knownForm, prio)}.
 Each item is a real term from the material. All in English. Use only simple characters (no quotes/apostrophes that could break JSON).` : `You are an exam coach. First decide the SHAPE of the topic "${t.name}":
 - COMPARE: the topic is fundamentally a contrast of TWO specific things (X vs Y).
 - CAUSEWEB: SEVERAL independent factors/causes that converge on ONE outcome or event.
