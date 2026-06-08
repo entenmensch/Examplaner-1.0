@@ -935,6 +935,24 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .prio-slide-ta:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(29,61,42,.08)}
 .prio-slide-ft{display:flex;align-items:center;gap:.75rem}
 .prio-slide-load{font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:.5rem;flex:1}
+/* ── DASHBOARD ── */
+.dash-hero{display:flex;align-items:center;gap:1.6rem;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.3rem 1.5rem;margin-bottom:1.8rem}
+.dash-ready{text-align:center;flex-shrink:0}
+.dash-ready-num{font-family:var(--serif);font-size:2.7rem;font-weight:600;line-height:1}
+.dash-ready-lbl{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.2rem}
+.dash-dist{display:flex;flex-direction:column;gap:.42rem}
+.dash-dist-item{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text)}
+.dash-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem}
+@media(max-width:520px){.dash-grid{grid-template-columns:1fr}}
+.dash-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.95rem 1.1rem;cursor:pointer;transition:all .15s}
+.dash-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.dash-card-name{font-size:.86rem;font-weight:600;line-height:1.35;margin-bottom:.6rem}
+.dash-card-foot{display:flex;align-items:baseline;gap:.5rem}
+.dash-mastery{font-family:var(--serif);font-size:1.55rem;font-weight:600}
+.dash-card-foot.rs-high .dash-mastery{color:var(--accent)}
+.dash-card-foot.rs-mid .dash-mastery{color:#C8860B}
+.dash-card-foot.rs-low .dash-mastery{color:var(--red)}
+.dash-cov{font-size:.72rem;color:var(--muted)}
 </style>
 <!-- PDF.js für Text-Extraktion -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -945,6 +963,8 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 <nav class="nav">
   <div class="logo">Study<em>AI</em></div>
   <div class="navlinks">
+    <button class="nl" id="nDash" onclick="goDashboard()">🏠 Dashboard</button>
+
     <button class="nl on" id="nPlan" onclick="goPlaner()">📅 Exam Planner</button>
 
     <button class="nl" id="nFeedback" onclick="window.open('https://forms.gle/wZ2YNpBFRfYa3Vcm8', '_blank')">Give Feedback</button>
@@ -1193,10 +1213,11 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 <!-- ══════ PRIORITY OVERVIEW ══════ -->
 <div class="sc" id="scPrioOverview">
   <p class="h1">Your study<em>plan</em></p>
+  <p class="sub">Plan first: decide <strong>what</strong> you want to learn and <strong>how important</strong> it is. Set priorities and remove what you don't need — then hit "Start learning". (Learning happens on the dashboard.)</p>
   <div id="prioHead"></div>
   <div class="prio-grid" id="prioGrid"></div>
   <div style="margin-top:1.4rem;text-align:center">
-    <button class="btn bp" id="btnSavePlanBottom" onclick="savePlan()" style="padding:.72rem 2rem;font-size:.88rem">💾 Save plan</button>
+    <button class="btn bp" id="btnSavePlanBottom" onclick="savePlan()" style="padding:.72rem 2rem;font-size:.88rem">Start learning →</button>
   </div>
 </div>
 
@@ -1213,6 +1234,11 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
     <div class="prio-slide-load" id="prioAdjustLoad" style="display:none"><div class="typ" style="display:inline-flex"><span></span><span></span><span></span></div> AI adjusting…</div>
     <button class="btn bp" id="btnPrioAdjust" onclick="applyPrioChange()">Adjust →</button>
   </div>
+</div>
+
+<!-- ══════ DASHBOARD ══════ -->
+<div class="sc" id="scDashboard">
+  <div id="dashBody"></div>
 </div>
 
 <!-- ══════ TARGETED LEARNING ══════ -->
@@ -1359,7 +1385,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
     </div>
 
     <div class="brow">
-      <button class="btn bg" onclick="backToPlan()">← Plan</button>
+      <button class="btn bg" onclick="goDashboard()">← Dashboard</button>
     </div>
   </div>
 </div>
@@ -1545,8 +1571,9 @@ function savePlan() {
     }));
     ['btnSavePlan', 'btnSavePlanBottom'].forEach(id => {
       const btn = document.getElementById(id);
-      if (btn) { btn.textContent = '✓ Saved'; btn.disabled = true; setTimeout(() => { btn.textContent = '💾 Save plan'; btn.disabled = false; }, 2000); }
+      if (btn) { btn.textContent = '✓ Saved'; btn.disabled = true; setTimeout(() => { btn.textContent = 'Start learning →'; btn.disabled = false; }, 2000); }
     });
+    goDashboard();
   } catch(e) {}
 }
 const loadSavedPlan = () => { try { return JSON.parse(localStorage.getItem(PK)) || null; } catch { return null; } };
@@ -1676,6 +1703,7 @@ function show(id) {
 }
 function setNav(active) {
   document.getElementById('nPlan').classList.toggle('on', active === 'nPlan');
+  const d = document.getElementById('nDash'); if (d) d.classList.toggle('on', active === 'nDash');
 }
 function goHome() { goPlaner(); }
 function goSession() {
@@ -1686,6 +1714,92 @@ function goPlaner() {
   resetPlaner();
   show('scPlan'); setNav('nPlan');
   renderSavedPlanCard();
+}
+
+// ── DASHBOARD (landing) ──────────────────────────────────────────────────────
+function goDashboard() {
+  if (!ST.allTopics || !ST.allTopics.length) {
+    const saved = loadSavedPlan();
+    if (saved) {
+      ST.allTopics = saved.allTopics || [];
+      ST.currentPlan = { name: saved.meta.name, examStr: saved.meta.examStr, days: saved.meta.days };
+      if (saved.textFiles && saved.textFiles.length) ST.planFiles = saved.textFiles;
+    }
+  }
+  if (!ST.allTopics || !ST.allTopics.length) { goPlaner(); return; }
+  renderDashboard();
+  show('scDashboard'); setNav('nDash');
+}
+
+// Coverage + mastery per topic (mastery = avg of TESTED subtopics only — never untested=0)
+function dashTopicRollup(topicName) {
+  const bov = getBov(topicName);
+  if (!bov || !Array.isArray(bov.unterthemen) || !bov.unterthemen.length) return { explored: false, total: 0, tested: 0, mastery: null };
+  const subs = bov.unterthemen;
+  let tested = 0, sum = 0;
+  subs.forEach(s => { const m = getMastery(s.id); if (m && m.mastery != null) { tested++; sum += m.mastery; } });
+  return { explored: true, total: subs.length, tested, mastery: tested ? Math.round(sum / tested * 10) / 10 : null };
+}
+
+// Readiness = priority-weighted (coverage × mastery); untested high-prio drags it, without faking mastery
+function dashReadiness() {
+  const W = { hoch: 3, mittel: 2, niedrig: 1 };
+  let num = 0, den = 0, mastered = 0, started = 0, untouched = 0;
+  (ST.allTopics || []).forEach(t => {
+    const w = W[t.prioritaet] || 1; den += w;
+    const r = dashTopicRollup(t.name);
+    let contrib = 0;
+    if (r.explored && r.tested > 0) {
+      const coverage = r.tested / r.total;
+      contrib = coverage * ((r.mastery || 0) / 10);
+      if (coverage >= 1 && (r.mastery || 0) >= 8) mastered++; else started++;
+    } else { untouched++; }
+    num += w * contrib;
+  });
+  return { pct: den ? Math.round(num / den * 100) : 0, mastered, started, untouched };
+}
+
+function renderDashboard() {
+  const plan = ST.currentPlan || {};
+  const r = dashReadiness();
+  const readyCol = r.pct >= 70 ? 'var(--accent)' : r.pct >= 40 ? '#C8860B' : 'var(--red)';
+  let h = `<p class="h1">Your <em>dashboard</em></p>
+    <p class="sub">${esc(plan.name || 'Your plan')}${plan.days != null ? ` · ${plan.days} days left` : ''} · <a onclick="resumeSavedPlan()" style="color:var(--accent);cursor:pointer;font-weight:500">✏️ Adjust plan</a></p>
+    <div class="dash-hero">
+      <div class="dash-ready"><div class="dash-ready-num" style="color:${readyCol}">${r.pct}%</div><div class="dash-ready-lbl">Exam-ready</div></div>
+      <div class="dash-dist">
+        <div class="dash-dist-item"><span class="prio-dot" style="background:var(--accent)"></span><strong>${r.mastered}</strong>&nbsp;mastered</div>
+        <div class="dash-dist-item"><span class="prio-dot" style="background:#C8860B"></span><strong>${r.started}</strong>&nbsp;started</div>
+        <div class="dash-dist-item"><span class="prio-dot" style="background:var(--muted2)"></span><strong>${r.untouched}</strong>&nbsp;untouched</div>
+      </div>
+    </div>`;
+  const PRIO = [
+    { key: 'hoch', lbl: 'High Priority', dot: '#C4533A' },
+    { key: 'mittel', lbl: 'Medium Priority', dot: '#C8A020' },
+    { key: 'niedrig', lbl: 'Low Priority', dot: '#4A9A5A' },
+  ];
+  PRIO.forEach(p => {
+    const topics = (ST.allTopics || []).map((t, idx) => ({ t, idx })).filter(x => (x.t.prioritaet || 'niedrig') === p.key);
+    if (!topics.length) return;
+    h += `<div class="bov-section"><div class="bov-section-lbl"><span class="prio-dot" style="background:${p.dot}"></span>${p.lbl}</div><div class="dash-grid">`;
+    topics.forEach(({ t, idx }) => {
+      const r2 = dashTopicRollup(t.name);
+      let footHtml, cls = 'rs-none';
+      if (!r2.explored) footHtml = '<span class="dash-cov">Not explored yet</span>';
+      else if (r2.tested === 0) footHtml = `<span class="dash-cov">0/${r2.total} tested</span>`;
+      else {
+        const m = r2.mastery;
+        cls = m >= 8 ? 'rs-high' : m >= 5 ? 'rs-mid' : 'rs-low';
+        footHtml = `<span class="dash-mastery">${m.toFixed(1)}</span><span class="dash-cov">${r2.tested}/${r2.total} tested</span>`;
+      }
+      h += `<div class="dash-card" onclick="openBaustein(${idx})">
+        <div class="dash-card-name">${esc(t.name)}</div>
+        <div class="dash-card-foot ${cls}">${footHtml}</div>
+      </div>`;
+    });
+    h += `</div></div>`;
+  });
+  document.getElementById('dashBody').innerHTML = h;
 }
 function editSetup() {
   const d = load() || fresh();
@@ -6072,7 +6186,7 @@ function showPrioOverview(plan, name, examStr, days) {
         <div class="plan-title">${esc(name)}</div>
         <div class="plan-meta">${examStr} · ${days} days · ~${plan.empfohleneStunden}h · ${plan.gesamtthemen} topics</div>
       </div>
-      <button class="btn bg" id="btnSavePlan" onclick="savePlan()" style="font-size:.72rem;padding:.38rem .85rem;white-space:nowrap;flex-shrink:0">💾 Save</button>
+      <button class="btn bg" id="btnSavePlan" onclick="savePlan()" style="font-size:.72rem;padding:.38rem .85rem;white-space:nowrap;flex-shrink:0">Start learning →</button>
     </div>`;
 
   const COLS = [
@@ -6132,7 +6246,6 @@ function renderPrioGrid() {
                     <span class="prio-dot" style="background:${PRIO_DOTS[p]};width:7px;height:7px"></span>${PRIO_LABELS[p]}
                   </button>`).join('')}
                 <button class="prio-del-btn" onclick="removePrioTopic(${idx})">× Remove</button>
-                <button class="prio-tile-lernen" onclick="openBaustein(${idx})">Learn →</button>
               </div>
             </div>
           </div>`;
