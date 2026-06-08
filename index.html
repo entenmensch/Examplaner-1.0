@@ -945,14 +945,18 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .dash-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem}
 @media(max-width:520px){.dash-grid{grid-template-columns:1fr}}
 .dash-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.95rem 1.1rem;cursor:pointer;transition:all .15s}
-.dash-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.dash-card:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.dash-card.ds-high{background:var(--str-bg);border-color:var(--str-bd)}
+.dash-card.ds-mid{background:var(--erk-bg);border-color:var(--erk-bd)}
+.dash-card.ds-low{background:var(--red-s);border-color:rgba(196,83,58,.28)}
 .dash-card-name{font-size:.86rem;font-weight:600;line-height:1.35;margin-bottom:.6rem}
 .dash-card-foot{display:flex;align-items:baseline;gap:.5rem}
 .dash-mastery{font-family:var(--serif);font-size:1.55rem;font-weight:600}
-.dash-card-foot.rs-high .dash-mastery{color:var(--accent)}
-.dash-card-foot.rs-mid .dash-mastery{color:#C8860B}
-.dash-card-foot.rs-low .dash-mastery{color:var(--red)}
+.dash-card.ds-high .dash-mastery{color:var(--accent)}
+.dash-card.ds-mid .dash-mastery{color:#C8860B}
+.dash-card.ds-low .dash-mastery{color:var(--red)}
 .dash-cov{font-size:.72rem;color:var(--muted)}
+.dash-weak{font-size:.72rem;font-weight:500;margin-top:.4rem}
 </style>
 <!-- PDF.js für Text-Extraktion -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -1736,9 +1740,15 @@ function dashTopicRollup(topicName) {
   const bov = getBov(topicName);
   if (!bov || !Array.isArray(bov.unterthemen) || !bov.unterthemen.length) return { explored: false, total: 0, tested: 0, mastery: null };
   const subs = bov.unterthemen;
-  let tested = 0, sum = 0;
-  subs.forEach(s => { const m = getMastery(s.id); if (m && m.mastery != null) { tested++; sum += m.mastery; } });
-  return { explored: true, total: subs.length, tested, mastery: tested ? Math.round(sum / tested * 10) / 10 : null };
+  let tested = 0, sum = 0, weakest = null, weakestScore = Infinity;
+  subs.forEach(s => {
+    const m = getMastery(s.id);
+    if (m && m.mastery != null) {
+      tested++; sum += m.mastery;
+      if (m.mastery < weakestScore) { weakestScore = m.mastery; weakest = s.titel; }
+    }
+  });
+  return { explored: true, total: subs.length, tested, mastery: tested ? Math.round(sum / tested * 10) / 10 : null, weakest, weakestScore: tested ? weakestScore : null };
 }
 
 // Readiness = priority-weighted (coverage × mastery); untested high-prio drags it, without faking mastery
@@ -1784,17 +1794,22 @@ function renderDashboard() {
     h += `<div class="bov-section"><div class="bov-section-lbl"><span class="prio-dot" style="background:${p.dot}"></span>${p.lbl}</div><div class="dash-grid">`;
     topics.forEach(({ t, idx }) => {
       const r2 = dashTopicRollup(t.name);
-      let footHtml, cls = 'rs-none';
+      let footHtml, cls = '', weakHtml = '';
       if (!r2.explored) footHtml = '<span class="dash-cov">Not explored yet</span>';
       else if (r2.tested === 0) footHtml = `<span class="dash-cov">0/${r2.total} tested</span>`;
       else {
         const m = r2.mastery;
-        cls = m >= 8 ? 'rs-high' : m >= 5 ? 'rs-mid' : 'rs-low';
+        cls = m >= 8 ? 'ds-high' : m >= 5 ? 'ds-mid' : 'ds-low';
         footHtml = `<span class="dash-mastery">${m.toFixed(1)}</span><span class="dash-cov">${r2.tested}/${r2.total} tested</span>`;
+        if (r2.weakest && r2.weakestScore != null && r2.weakestScore < 7) {
+          const wc = r2.weakestScore < 5 ? 'var(--red)' : '#C8860B';
+          weakHtml = `<div class="dash-weak" style="color:${wc}">⚠ Weakest: ${esc(r2.weakest)}</div>`;
+        }
       }
-      h += `<div class="dash-card" onclick="openBaustein(${idx})">
+      h += `<div class="dash-card ${cls}" onclick="openBaustein(${idx})">
         <div class="dash-card-name">${esc(t.name)}</div>
-        <div class="dash-card-foot ${cls}">${footHtml}</div>
+        <div class="dash-card-foot">${footHtml}</div>
+        ${weakHtml}
       </div>`;
     });
     h += `</div></div>`;
