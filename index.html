@@ -6500,6 +6500,7 @@ function openSeqTestBeta(idx, forceForm) {
   document.getElementById('testHeader').innerHTML = `
     <span class="bh-prio pm" style="background:var(--erk-bg);color:var(--erk-tx);border:1px solid var(--erk-bd)">Beta</span>
     <span class="bh-name">${esc(st.titel)}</span>
+    <button class="endbtn" onclick="goDashboard()" style="flex-shrink:0">✕ Exit</button>
     <span class="bh-desc">${esc(st.beschreibung)}</span>`;
   document.getElementById('testContent').style.display = 'none';
   document.getElementById('testContent').innerHTML = '';
