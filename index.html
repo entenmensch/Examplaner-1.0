@@ -1516,6 +1516,8 @@ const MASTERY_KEY = 'las_mastery_v1';
 function loadMastery() { try { return JSON.parse(localStorage.getItem(MASTERY_KEY)) || {}; } catch { return {}; } }
 function saveMastery(m) { try { localStorage.setItem(MASTERY_KEY, JSON.stringify(m)); } catch (e) {} }
 function getMastery(id) { return loadMastery()[id] || null; }
+// Local YYYY-MM-DD (NOT toISOString, which shifts to UTC and would eat a day east of UTC)
+function localDay(d) { const x = new Date(d); return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`; }
 function recordMastery(id, meta) {
   if (!id) return;
   const m = loadMastery();
@@ -1526,6 +1528,13 @@ function recordMastery(id, meta) {
   // interim mastery = average of last 2 attempts (honest; full history kept for decay/stability later)
   const last2 = e.attempts.slice(-2).map(a => a.score).filter(v => v != null);
   e.mastery = last2.length ? Math.round(last2.reduce((a, b) => a + b, 0) / last2.length * 10) / 10 : null;
+  // spaced-repetition scheduling: expand the review interval from the test score (0-10 scale, same as calcSRInterval).
+  // dueAt only exists once a subtopic has been tested -> an untested subtopic can never be "due".
+  if (meta.score != null) {
+    e.interval = calcSRInterval(e.interval || 1, meta.score);
+    const due = new Date(); due.setHours(0, 0, 0, 0); due.setDate(due.getDate() + e.interval);
+    e.dueAt = localDay(due);
+  }
   m[id] = e;
   saveMastery(m);
 }
