@@ -1186,6 +1186,10 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
       <label class="lbl">Exam Date</label>
       <input type="date" id="inExamDate" onchange="updateDays()">
     </div>
+    <div class="f" style="max-width:150px">
+      <label class="lbl">Hours / Week</label>
+      <input type="number" id="inHoursPerWeek" min="1" placeholder="e.g. 10">
+    </div>
   </div>
 
   <div class="dbadge" id="daysBadge" style="display:none">
@@ -6174,6 +6178,7 @@ function resetPlaner() {
   ST.planFiles = [];
   document.getElementById('inExamName').value = '';
   document.getElementById('inExamDate').value = '';
+  document.getElementById('inHoursPerWeek').value = '';
   document.getElementById('inHints').value = '';
   document.getElementById('flist2').innerHTML = '';
   document.getElementById('planFileCountLbl').textContent = '';
@@ -6216,9 +6221,11 @@ function updateDays() {
 async function buildPlan() {
   const name = document.getElementById('inExamName').value.trim();
   const dateVal = document.getElementById('inExamDate').value;
+  const hoursPerWeek = parseInt(document.getElementById('inHoursPerWeek').value, 10);
   const hints = document.getElementById('inHints').value.trim();
   if (!name) return showErr('Please enter a subject / exam name.');
   if (!dateVal) return showErr('Please enter an exam date.');
+  if (!hoursPerWeek || hoursPerWeek < 1) return showErr('Please enter your available hours per week.');
   if (!ST.planFiles.length) return showErr('Please upload material first.');
   if (ST.planFiles.some(f => f.processing)) return showErr('Files are still being processed — please wait.');
   hideErr();
@@ -6241,6 +6248,7 @@ async function buildPlan() {
 Field of study: ${d.profile.sg}
 Exam: "${name}" on ${examStr} (in ${days} days)
 ${hints ? 'Notes: ' + hints : ''}
+Available study time: approx. ${hoursPerWeek} hours/week until the exam (${days} days remaining).
 ${quellenHinweis}
 
 Analyze the material. Create a study plan as JSON:
